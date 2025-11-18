@@ -46,9 +46,10 @@ A **Python-based multi-vendor marketplace** built on Odoo where:
 
 ## 📌 TABLE OF CONTENTS
 
-1.  **General Information**
-2.  **Odoo Modules Dependencies & Inheritance**
-3.  **Functional Specifications by Page/Module**
+1.  **Complete Project Structure**
+2.  **General Information**
+3.  **Odoo Modules Dependencies & Inheritance**
+4.  **Functional Specifications by Page/Module**
     - PAGE 1: Home Page
     - PAGE 2: Shop Page (Product Listing)
     - PAGE 3: Product Detail Page
@@ -58,14 +59,335 @@ A **Python-based multi-vendor marketplace** built on Odoo where:
     - PAGE 7: Vendor Dashboard (Seller Portal)
     - PAGE 8: Administrator Panel (Backend)
     - PAGE 9: Static Pages (About, Contact, etc.)
-4.  **Technical Architecture**
-5.  **User Roles & Permissions**
-6.  **Performance Requirements**
-7.  **Security Requirements**
+5.  **Technical Architecture**
+6.  **User Roles & Permissions**
+7.  **Performance Requirements**
+8.  **Security Requirements**
 
 ---
 
-## 1. GENERAL INFORMATION
+## 1. COMPLETE PROJECT STRUCTURE
+
+### 📁 Full Directory Structure
+
+```
+📦 odoo/
+└── 📁 addons/
+    └── 📁 marketplace_platform/           # Main marketplace module
+        ├── 📄 __init__.py                 # Module initialization
+        ├── 📄 __manifest__.py             # Module manifest (dependencies, info)
+        │
+        ├── 📁 models/                     # Python models (business logic)
+        │   ├── 📄 __init__.py
+        │   │
+        │   ├── 📄 vendor.py               # NEW: Vendor profile management
+        │   ├── 📄 commission.py           # NEW: Commission tracking
+        │   ├── 📄 payout.py              # NEW: Vendor payout requests
+        │   │
+        │   ├── 📄 product.py              # INHERIT: product.template
+        │   ├── 📄 product_category.py     # INHERIT: product.category
+        │   ├── 📄 sale_order.py           # INHERIT: sale.order
+        │   ├── 📄 sale_order_line.py      # INHERIT: sale.order.line
+        │   ├── 📄 account_move.py         # INHERIT: account.move (invoices)
+        │   ├── 📄 stock_picking.py        # INHERIT: stock.picking (delivery)
+        │   ├── 📄 res_partner.py          # INHERIT: res.partner (customers/vendors)
+        │   ├── 📄 payment_transaction.py  # INHERIT: payment.transaction
+        │   ├── 📄 website.py              # INHERIT: website
+        │   └── 📄 portal.py               # Portal customizations
+        │
+        ├── 📁 controllers/                # HTTP controllers (routes, APIs)
+        │   ├── 📄 __init__.py
+        │   ├── 📄 main.py                 # Main website routes
+        │   ├── 📄 vendor_portal.py        # Vendor dashboard routes
+        │   ├── 📄 customer_portal.py      # Customer portal routes
+        │   ├── 📄 shop.py                 # Shop/product listing routes
+        │   └── 📄 api.py                  # REST API endpoints (if needed)
+        │
+        ├── 📁 views/                      # XML view definitions
+        │   ├── 📄 vendor_views.xml        # Backend vendor management
+        │   ├── 📄 commission_views.xml    # Commission tracking views
+        │   ├── 📄 payout_views.xml        # Payout management views
+        │   ├── 📄 product_views.xml       # Extended product views
+        │   ├── 📄 sale_order_views.xml    # Extended order views
+        │   ├── 📄 account_move_views.xml  # Extended invoice views
+        │   ├── 📄 res_partner_views.xml   # Extended partner views
+        │   ├── 📄 marketplace_menus.xml   # Backend menu structure
+        │   └── 📄 dashboard_views.xml     # Dashboard views
+        │
+        ├── 📁 templates/                  # QWeb templates (frontend)
+        │   ├── 📄 portal_templates.xml    # Customer portal templates
+        │   ├── 📄 vendor_portal.xml       # Vendor dashboard templates
+        │   ├── 📄 vendor_storefront.xml   # Public vendor store page
+        │   ├── 📄 shop_templates.xml      # Shop page customizations
+        │   ├── 📄 product_templates.xml   # Product detail customizations
+        │   ├── 📄 cart_templates.xml      # Cart customizations
+        │   ├── 📄 checkout_templates.xml  # Checkout customizations
+        │   └── 📄 assets.xml              # CSS/JS assets (if minimal needed)
+        │
+        ├── 📁 wizards/                    # Wizard models (popup forms)
+        │   ├── 📄 __init__.py
+        │   ├── 📄 vendor_approval_wizard.py
+        │   ├── 📄 payout_wizard.py
+        │   ├── 📄 commission_report_wizard.py
+        │   └── 📄 bulk_product_wizard.py
+        │
+        ├── 📁 reports/                    # Report definitions
+        │   ├── 📄 vendor_sales_report.xml
+        │   ├── 📄 commission_report.xml
+        │   ├── 📄 payout_report.xml
+        │   ├── 📄 vendor_invoice_template.xml
+        │   └── 📄 report_templates.xml
+        │
+        ├── 📁 security/                   # Access rights & security
+        │   ├── 📄 ir.model.access.csv     # Model access rights
+        │   ├── 📄 security.xml            # Security groups & rules
+        │   └── 📄 record_rules.xml        # Record-level security
+        │
+        ├── 📁 data/                       # Initial data & demo data
+        │   ├── 📄 commission_rates.xml    # Default commission rates
+        │   ├── 📄 email_templates.xml     # Email templates
+        │   ├── 📄 cron_jobs.xml           # Scheduled actions
+        │   ├── 📄 demo_data.xml           # Demo vendors & products
+        │   └── 📄 sequence_data.xml       # Number sequences
+        │
+        ├── 📁 static/                     # Static files (if needed)
+        │   ├── 📁 src/
+        │   │   ├── 📁 img/               # Images
+        │   │   ├── 📁 css/               # Minimal CSS (optional)
+        │   │   └── 📁 js/                # Minimal JS (optional)
+        │   └── 📁 description/
+        │       ├── 📄 icon.png           # Module icon
+        │       └── 📄 index.html         # Module description
+        │
+        ├── 📁 tests/                      # Unit tests
+        │   ├── 📄 __init__.py
+        │   ├── 📄 test_vendor.py
+        │   ├── 📄 test_commission.py
+        │   ├── 📄 test_payout.py
+        │   └── 📄 test_order_split.py
+        │
+        └── 📄 README.md                   # Module documentation
+
+```
+
+---
+
+### 📋 File-by-File Breakdown
+
+#### **Root Files**
+
+| File              | Purpose            | Content                                 |
+| ----------------- | ------------------ | --------------------------------------- |
+| `__init__.py`     | Module entry point | Import models, controllers, wizards     |
+| `__manifest__.py` | Module metadata    | Name, version, dependencies, data files |
+| `README.md`       | Documentation      | Installation, usage, features           |
+
+---
+
+#### **📁 models/ - Python Business Logic**
+
+| File                     | Type          | Description                                    |
+| ------------------------ | ------------- | ---------------------------------------------- |
+| `vendor.py`              | **NEW MODEL** | Vendor profiles, store info, approval workflow |
+| `commission.py`          | **NEW MODEL** | Commission calculation and tracking            |
+| `payout.py`              | **NEW MODEL** | Payout requests and processing                 |
+| `product.py`             | **INHERIT**   | Extend `product.template` with vendor fields   |
+| `sale_order.py`          | **INHERIT**   | Extend orders with commission, vendor split    |
+| `sale_order_line.py`     | **INHERIT**   | Commission per order line                      |
+| `account_move.py`        | **INHERIT**   | Invoice commission tracking                    |
+| `stock_picking.py`       | **INHERIT**   | Vendor-specific delivery                       |
+| `res_partner.py`         | **INHERIT**   | Add vendor flag, commission rate               |
+| `payment_transaction.py` | **INHERIT**   | Commission on payments                         |
+| `website.py`             | **INHERIT**   | Website customizations                         |
+| `portal.py`              | **INHERIT**   | Portal access customizations                   |
+
+**Key Python Patterns:**
+
+```python
+# NEW Model
+class MarketplaceVendor(models.Model):
+    _name = 'marketplace.vendor'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+# INHERIT Model
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
+```
+
+---
+
+#### **📁 controllers/ - HTTP Routes**
+
+| File                 | Purpose            | Routes                                                    |
+| -------------------- | ------------------ | --------------------------------------------------------- |
+| `main.py`            | Main routes        | Home page, general routes                                 |
+| `vendor_portal.py`   | Vendor dashboard   | `/vendor/dashboard`, `/vendor/products`, `/vendor/orders` |
+| `customer_portal.py` | Customer portal    | `/my/account`, `/my/orders`, `/my/wishlist`               |
+| `shop.py`            | Shop functionality | `/shop`, `/shop/vendor/<id>`                              |
+| `api.py`             | API endpoints      | REST API for external integrations                        |
+
+**Controller Example:**
+
+```python
+class VendorPortal(http.Controller):
+    @http.route('/vendor/dashboard', type='http', auth='user', website=True)
+    def vendor_dashboard(self, **kwargs):
+        # Logic here
+        return request.render('marketplace_platform.vendor_dashboard', values)
+```
+
+---
+
+#### **📁 views/ - Backend Views (XML)**
+
+| File                    | Purpose                                   |
+| ----------------------- | ----------------------------------------- |
+| `vendor_views.xml`      | Form, tree, kanban views for vendors      |
+| `commission_views.xml`  | Commission tracking views                 |
+| `payout_views.xml`      | Payout request management                 |
+| `product_views.xml`     | Extended product forms with vendor fields |
+| `sale_order_views.xml`  | Extended order views                      |
+| `marketplace_menus.xml` | Backend menu structure                    |
+| `dashboard_views.xml`   | Dashboard widgets                         |
+
+**View Example:**
+
+```xml
+<record id="view_vendor_form" model="ir.ui.view">
+    <field name="name">marketplace.vendor.form</field>
+    <field name="model">marketplace.vendor</field>
+    <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <field name="store_name"/>
+                <field name="commission_rate"/>
+            </sheet>
+        </form>
+    </field>
+</record>
+```
+
+---
+
+#### **📁 templates/ - Frontend Templates (QWeb)**
+
+| File                     | Purpose                           |
+| ------------------------ | --------------------------------- |
+| `portal_templates.xml`   | Customer portal pages             |
+| `vendor_portal.xml`      | Vendor dashboard frontend         |
+| `vendor_storefront.xml`  | Public vendor store page          |
+| `shop_templates.xml`     | Shop page filters, vendor display |
+| `product_templates.xml`  | Product detail vendor info        |
+| `cart_templates.xml`     | Multi-vendor cart display         |
+| `checkout_templates.xml` | Checkout customizations           |
+
+**Template Example:**
+
+```xml
+<template id="vendor_dashboard_template" name="Vendor Dashboard">
+    <t t-call="website.layout">
+        <div class="container">
+            <h1>Vendor Dashboard</h1>
+            <t t-foreach="orders" t-as="order">
+                <div t-esc="order.name"/>
+            </t>
+        </div>
+    </t>
+</template>
+```
+
+---
+
+#### **📁 wizards/ - Popup Forms**
+
+| File                          | Purpose                            |
+| ----------------------------- | ---------------------------------- |
+| `vendor_approval_wizard.py`   | Approve/reject vendor applications |
+| `payout_wizard.py`            | Process payout requests            |
+| `commission_report_wizard.py` | Generate commission reports        |
+| `bulk_product_wizard.py`      | Bulk product operations            |
+
+---
+
+#### **📁 reports/ - PDF Reports**
+
+| File                          | Purpose                    |
+| ----------------------------- | -------------------------- |
+| `vendor_sales_report.xml`     | Vendor sales report PDF    |
+| `commission_report.xml`       | Commission summary report  |
+| `payout_report.xml`           | Payout statement           |
+| `vendor_invoice_template.xml` | Custom invoice for vendors |
+
+---
+
+#### **📁 security/ - Access Control**
+
+| File                  | Purpose                                          |
+| --------------------- | ------------------------------------------------ |
+| `ir.model.access.csv` | Model-level access (CRUD permissions)            |
+| `security.xml`        | User groups definition                           |
+| `record_rules.xml`    | Record-level rules (vendors see only their data) |
+
+**Access Rights Example:**
+
+```csv
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_vendor_user,vendor.user,model_marketplace_vendor,group_vendor_user,1,1,1,0
+```
+
+---
+
+#### **📁 data/ - Initial Data**
+
+| File                   | Purpose                                |
+| ---------------------- | -------------------------------------- |
+| `commission_rates.xml` | Default commission percentages         |
+| `email_templates.xml`  | Automated email templates              |
+| `cron_jobs.xml`        | Scheduled tasks (auto-commission calc) |
+| `demo_data.xml`        | Sample vendors and products            |
+| `sequence_data.xml`    | Number sequences (ORD001, PAY001)      |
+
+---
+
+### 🎯 Development Workflow
+
+1. **Start with Models** (`models/`)
+
+   - Create NEW models (vendor, commission, payout)
+   - Inherit existing models (product, sale.order)
+
+2. **Add Backend Views** (`views/`)
+
+   - Create forms, trees, kanbans
+   - Add menus
+
+3. **Set Security** (`security/`)
+
+   - Define user groups
+   - Set access rights
+
+4. **Create Controllers** (`controllers/`)
+
+   - Add routes for portals
+   - Create APIs
+
+5. **Build Frontend** (`templates/`)
+
+   - Customize website templates
+   - Add portal pages
+
+6. **Add Reports** (`reports/`)
+
+   - Generate PDFs
+   - Create dashboards
+
+7. **Test** (`tests/`)
+   - Write unit tests
+   - Test workflows
+
+---
+
+## 2. GENERAL INFORMATION
 
 ### 1.1 Project Objectives
 
