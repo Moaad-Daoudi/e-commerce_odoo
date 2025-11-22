@@ -20,7 +20,7 @@
         - Portail vendeur dédié
     """,
 
-    'author': "Ilyas BEL EL YAZID, Moaad DAOUDI",
+    'author': "Ilyas BEL EL YAZID, Moaad Daoudi",
     'category': 'Sales/Marketplace',
     'version': '18.0', 
 
@@ -40,6 +40,10 @@
     'data': [
         'security/groups.xml',
         'security/ir.model.access.csv',
+        'views/vendor_views.xml',
+        'views/product_views.xml',
+        'views/commission_views.xml',
+        'views/menu.xml',
         'wizard/vendor_refuse_view.xml',
     ],
 
