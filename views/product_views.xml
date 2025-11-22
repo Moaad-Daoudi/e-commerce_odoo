@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Product Template Inherit Form -->
+    <record id="product_template_form_view_inherit" model="ir.ui.view">
+        <field name="name">product.template.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='group_general']" position="after">
+                <group string="Marketplace Information" name="marketplace_info">
+                    <field name="vendor_id"/>
+                    <field name="approval_state" widget="badge" 
+                           decoration-info="approval_state == 'draft'" 
+                           decoration-warning="approval_state == 'pending'" 
+                           decoration-success="approval_state == 'approved'" 
+                           decoration-danger="approval_state == 'rejected'"/>
+                    <field name="commission_rate"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Vendor Products Action -->
+    <record id="action_vendor_products" model="ir.actions.act_window">
+        <field name="name">Vendor Products</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="domain">[('vendor_id', '!=', False)]</field>
+        <field name="context">{'search_default_vendor_id': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No vendor products yet!
+            </p>
+            <p>
+                Products from vendors will appear here.
+            </p>
+        </field>
+    </record>
+
+</odoo>

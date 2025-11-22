@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Main Menu -->
+    <menuitem id="menu_marketplace_root" 
+              name="Marketplace" 
+              sequence="10" 
+              web_icon="website_sale,static/description/icon.png"/>
+
+    <!-- Vendors Menu -->
+    <menuitem id="menu_marketplace_vendors" 
+              name="Vendors" 
+              parent="menu_marketplace_root" 
+              sequence="10"/>
+    
+    <menuitem id="menu_vendor_list" 
+              name="All Vendors" 
+              parent="menu_marketplace_vendors" 
+              action="action_vendor" 
+              sequence="10"/>
+
+    <menuitem id="menu_vendor_products" 
+              name="Vendor Products" 
+              parent="menu_marketplace_vendors" 
+              action="action_vendor_products" 
+              sequence="20"/>
+
+    <!-- Finance Menu -->
+    <menuitem id="menu_marketplace_finance" 
+              name="Finance" 
+              parent="menu_marketplace_root" 
+              sequence="20"/>
+    
+    <menuitem id="menu_commission_list" 
+              name="Commissions" 
+              parent="menu_marketplace_finance" 
+              action="action_commission" 
+              sequence="10"/>
+
+    <menuitem id="menu_payout_list" 
+              name="Payouts" 
+              parent="menu_marketplace_finance" 
+              action="action_payout" 
+              sequence="20"/>
+
+</odoo>
