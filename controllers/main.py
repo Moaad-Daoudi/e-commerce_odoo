@@ -3,6 +3,21 @@ from odoo import http
 from odoo.http import request
 
 class MarketplaceController(http.Controller):
+    
+    # Home Page for guest
+    @http.route('/', type='http', auth='public', website=True)
+    def homepage(self, **kwargs):
+
+        # Example data loading
+        categories = request.env['product.category'].sudo().search([], limit=6)
+        products   = request.env['product.template'].sudo().search([], limit=8)
+        vendors    = request.env['marketplace.vendor'].sudo().search([], limit=4)
+
+        return request.render('marketplace_platform.home_page', {
+            'categories': categories,
+            'products': products,
+            'vendors': vendors
+        })
 
     @http.route(['/my/marketplace'], type='http', auth="user", website=True)
     def vendor_dashboard(self, **kw):

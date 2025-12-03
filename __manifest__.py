@@ -44,8 +44,18 @@
         'views/product_views.xml',
         'views/commission_views.xml',
         'views/menu.xml',
+        'views/components/navbar.xml',
+        'views/components/footer.xml',
+        'views/components/hero.xml',
+        'views/home_page.xml',
         'wizard/vendor_refuse_view.xml',
     ],
+    
+    'assets': {
+        'web.assets_frontend': [
+            'marketplace_platform/static/src/scss/aura_style.scss',
+        ],
+    },
 
     'installable': True,
     'application': True, 
