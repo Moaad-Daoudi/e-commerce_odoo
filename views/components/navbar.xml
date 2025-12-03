@@ -1,0 +1,78 @@
+<odoo>
+    <template id="navbar_component" name="Aura Navbar Component">
+        <!-- Main Navbar Container -->
+        <nav class="navbar navbar-expand-lg aura-navbar w-100">
+            <div class="container-fluid px-4">
+                
+                <!-- 1. LOGO -->
+                <a href="/" class="navbar-brand aura-logo-container d-flex align-items-center gap-2 me-5">
+                    <img src="/marketplace_platform/static/src/img/logo_icon.png" class="aura-logo" alt="Logo"/>
+                </a>
+
+                <!-- 2. MENU LINKS (Home, Shop...) - Hidden on mobile -->
+                <div class="d-none d-xl-flex align-items-center me-auto">
+                    <a href="/" class="aura-nav-link">Home</a>
+                    <a href="/shop" class="aura-nav-link">Shop</a>
+                    <a href="/vendors" class="aura-nav-link">Vendors</a>
+                    <a href="/contactus" class="aura-nav-link">Contact</a>
+                </div>
+
+                <!-- 3. SEARCH BAR (Centered & Wide) -->
+                <div class="flex-grow-1 d-none d-md-flex justify-content-center mx-4">
+                    <form action="/shop" method="get" class="aura-search-container">
+                        <i class="fa fa-microphone text-muted ms-2"/>
+                        <input type="text" name="search" class="aura-search-input" placeholder="Search for products..."/>
+                        <button type="submit" class="btn btn-link p-0 text-muted">
+                            <i class="fa fa-search fs-5"/>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- 4. RIGHT SIDE ACTIONS -->
+                <div class="d-flex align-items-center">
+                    
+                    <!-- Icons (Wishlist, Chat) -->
+                    <a href="/shop/wishlist" class="aura-icon-btn text-decoration-none" title="Wishlist">
+                        <i class="fa fa-heart-o"/>
+                    </a>
+                    <a href="/chat" class="aura-icon-btn text-decoration-none" title="Messages">
+                        <i class="fa fa-comment-o"/>
+                    </a>
+
+                    <!-- Auth Buttons -->
+                    <t t-if="user_id._is_public()">
+                        <a href="/web/login" class="btn btn-aura-signin ms-3">Sign in</a>
+                        <a href="/web/signup" class="btn btn-aura-join">Join</a>
+                    </t>
+                    <t t-else="">
+                        <!-- User Dropdown if logged in -->
+                        <div class="dropdown ms-3">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img t-att-src="image_data_uri(user_id.avatar_128)" width="38" height="38" class="rounded-circle border border-white"/>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="dropdownUser1">
+                                <li><div class="dropdown-header">Hi, <t t-esc="user_id.name"/></div></li>
+                                <li><a class="dropdown-item" href="/my/home"><i class="fa fa-user me-2"/> My Account</a></li>
+                                <li><a class="dropdown-item" href="/my/marketplace"><i class="fa fa-store me-2"/> Vendor Dashboard</a></li>
+                                <li><hr class="dropdown-divider"/></li>
+                                <li><a class="dropdown-item text-danger" href="/web/session/logout?redirect=/"><i class="fa fa-sign-out me-2"/> Log out</a></li>
+                            </ul>
+                        </div>
+                    </t>
+
+                    <!-- Cart Icon (Always last) -->
+                    <a href="/shop/cart" class="position-relative ms-4 text-dark">
+                        <i class="fa fa-shopping-cart fa-lg" style="font-size: 24px;"/>
+                        <t t-set="website_sale_order" t-value="request.website.sale_get_order()"/>
+                        <t t-if="website_sale_order and website_sale_order.cart_quantity > 0">
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill aura-badge">
+                                <t t-esc="website_sale_order.cart_quantity"/>
+                            </span>
+                        </t>
+                    </a>
+
+                </div>
+            </div>
+        </nav>
+    </template>
+</odoo>
