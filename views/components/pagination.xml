@@ -1,0 +1,63 @@
+<odoo>
+    <!-- Reusable Pagination Component -->
+    <template id="pagination_component" name="Pagination Component">
+        <!-- 
+            Usage: <t t-call="marketplace_platform.pagination_component">
+                       <t t-set="pager" t-value="pager"/>
+                       <t t-set="base_url" t-value="'/page'"/>
+                       <t t-set="url_params" t-value="''"/>  Optional: query string parameters
+                   </t>
+            
+            Parameters:
+            - pager: Dictionary with pagination data (current_page, total_pages, pages, has_prev, has_next, prev_num, next_num)
+            - base_url: Base URL for pagination links (e.g., '/page', '/category/5/page', '/vendor/2/page', '/search/page')
+            - url_params: Optional query string (e.g., '?search=test&sort=price_asc')
+        -->
+        <div class="row mt-5" t-if="pager and pager.get('total_pages', 0) > 1">
+            <div class="col-12 d-flex justify-content-center">
+                <div class="aura-pagination-container d-flex align-items-center gap-2 p-2 shadow-sm bg-white rounded-pill">
+                    
+                    <!-- Previous Button -->
+                    <a t-if="pager.get('has_prev')" 
+                       t-att-href="'%s/%s%s' % (base_url, pager.get('prev_num', 1), url_params or '')" 
+                       class="btn btn-outline-secondary rounded-pill px-3 py-1 btn-sm d-flex align-items-center gap-1 border-gray">
+                        <i class="fa fa-chevron-left small"/> Prev
+                    </a>
+                    <span t-else="" class="btn btn-outline-light text-muted rounded-pill px-3 py-1 btn-sm disabled d-flex align-items-center gap-1">
+                        <i class="fa fa-chevron-left small"/> Prev
+                    </span>
+
+                    <!-- Page Numbers -->
+                    <div class="d-flex align-items-center gap-1 mx-2">
+                        <t t-foreach="pager.get('pages', [])" t-as="p_num">
+                            <!-- Active State -->
+                            <t t-if="p_num == pager.get('current_page')">
+                                <span class="aura-page-link active">
+                                    <t t-esc="p_num"/>
+                                </span>
+                            </t>
+                            <!-- Inactive State -->
+                            <t t-else="">
+                                <a t-att-href="'%s/%s%s' % (base_url, p_num, url_params or '')" 
+                                   class="aura-page-link">
+                                    <t t-esc="p_num"/>
+                                </a>
+                            </t>
+                        </t>
+                    </div>
+
+                    <!-- Next Button -->
+                    <a t-if="pager.get('has_next')" 
+                       t-att-href="'%s/%s%s' % (base_url, pager.get('next_num', 1), url_params or '')" 
+                       class="btn btn-outline-secondary rounded-pill px-3 py-1 btn-sm d-flex align-items-center gap-1 border-gray">
+                        Next <i class="fa fa-chevron-right small"/>
+                    </a>
+                    <span t-else="" class="btn btn-outline-light text-muted rounded-pill px-3 py-1 btn-sm disabled d-flex align-items-center gap-1">
+                        Next <i class="fa fa-chevron-right small"/>
+                    </span>
+
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

@@ -292,3 +292,446 @@ body {
     align-items: center;
     justify-content: center;
 }
+
+/* ===========================
+   PAGINATION STYLES
+   =========================== */
+
+/* The White Pill Container */
+.aura-pagination-container {
+    background-color: #FFFFFF;
+    border: 1px solid #EEEEEE;
+    border-radius: 50px !important;
+    padding: 8px 12px !important;
+}
+
+/* Page Numbers (Circles) */
+.aura-page-link {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    text-decoration: none;
+    font-weight: 600;
+    color: #475467; /* Gray text */
+    transition: all 0.2s;
+    cursor: pointer;
+    font-size: 14px;
+
+    &:hover {
+        background-color: #F2F4F7;
+        color: #1D2939;
+    }
+}
+
+/* Active State (The Teal Circle from Image) */
+.aura-page-link.active {
+    background-color: #38A3A5; /* Teal color */
+    color: white;
+    box-shadow: 0 4px 10px rgba(56, 163, 165, 0.3);
+    
+    &:hover {
+        background-color: #38A3A5; /* Keep color on hover */
+        color: white;
+    }
+}
+
+/* Previous/Next Buttons */
+.btn.border-gray {
+    border-color: #D0D5DD !important;
+    color: #344054 !important;
+    font-weight: 600;
+    font-size: 14px;
+
+    &:hover {
+        background-color: #F9FAFB;
+        border-color: #D0D5DD !important;
+    }
+}
+
+
+/* ===========================
+   CATEGORY PAGE STYLES
+   =========================== */
+
+/* Background Color for the listing page */
+.bg-light-cream {
+    background-color: #F8F6F1;
+}
+
+/* Category Hero Image Shape */
+.aura-cat-hero-img {
+    height: 300px;
+    width: auto;
+    border-radius: 150px 150px 20px 20px; /* Dome shape */
+    object-fit: cover;
+}
+
+/* Sidebar Styling */
+.aura-sidebar {
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.form-check-input:checked {
+    background-color: var(--aura-primary);
+    border-color: var(--aura-primary);
+}
+
+/* Sticky Top Offset adjustments */
+.sticky-top {
+    transition: top 0.3s;
+}
+
+/* Filter Sidebar Scroll */
+.aura-filter-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e0 #f3f4f6;
+}
+
+.aura-filter-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.aura-filter-scroll::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 10px;
+}
+
+.aura-filter-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 10px;
+}
+
+.aura-filter-scroll::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+/* ===========================
+   PRODUCT DETAIL PAGE
+   =========================== */
+
+/* 1. Gallery Styles */
+.aura-gallery-main {
+    background-color: #EAEAEA; /* Light gray background from image */
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    height: 500px;
+}
+
+.aura-gallery-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* or 'contain' depending on preference */
+}
+
+.aura-thumb-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%; /* Circle thumbnails as per design style */
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    background: #fff;
+    
+    &:hover {
+        border-color: var(--aura-primary);
+        transform: scale(1.05);
+    }
+}
+
+/* 2. Vendor Card */
+.aura-vendor-card {
+    background: #FFFFFF;
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+
+.vendor-avatar {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* 3. Buttons */
+.btn-aura-green {
+    background-color: #6CAE75; /* The Green from the image */
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 30px;
+    transition: background 0.2s;
+    
+    &:hover {
+        background-color: #55915d;
+        color: white;
+    }
+}
+
+.btn-aura-light {
+    background-color: #F0EFEA; /* Light beige/gray */
+    color: #333;
+    font-weight: 600;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 30px;
+    
+    &:hover {
+        background-color: #e2e1dc;
+        color: #000;
+    }
+}
+
+.btn-sm-follow {
+    font-size: 0.8rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: #F2F4F7;
+    color: #333;
+    text-decoration: none;
+    font-weight: 600;
+    &:hover { background: #E4E7EC; color: #000; }
+}
+
+/* 4. Review Stars */
+.aura-rating i {
+    color: #F38D46; /* Orange stars */
+    font-size: 14px;
+}
+
+
+/* ===========================
+   VENDOR PROFILE PAGE
+   =========================== */
+
+/* The Banner Area */
+.aura-vendor-banner-wrapper {
+    height: 250px;
+    background-color: #D1D5DB; /* Fallback gray */
+    position: relative;
+    overflow: hidden;
+}
+
+.aura-vendor-banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* The Floating Profile Card */
+.aura-vendor-header-card {
+    margin-top: -60px; /* Negative margin to pull it up over banner */
+    background: #FFFFFF;
+    position: relative;
+    z-index: 10;
+}
+
+.aura-vendor-profile-img-lg {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #FFFFFF;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Navigation Tabs */
+.aura-nav-tabs {
+    border-bottom: 1px solid #E5E7EB;
+    
+    .nav-link {
+        border: none;
+        color: #6B7280;
+        font-weight: 600;
+        padding-bottom: 15px;
+        margin-right: 20px;
+        background: transparent;
+        
+        &:hover {
+            color: var(--aura-primary);
+        }
+        
+        &.active {
+            color: var(--aura-primary);
+            border-bottom: 3px solid var(--aura-primary);
+        }
+    }
+}
+
+/* ===========================
+   CART PAGE STYLES
+   =========================== */
+
+/* 1. Cart Item Card */
+.aura-cart-item {
+    background: #FFFFFF;
+    border-radius: var(--radius-lg);
+    padding: 15px;
+    border: 1px solid rgba(0,0,0,0.03);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    transition: transform 0.2s;
+    
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+}
+
+.aura-cart-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    background: #F8F6F1;
+}
+
+/* 2. Quantity Controls */
+.aura-qty-input-group {
+    background: #F3F4F6;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    padding: 2px;
+}
+
+.btn-qty {
+    border: none;
+    background: transparent;
+    padding: 5px 12px;
+    font-weight: bold;
+    color: #4B5563;
+    &:hover { color: #000; }
+}
+
+.input-qty {
+    width: 40px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0;
+    pointer-events: none; /* Make it read-only visually */
+}
+
+/* 3. Summary Card */
+.aura-summary-card {
+    background: #FFFFFF;
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 100px; /* Sticks when scrolling */
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    color: #4B5563;
+    font-size: 0.95rem;
+}
+
+.summary-total {
+    border-top: 1px solid #E5E7EB;
+    margin-top: 20px;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #111827;
+}
+
+/* Remove Link */
+.btn-remove {
+    color: #9CA3AF;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: color 0.2s;
+    &:hover { color: #EF4444; }
+}
+
+/* ===========================
+   AUTH PAGES (LOGIN/SIGNUP)
+   =========================== */
+
+.aura-auth-container {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F8F6F1;
+    padding: 40px 20px;
+}
+
+.aura-auth-card {
+    background: #FFFFFF;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    padding: 40px;
+    border: 1px solid rgba(0,0,0,0.02);
+}
+
+.aura-form-control {
+    background-color: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+
+    &:focus {
+        background-color: #fff;
+        border-color: var(--aura-primary);
+        box-shadow: 0 0 0 4px rgba(127, 86, 217, 0.1);
+    }
+}
+
+.aura-form-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.btn-social {
+    border: 1px solid #E5E7EB;
+    background: #FFFFFF;
+    color: #374151;
+    font-weight: 500;
+    border-radius: 12px;
+    padding: 10px;
+    transition: all 0.2s;
+    
+    &:hover {
+        background-color: #F9FAFB;
+        border-color: #D1D5DB;
+    }
+}
+
+.divider-text {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #9CA3AF;
+    font-size: 0.85rem;
+    margin: 20px 0;
+    
+    &::before, &::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #E5E7EB;
+    }
+    &::before { margin-right: .5em; }
+    &::after { margin-left: .5em; }
+}

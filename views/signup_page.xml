@@ -1,0 +1,76 @@
+<odoo>
+    <!-- SIGNUP PAGE TEMPLATE -->
+    <template id="signup_page" name="Aura Signup">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream">
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <div class="aura-auth-container">
+                    <div class="aura-auth-card">
+                        
+                        <!-- Header -->
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold text-dark">Create an account</h2>
+                            <p class="text-muted">Start your journey with Aura Market.</p>
+                        </div>
+
+                        <p t-if="error" class="alert alert-danger py-2 small text-center rounded-3">
+                            <t t-esc="error"/>
+                        </p>
+
+                        <!-- Form submitting to standard Odoo Signup -->
+                        <form class="role" method="post" action="/web/signup">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="redirect" t-att-value="redirect"/>
+                            <input type="hidden" name="token" t-att-value="token"/>
+
+                            <!-- Name -->
+                            <div class="mb-3">
+                                <label for="name" class="aura-form-label">Full Name</label>
+                                <input type="text" name="name" t-att-value="name" id="name" 
+                                       class="form-control aura-form-control" required="required"
+                                       placeholder="e.g. Sarah Smith"/>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label for="login" class="aura-form-label">Email address</label>
+                                <input type="email" name="login" t-att-value="login" id="login" 
+                                       class="form-control aura-form-control" required="required"
+                                       placeholder="name@company.com"/>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="mb-3">
+                                <label for="password" class="aura-form-label">Password</label>
+                                <input type="password" name="password" id="password" 
+                                       class="form-control aura-form-control" required="required" 
+                                       placeholder="Create a password"/>
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="mb-4">
+                                <label for="confirm_password" class="aura-form-label">Confirm Password</label>
+                                <input type="password" name="confirm_password" id="confirm_password" 
+                                       class="form-control aura-form-control" required="required" 
+                                       placeholder="Confirm password"/>
+                            </div>
+
+                            <!-- Submit -->
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="btn btn-aura-primary rounded-pill py-2 shadow-sm">Create Account</button>
+                            </div>
+                        </form>
+
+                        <div class="text-center mt-3">
+                            <span class="text-muted small">Already have an account? </span>
+                            <a href="/aura/login" class="text-aura-primary fw-bold small text-decoration-none">Log in</a>
+                        </div>
+                    </div>
+                </div>
+
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

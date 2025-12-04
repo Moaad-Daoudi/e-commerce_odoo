@@ -1,4 +1,5 @@
 <odoo>
+    <!-- Reusable Hero Component with Dynamic Content -->
     <template id="hero_component" name="Aura Hero Section">
         <section class="aura-hero-section position-relative overflow-hidden">
             
@@ -8,70 +9,52 @@
             <div class="container position-relative z-1 pt-5 pb-5">
                 <div class="row align-items-center g-5">
                     
-                    <!-- LEFT COLUMN: Text Content -->
+                    <!-- LEFT COLUMN: Text Content (Dynamic) -->
                     <div class="col-lg-6">
+                        <!-- Breadcrumb (optional) -->
+                        <t t-if="hero_breadcrumb">
+                            <div class="text-muted small fw-bold mb-3">
+                                <t t-raw="hero_breadcrumb"/>
+                            </div>
+                        </t>
+                        
                         <h1 class="display-3 fw-bold mb-4 text-dark" style="letter-spacing: -1px; line-height: 1.1;">
-                            Crafted with Soul.<br/>
-                            <span class="text-primary-gradient">Discover Unique</span>
+                            <t t-if="hero_title" t-raw="hero_title"/>
+                            <t t-else="">
+                                Crafted with Soul.<br/>
+                                <span class="text-primary-gradient">Discover Unique</span>
+                            </t>
                         </h1>
                         
                         <p class="lead text-muted mb-5" style="max-width: 450px;">
-                            Handmade goods, art, and artisanal finds from independent creators around the world.
+                            <t t-if="hero_subtitle" t-esc="hero_subtitle"/>
+                            <t t-else="">
+                                Handmade goods, art, and artisanal finds from independent creators around the world.
+                            </t>
                         </p>
                         
-                        <a href="/shop" class="btn btn-aura-primary btn-lg px-5 py-3 rounded-pill shadow-sm">
-                            Explore Makers
-                        </a>
+                        <t t-if="hero_button_text and hero_button_url">
+                            <a t-att-href="hero_button_url" class="btn btn-aura-primary btn-lg px-5 py-3 rounded-pill shadow-sm">
+                                <t t-esc="hero_button_text"/>
+                            </a>
+                        </t>
+                        <t t-else="">
+                            <a href="/shop" class="btn btn-aura-primary btn-lg px-5 py-3 rounded-pill shadow-sm">
+                                Explore Makers
+                            </a>
+                        </t>
                     </div>
 
-                    <!-- RIGHT COLUMN: Image & Floating Widget -->
+                    <!-- RIGHT COLUMN: Image (Same for all pages) -->
                     <div class="col-lg-6 position-relative">
                         
                         <!-- Main Image with Custom Shape -->
                         <div class="aura-hero-img-wrapper">
-                            <!-- Replace src with your actual image or a placeholder -->
                             <img src="/marketplace_platform/static/src/img/hero_photo.png" class="img-fluid aura-hero-img" alt="Artisans working"/>
                         </div>
 
-                        <!-- Floating Stat Widget (Top Right) -->
-                        <!-- <div class="aura-float-card bg-white p-3 rounded-4 shadow position-absolute top-0 end-0 mt-4 me-lg-4 d-none d-md-block">
-                            <div class="d-flex justify-content-between align-items-start mb-2 gap-4">
-                                <span class="small fw-bold text-muted">Increase Sales</span>
-                                <span class="badge bg-warning text-dark rounded-pill">$</span>
-                            </div>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="position-relative" style="width: 50px; height: 50px;">
-                                    <svg viewBox="0 0 36 36" class="w-100 h-100">
-                                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#eee" stroke-width="3"/>
-                                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831" fill="none" stroke="#F38D46" stroke-width="3" stroke-dasharray="72, 100"/>
-                                    </svg>
-                                    <div class="position-absolute top-50 start-50 translate-middle fw-bold small">72%</div>
-                                </div>
-                            </div>
-                        </div> -->
-
                     </div>
                 </div>
-
-                <!-- BOTTOM ROW: Shop by Vibe (Category Pills) -->
-                <div class="row mt-5 pt-4">
-                    <div class="col-12">
-                        <h6 class="fw-bold mb-3">Shop by Vibe</h6>
-                        <div class="d-flex flex-wrap gap-3">
-                            <!-- Loop through categories passed from controller -->
-                            <t t-foreach="categories" t-as="cat">
-                                <a t-att-href="'/shop/category/%s' % slug(cat)" class="aura-cat-pill d-flex align-items-center gap-2 text-decoration-none">
-                                    <div class="cat-icon-circle">
-                                        <!-- If you have icons on categories, use them, else generic -->
-                                        <i class="fa fa-gift"/> 
-                                    </div>
-                                    <span t-field="cat.name"/>
-                                </a>
-                            </t>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </section>
     </template>

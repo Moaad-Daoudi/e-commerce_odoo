@@ -18,32 +18,9 @@
                 <!-- Main content -->
                 <div class="container mt-4">
                     <t t-call="marketplace_platform.hero_component"/>
-
-                    <div class="container mt-5 pt-5">
-                        <!-- Your Product Grid will go here later -->
-                        <h3 class="fw-bold mb-4">Featured Makers</h3>
-                        
-                        <!-- Temporary Debugging to show layout works -->
-                        <div class="row">
-                            <t t-foreach="products" t-as="product">
-                                <div class="col-md-3 mb-4">
-                                    <div class="card h-100 border-0 shadow-sm p-2">
-                                        <div class="card-body">
-                                            <h5 t-field="product.name"/>
-                                            <span class="text-primary fw-bold" t-field="product.list_price"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </t>
-                        </div>
-                    </div>
-                    
-                    <!--
-                    <t t-call="your_module.categories_section"/>
-                    <t t-call="your_module.featured_products"/>
-                    <t t-call="your_module.featured_vendors"/> -->
+                    <t t-call="marketplace_platform.featured_section"/>
                 </div>
-                <t t-call="marketplace_platform.footer_component"/>
+                    <t t-call="marketplace_platform.footer_component"/>
             </div>
         </t>
     </template>

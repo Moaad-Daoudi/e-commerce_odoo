@@ -1,0 +1,184 @@
+<odoo>
+    <template id="vendor_profile_page" name="Vendor Profile Page">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream">
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <!-- 1. VENDOR BANNER (Top) -->
+                <div class="aura-vendor-banner-wrapper">
+                    <!-- Check if vendor has a banner image (assume field exists, or use placeholder) -->
+                    <img src="/marketplace_platform/static/src/img/hero_photo.png" class="aura-vendor-banner-img" alt="Banner"/>
+                </div>
+
+                <div class="container pb-5">
+                    
+                    <!-- 2. VENDOR INFO HEADER (Overlapping) -->
+                    <div class="row mb-5">
+                        <div class="col-12">
+                            <div class="aura-vendor-header-card p-4 rounded-4 shadow-sm d-flex flex-column flex-md-row align-items-center align-items-md-start gap-4">
+                                
+                                <!-- Logo -->
+                                <div class="flex-shrink-0">
+                                    <t t-if="vendor_partner and vendor_partner.image_128">
+                                        <img t-att-src="image_data_uri(vendor_partner.image_128)" class="aura-vendor-profile-img-lg" alt="Logo"/>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="aura-vendor-profile-img-lg d-flex align-items-center justify-content-center bg-light">
+                                            <i class="fa fa-user fa-2x text-muted"/>
+                                        </div>
+                                    </t>
+                                </div>
+
+                                <!-- Details -->
+                                <div class="flex-grow-1 text-center text-md-start">
+                                    <h2 class="fw-bold mb-1" t-field="vendor.shop_name"/>
+                                    
+                                    <div class="d-flex flex-wrap justify-content-center justify-content-md-start gap-3 text-muted small mb-3">
+                                        <span><i class="fa fa-map-marker me-1"/> <t t-if="vendor_partner"><span t-field="vendor_partner.city"/>, <span t-field="vendor_partner.country_id.code"/></t></span>
+                                        <span><i class="fa fa-star text-warning me-1"/> 4.8 (120 Reviews)</span>
+                                        <span><i class="fa fa-cube me-1"/> <t t-esc="len(products)"/> Products</span>
+                                    </div>
+                                    
+                                    <p class="text-muted mb-0" style="max-width: 600px;">
+                                        <!-- Placeholder bio if field doesn't exist yet -->
+                                        We are creators of fine handmade goods. We believe in quality, sustainability, and bringing joy to your home through our craft.
+                                    </p>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="d-flex gap-2 mt-3 mt-md-0">
+                                    <a t-if="vendor_partner" t-attf-href="mailto:#{vendor_partner.email}" class="btn btn-aura-primary rounded-pill px-4">
+                                        Contact
+                                    </a>
+                                    <!-- Optional 'Follow' button logic -->
+                                    <button class="btn btn-outline-secondary rounded-pill px-4">
+                                        Follow
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. TABS (Products / Reviews / About) -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <ul class="nav aura-nav-tabs" id="vendorTab" role="tablist">
+                                <li class="nav-item">
+                                    <button class="nav-link active" id="products-tab" data-bs-toggle="tab" data-bs-target="#products" type="button" role="tab">Products</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">Reviews</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" id="about-tab" data-bs-toggle="tab" data-bs-target="#about" type="button" role="tab">About</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 4. TAB CONTENT -->
+                    <div class="tab-content" id="vendorTabContent">
+                        
+                        <!-- TAB 1: PRODUCT LIST -->
+                        <div class="tab-pane fade show active" id="products" role="tabpanel">
+                            <div class="row g-4">
+                                <t t-if="products" t-foreach="products" t-as="product">
+                                    <div class="col-lg-3 col-md-4 col-sm-6">
+                                        <a t-attf-href="/product/#{product.id}" class="text-decoration-none">
+                                            <div class="card h-100 aura-product-card border-0 shadow-sm bg-white">
+                                                <div class="product-img-box position-relative overflow-hidden" style="height: 220px; background: #f3f4f6;">
+                                                    <t t-if="product.image_1920">
+                                                        <img t-att-src="image_data_uri(product.image_1920)" class="card-img-top w-100 h-100 object-fit-cover" t-att-alt="product.name"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                                            <i class="fa fa-image fa-3x text-muted"/>
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h6 class="fw-bold text-dark mb-1 text-truncate" t-esc="product.name"/>
+                                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                                        <span class="fw-bold fs-6 text-aura-orange">
+                                                            $<t t-esc="'%.2f' % product.list_price"/>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </t>
+                                <t t-if="not products">
+                                    <div class="col-12 text-center py-5">
+                                        <div class="p-5">
+                                            <i class="fa fa-shopping-basket fa-3x text-muted mb-3"/>
+                                            <h4 class="text-muted">No products found for this vendor.</h4>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+
+                            <!-- Pagination for Vendor Products -->
+                            <t t-call="marketplace_platform.pagination_component">
+                                <t t-set="pager" t-value="pager"/>
+                                <t t-set="base_url" t-value="'/vendor/%s/page' % vendor.id"/>
+                            </t>
+                        </div>
+
+                        <!-- TAB 2: REVIEWS (Static Mockup) -->
+                        <div class="tab-pane fade" id="reviews" role="tabpanel">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8">
+                                    <div class="bg-white p-4 rounded-4 shadow-sm mb-3">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <div class="fw-bold">Sarah J.</div>
+                                            <div class="text-warning small"><i class="fa fa-star"/><i class="fa fa-star"/><i class="fa fa-star"/><i class="fa fa-star"/><i class="fa fa-star"/></div>
+                                        </div>
+                                        <p class="text-muted small mb-0">Absolutely love the quality of the fabrics! Shipping was fast too.</p>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-4 shadow-sm mb-3">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <div class="fw-bold">Mike R.</div>
+                                            <div class="text-warning small"><i class="fa fa-star"/><i class="fa fa-star"/><i class="fa fa-star"/><i class="fa fa-star"/></div>
+                                        </div>
+                                        <p class="text-muted small mb-0">Great craftsmanship. One of the best items I've bought on Aura.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- TAB 3: ABOUT -->
+                        <div class="tab-pane fade" id="about" role="tabpanel">
+                             <div class="bg-white p-5 rounded-4 shadow-sm">
+                                <h4 class="fw-bold mb-3">About <span t-field="vendor.shop_name"/></h4>
+                                <p class="text-muted">
+                                    Located in <span t-field="vendor.partner_id.city"/>, we specialize in bringing unique, handmade items to the world.
+                                    Our journey began in 2015...
+                                </p>
+                                <div class="row mt-4">
+                                    <div class="col-md-4">
+                                        <div class="p-3 bg-light rounded-3 text-center">
+                                            <h3 class="fw-bold text-primary">2015</h3>
+                                            <span class="small text-muted">Founded</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="p-3 bg-light rounded-3 text-center">
+                                            <h3 class="fw-bold text-primary">100%</h3>
+                                            <span class="small text-muted">Handmade</span>
+                                        </div>
+                                    </div>
+                                </div>
+                             </div>
+                        </div>
+
+                    </div>
+                    <!-- END TABS -->
+
+                </div>
+                
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

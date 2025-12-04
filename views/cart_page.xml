@@ -1,0 +1,145 @@
+<odoo>
+    <template id="cart_page" name="Aura Cart Page">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream" style="min-height: 100vh;">
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <div class="container py-5">
+                    
+                    <!-- Header -->
+                    <div class="mb-5">
+                        <div class="d-flex align-items-center gap-3 text-muted small fw-bold mb-2">
+                             <a href="/" class="text-decoration-none text-muted">Home</a> / 
+                             <a href="/shop" class="text-decoration-none text-muted">Shop</a> / 
+                             <span>Cart</span>
+                        </div>
+                        <h1 class="fw-bold mb-0">Your Cart 
+                            <span class="text-muted fw-normal ms-2 fs-3">
+                                (<t t-esc="website_sale_order.cart_quantity"/> items)
+                            </span>
+                        </h1>
+                    </div>
+
+                    <div class="row g-5">
+                        
+                        <!-- LEFT COL: CART ITEMS -->
+                        <div class="col-lg-8">
+                            
+                            <!-- Check if Empty -->
+                            <t t-if="not website_sale_order or not website_sale_order.website_order_line">
+                                <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+                                    <i class="fa fa-shopping-basket fa-4x text-muted opacity-25 mb-3"/>
+                                    <h3>Your cart is empty</h3>
+                                    <p class="text-muted mb-4">Looks like you haven't added any unique finds yet.</p>
+                                    <a href="/shop" class="btn btn-aura-primary rounded-pill px-5">Start Shopping</a>
+                                </div>
+                            </t>
+
+                            <!-- Loop Items -->
+                            <t t-else="">
+                                <t t-foreach="website_sale_order.website_order_line" t-as="line">
+                                    <div class="aura-cart-item mb-3 d-flex align-items-center gap-4">
+                                        
+                                        <!-- Image -->
+                                        <a t-attf-href="/aura/product/#{line.product_id.product_tmpl_id.id}">
+                                            <span t-field="line.product_id.image_128" 
+                                                  t-options="{'widget': 'image', 'class': 'aura-cart-img'}"/>
+                                        </a>
+
+                                        <!-- Details -->
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h5 class="fw-bold text-dark mb-1">
+                                                        <a t-attf-href="/aura/product/#{line.product_id.product_tmpl_id.id}" class="text-decoration-none text-dark">
+                                                            <t t-esc="line.name_short"/>
+                                                        </a>
+                                                    </h5>
+                                                    <p class="small text-muted mb-2">
+                                                        by <t t-if="line.product_id.vendor_id" t-esc="line.product_id.vendor_id.shop_name"/>
+                                                        <t t-else="">Aura Market</t>
+                                                    </p>
+                                                </div>
+                                                <div class="text-end">
+                                                    <h5 class="fw-bold text-aura-orange mb-0">
+                                                        <span t-field="line.price_reduce_taxexcl" 
+                                                              t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"/>
+                                                    </h5>
+                                                </div>
+                                            </div>
+
+                                            <!-- Controls Row -->
+                                            <div class="d-flex justify-content-between align-items-end mt-2">
+                                                
+                                                <!-- Quantity Stepper -->
+                                                <div class="aura-qty-input-group">
+                                                    <!-- Decrease -->
+                                                    <a t-attf-href="/shop/cart/update?line_id=#{line.id}&amp;remove_qty=1" 
+                                                       class="btn-qty text-decoration-none">-</a>
+                                                    
+                                                    <input type="text" class="input-qty" t-att-value="int(line.product_uom_qty)"/>
+                                                    
+                                                    <!-- Increase -->
+                                                    <a t-attf-href="/shop/cart/update?line_id=#{line.id}&amp;add_qty=1" 
+                                                       class="btn-qty text-decoration-none">+</a>
+                                                </div>
+
+                                                <!-- Remove Link -->
+                                                <a t-attf-href="/shop/cart/update?line_id=#{line.id}&amp;set_qty=0" 
+                                                   class="btn-remove">
+                                                    Remove
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </t>
+                        </div>
+
+                        <!-- RIGHT COL: SUMMARY -->
+                        <div class="col-lg-4" t-if="website_sale_order and website_sale_order.website_order_line">
+                            <div class="aura-summary-card">
+                                <h4 class="fw-bold mb-4">Order Summary</h4>
+                                
+                                <div class="summary-row">
+                                    <span>Subtotal</span>
+                                    <span t-field="website_sale_order.amount_untaxed" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"/>
+                                </div>
+                                
+                                <div class="summary-row">
+                                    <span>Taxes</span>
+                                    <span t-field="website_sale_order.amount_tax" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"/>
+                                </div>
+
+                                <div class="summary-total">
+                                    <span>Order Total</span>
+                                    <span t-field="website_sale_order.amount_total" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"/>
+                                </div>
+                                
+                                <!-- CHECKOUT BUTTON -->
+                                <div class="mt-4">
+                                    <a href="/shop/checkout?express=1" class="btn btn-aura-orange w-100 py-3 rounded-pill fw-bold text-white shadow-sm" style="background-color: #E68A45;">
+                                        Proceed to Checkout
+                                    </a>
+                                </div>
+
+                                <div class="mt-4 text-center">
+                                    <p class="small text-muted mb-2">We accept</p>
+                                    <div class="d-flex justify-content-center gap-2 text-muted fs-4">
+                                        <i class="fa fa-cc-visa"/>
+                                        <i class="fa fa-cc-mastercard"/>
+                                        <i class="fa fa-cc-paypal"/>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

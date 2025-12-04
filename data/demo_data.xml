@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Demo Categories -->
+        <record id="demo_category_electronics" model="product.public.category">
+            <field name="name">Electronics</field>
+            <field name="sequence">1</field>
+        </record>
+        
+        <record id="demo_category_fashion" model="product.public.category">
+            <field name="name">Fashion</field>
+            <field name="sequence">2</field>
+        </record>
+        
+        <record id="demo_category_home" model="product.public.category">
+            <field name="name">Home &amp; Garden</field>
+            <field name="sequence">3</field>
+        </record>
+        
+        <record id="demo_category_sports" model="product.public.category">
+            <field name="name">Sports &amp; Outdoors</field>
+            <field name="sequence">4</field>
+        </record>
+        
+        <record id="demo_category_books" model="product.public.category">
+            <field name="name">Books &amp; Media</field>
+            <field name="sequence">5</field>
+        </record>
+        
+        <record id="demo_category_beauty" model="product.public.category">
+            <field name="name">Beauty &amp; Health</field>
+            <field name="sequence">6</field>
+        </record>
+
+        <!-- Demo Vendor Partners -->
+        <record id="demo_partner_techstore" model="res.partner">
+            <field name="name">TechStore Pro</field>
+            <field name="email">contact@techstore.com</field>
+            <field name="phone">+1-555-0101</field>
+            <field name="street">123 Tech Avenue</field>
+            <field name="city">San Francisco</field>
+            <field name="zip">94102</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="is_company">True</field>
+        </record>
+        
+        <record id="demo_partner_fashionhub" model="res.partner">
+            <field name="name">Fashion Hub</field>
+            <field name="email">info@fashionhub.com</field>
+            <field name="phone">+1-555-0202</field>
+            <field name="street">456 Style Street</field>
+            <field name="city">New York</field>
+            <field name="zip">10001</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="is_company">True</field>
+        </record>
+        
+        <record id="demo_partner_homegoods" model="res.partner">
+            <field name="name">Home Goods Express</field>
+            <field name="email">sales@homegoods.com</field>
+            <field name="phone">+1-555-0303</field>
+            <field name="street">789 Home Lane</field>
+            <field name="city">Chicago</field>
+            <field name="zip">60601</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="is_company">True</field>
+        </record>
+        
+        <record id="demo_partner_sportsworld" model="res.partner">
+            <field name="name">Sports World</field>
+            <field name="email">support@sportsworld.com</field>
+            <field name="phone">+1-555-0404</field>
+            <field name="street">321 Sports Road</field>
+            <field name="city">Los Angeles</field>
+            <field name="zip">90001</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="is_company">True</field>
+        </record>
+
+        <!-- Demo Vendors -->
+        <record id="demo_vendor_techstore" model="marketplace.vendor">
+            <field name="partner_id" ref="demo_partner_techstore"/>
+            <field name="shop_name">TechStore Pro</field>
+            <field name="shop_url">techstore-pro</field>
+            <field name="default_commission_rate">12.0</field>
+            <field name="state">active</field>
+        </record>
+        
+        <record id="demo_vendor_fashionhub" model="marketplace.vendor">
+            <field name="partner_id" ref="demo_partner_fashionhub"/>
+            <field name="shop_name">Fashion Hub</field>
+            <field name="shop_url">fashion-hub</field>
+            <field name="default_commission_rate">15.0</field>
+            <field name="state">active</field>
+        </record>
+        
+        <record id="demo_vendor_homegoods" model="marketplace.vendor">
+            <field name="partner_id" ref="demo_partner_homegoods"/>
+            <field name="shop_name">Home Goods Express</field>
+            <field name="shop_url">home-goods-express</field>
+            <field name="default_commission_rate">10.0</field>
+            <field name="state">active</field>
+        </record>
+        
+        <record id="demo_vendor_sportsworld" model="marketplace.vendor">
+            <field name="partner_id" ref="demo_partner_sportsworld"/>
+            <field name="shop_name">Sports World</field>
+            <field name="shop_url">sports-world</field>
+            <field name="default_commission_rate">13.0</field>
+            <field name="state">active</field>
+        </record>
+
+        <!-- Demo Products - Electronics -->
+        <record id="demo_product_laptop" model="product.template">
+            <field name="name">Premium Laptop 15"</field>
+            <field name="list_price">1299.00</field>
+            <field name="standard_price">899.00</field>
+            <field name="type">consu</field>
+            <field name="public_categ_ids" eval="[(4, ref('demo_category_electronics'))]"/>
+            <field name="vendor_id" ref="demo_vendor_techstore"/>
+            <field name="approval_state">approved</field>
+            <field name="commission_rate">12.0</field>
+            <field name="is_published">True</field>
+            <field name="description_sale">High-performance laptop with 16GB RAM, 512GB SSD, and Intel Core i7 processor. Perfect for work and entertainment.</field>
+        </record>
+        
+        <record id="demo_product_smartphone" model="product.template">
+            <field name="name">Smartphone Pro X</field>
+            <field name="list_price">899.00</field>
+            <field name="standard_price">649.00</field>
+            <field name="type">consu</field>
+            <field name="public_categ_ids" eval="[(4, ref('demo_category_electronics'))]"/>
+            <field name="vendor_id" ref="demo_vendor_techstore"/>
+            <field name="approval_state">approved</field>
+            <field name="commission_rate">12.0</field>
+            <field name="is_published">True</field>
+            <field name="description_sale">Latest flagship smartphone with 6.7" OLED display, 128GB storage, and triple camera system.</field>
+        </record>
+        
+        <record id="demo_product_headphones" model="product.template">
+            <field name="name">Wireless Headphones</field>
+            <field name="list_price">199.00</field>
+            <field name="standard_price">129.00</field>
+            <field name="type">consu</field>
+            <field name="public_categ_ids" eval="[(4, ref('demo_category_electronics'))]"/>
+            <field name="vendor_id" ref="demo_vendor_techstore"/>
+            <field name="approval_state">approved</field>
+            <field name="commission_rate">12.0</field>
+            <field name="is_published">True</field>
+            <field name="description_sale">Premium wireless headphones with active noise cancellation and 30-hour battery life.</field>
+        </record>
+
+        <!-- Demo Products - Fashion -->
+        <record id="demo_product_jacket" model="product.template">
+            <field name="name">Leather Jacket</field>
+            <field name="list_price">249.00</field>
+            <field name="standard_price">149.00</field>
+            <field name="type">consu</field>
+            <field name="public_categ_ids" eval="[(4, ref('demo_category_fashion'))]"/>
+            <field name="vendor_id" ref="demo_vendor_fashionhub"/>
+            <field name="approval_state">approved</field>
+            <field name="commission_rate">15.0</field>
+            <field name="is_published">True</field>
+            <field name="description_sale">Genuine leather jacket with classic design. Available in multiple sizes and colors.</field>
+        </record>
+        
+        <record id="demo_product_sneakers" model="product.template">
+            <field name="name">Running Sneakers</field>
+            <field name="list_price">129.00</field>
+            <field name="standard_price">79.00</field>
+            <field name="type">consu</field>
+            <field name="public_categ_ids" eval="[(4, ref('demo_category_fashion'))]"/>
+            <field name="vendor_id" ref="demo_vendor_fashionhub"/>
+            <field name="approval_state">approved</field>
+            <field name="commission_rate">15.0</field>
+            <field name="is_published">True</field>
+            <field name="description_sale">Comfortable running sneakers with breathable mesh and cushioned sole.</field>
+        </record>
+        
+        <record id="demo_product_handbag" model="product.template">
+            <field name="name">Designer Handbag</field>
+            <field name="list_price">399.00</field>
+            <field name="standard_price">249.00</field>
+            <field name="type">consu</field>
+            <field name="public_categ_ids" eval="[(4, ref('demo_category_fashion'))]"/>
+            <field name="vendor_id" ref="demo_vendor_fashionhub"/>
+            <field name="approval_state">approved</field>
+            <field name="commission_rate">15.0</field>
+            <field name="is_published">True</field>
+            <field name="description_sale">Elegant designer handbag made from premium materials. Perfect for any occasion.</field>
+        </record>
+
+        <!-- Demo Products - Home & Garden -->
+        <record id="demo_product_coffeemaker" model="product.template">
+            <field name="name">Coffee Maker Deluxe</field>
+            <field name="list_price">89.00</field>
+            <field name="standard_price">59.00</field>
+            <field name="type">consu</field>
+            <field name="public_categ_ids" eval="[(4, ref('demo_category_home'))]"/>
+            <field name="vendor_id" ref="demo_vendor_homegoods"/>
+            <field name="approval_state">approved</field>
+            <field name="commission_rate">10.0</field>
+            <field name="is_published">True</field>
+            <field name="description_sale">Programmable coffee maker with 12-cup capacity and auto-brew feature.</field>
+        </record>
+        
+        <record id="demo_product_bedding" model="product.template">
+            <field name="name">Premium Bedding Set</field>
+            <field name="list_price">149.00</field>
+            <field name="standard_price">99.00</field>
+            <field name="type">consu</field>
+            <field name="public_categ_ids" eval="[(4, ref('demo_category_home'))]"/>
+            <field name="vendor_id" ref="demo_vendor_homegoods"/>
+            <field name="approval_state">approved</field>
+            <field name="commission_rate">10.0</field>
+            <field name="is_published">True</field>
+            <field name="description_sale">Luxurious 100% cotton bedding set including duvet cover, pillowcases, and fitted sheet.</field>
+        </record>
+
+        <!-- Demo Products - Sports -->
+        <record id="demo_product_yoga_mat" model="product.template">
+            <field name="name">Premium Yoga Mat</field>
+            <field name="list_price">49.00</field>
+            <field name="standard_price">29.00</field>
+            <field name="type">consu</field>
+            <field name="public_categ_ids" eval="[(4, ref('demo_category_sports'))]"/>
+            <field name="vendor_id" ref="demo_vendor_sportsworld"/>
+            <field name="approval_state">approved</field>
+            <field name="commission_rate">13.0</field>
+            <field name="is_published">True</field>
+            <field name="description_sale">Non-slip yoga mat with extra cushioning. Perfect for yoga, pilates, and floor exercises.</field>
+        </record>
+        
+        <record id="demo_product_dumbbell" model="product.template">
+            <field name="name">Adjustable Dumbbell Set</field>
+            <field name="list_price">299.00</field>
+            <field name="standard_price">199.00</field>
+            <field name="type">consu</field>
+            <field name="public_categ_ids" eval="[(4, ref('demo_category_sports'))]"/>
+            <field name="vendor_id" ref="demo_vendor_sportsworld"/>
+            <field name="approval_state">approved</field>
+            <field name="commission_rate">13.0</field>
+            <field name="is_published">True</field>
+            <field name="description_sale">Space-saving adjustable dumbbell set with weights from 5-52.5 lbs. Complete home gym solution.</field>
+        </record>
+        
+        <record id="demo_product_bicycle" model="product.template">
+            <field name="name">Mountain Bike Pro</field>
+            <field name="list_price">799.00</field>
+            <field name="standard_price">549.00</field>
+            <field name="type">consu</field>
+            <field name="public_categ_ids" eval="[(4, ref('demo_category_sports'))]"/>
+            <field name="vendor_id" ref="demo_vendor_sportsworld"/>
+            <field name="approval_state">approved</field>
+            <field name="commission_rate">13.0</field>
+            <field name="is_published">True</field>
+            <field name="description_sale">Professional mountain bike with 21-speed gear system and front suspension. Built for rugged terrain.</field>
+        </record>
+
+        <!-- Demo Products - Books -->
+        <record id="demo_product_book1" model="product.template">
+            <field name="name">Best Selling Novel</field>
+            <field name="list_price">24.99</field>
+            <field name="standard_price">14.99</field>
+            <field name="type">consu</field>
+            <field name="public_categ_ids" eval="[(4, ref('demo_category_books'))]"/>
+            <field name="vendor_id" ref="demo_vendor_techstore"/>
+            <field name="approval_state">approved</field>
+            <field name="commission_rate">12.0</field>
+            <field name="is_published">True</field>
+            <field name="description_sale">Award-winning contemporary fiction novel. A must-read for book lovers.</field>
+        </record>
+
+        <!-- Demo Products - Beauty -->
+        <record id="demo_product_skincare" model="product.template">
+            <field name="name">Anti-Aging Cream Set</field>
+            <field name="list_price">79.00</field>
+            <field name="standard_price">49.00</field>
+            <field name="type">consu</field>
+            <field name="public_categ_ids" eval="[(4, ref('demo_category_beauty'))]"/>
+            <field name="vendor_id" ref="demo_vendor_fashionhub"/>
+            <field name="approval_state">approved</field>
+            <field name="commission_rate">15.0</field>
+            <field name="is_published">True</field>
+            <field name="description_sale">Complete anti-aging skincare set with day cream, night cream, and serum. Dermatologist tested.</field>
+        </record>
+
+    </data>
+</odoo>

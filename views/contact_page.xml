@@ -1,0 +1,153 @@
+<odoo>
+    <template id="contact_page" name="Contact Us Page">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream">
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <!-- Hero Section -->
+                <t t-call="marketplace_platform.hero_component">
+                    <t t-set="hero_title" t-value="'Contact Us'"/>
+                    <t t-set="hero_subtitle" t-value="'We would love to hear from you'"/>
+                    <t t-set="hero_breadcrumb" t-value="'Home / Contact'"/>
+                </t>
+
+                <!-- Main Content -->
+                <div class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-10">
+                            
+                            <div class="row g-4">
+                                <!-- Contact Form -->
+                                <div class="col-lg-7">
+                                    <div class="bg-white rounded-4 shadow-sm p-4">
+                                        <h3 class="fw-bold mb-4">Send us a Message</h3>
+                                        <form action="/contactus/submit" method="post">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Your Name</label>
+                                                <input type="text" name="name" class="form-control" placeholder="John Doe" required="required"/>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Email Address</label>
+                                                <input type="email" name="email" class="form-control" placeholder="john@example.com" required="required"/>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Phone Number</label>
+                                                <input type="tel" name="phone" class="form-control" placeholder="+1 234 567 8900"/>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Subject</label>
+                                                <select name="subject" class="form-select">
+                                                    <option value="general">General Inquiry</option>
+                                                    <option value="support">Customer Support</option>
+                                                    <option value="vendor">Vendor Partnership</option>
+                                                    <option value="feedback">Feedback</option>
+                                                    <option value="other">Other</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="mb-4">
+                                                <label class="form-label fw-bold">Message</label>
+                                                <textarea name="message" class="form-control" rows="6" 
+                                                          placeholder="Tell us how we can help you..." required="required"/>
+                                            </div>
+                                            
+                                            <button type="submit" class="btn btn-aura-primary rounded-pill px-4 w-100">
+                                                <i class="fa fa-paper-plane me-2"/>
+                                                Send Message
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!-- Contact Information -->
+                                <div class="col-lg-5">
+                                    <div class="bg-white rounded-4 shadow-sm p-4 mb-4">
+                                        <h4 class="fw-bold mb-4">Get in Touch</h4>
+                                        
+                                        <div class="mb-4">
+                                            <div class="d-flex gap-3 mb-3">
+                                                <i class="fa fa-map-marker fa-lg text-primary" style="width: 24px;"/>
+                                                <div>
+                                                    <h6 class="fw-bold mb-1">Visit Us</h6>
+                                                    <p class="text-muted small mb-0">
+                                                        123 Marketplace Street<br/>
+                                                        San Francisco, CA 94102<br/>
+                                                        United States
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <div class="d-flex gap-3 mb-3">
+                                                <i class="fa fa-envelope fa-lg text-primary" style="width: 24px;"/>
+                                                <div>
+                                                    <h6 class="fw-bold mb-1">Email Us</h6>
+                                                    <p class="text-muted small mb-0">
+                                                        support@marketplace.com<br/>
+                                                        vendors@marketplace.com
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <div class="d-flex gap-3 mb-3">
+                                                <i class="fa fa-phone fa-lg text-primary" style="width: 24px;"/>
+                                                <div>
+                                                    <h6 class="fw-bold mb-1">Call Us</h6>
+                                                    <p class="text-muted small mb-0">
+                                                        +1 (555) 123-4567<br/>
+                                                        Mon-Fri: 9AM - 6PM PST
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <hr class="my-4"/>
+
+                                        <h6 class="fw-bold mb-3">Follow Us</h6>
+                                        <div class="d-flex gap-3">
+                                            <a href="#" class="btn btn-outline-secondary rounded-circle" style="width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fa fa-facebook"/>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-secondary rounded-circle" style="width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fa fa-twitter"/>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-secondary rounded-circle" style="width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fa fa-instagram"/>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-secondary rounded-circle" style="width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fa fa-linkedin"/>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <!-- FAQ Link -->
+                                    <div class="bg-primary bg-opacity-10 rounded-4 p-4 text-center">
+                                        <i class="fa fa-question-circle fa-3x text-primary mb-3"/>
+                                        <h5 class="fw-bold mb-2">Have Questions?</h5>
+                                        <p class="text-muted small mb-3">
+                                            Check out our FAQ section for quick answers
+                                        </p>
+                                        <a href="/faq" class="btn btn-sm btn-outline-primary rounded-pill">
+                                            View FAQ
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

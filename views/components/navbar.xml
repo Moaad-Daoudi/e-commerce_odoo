@@ -9,17 +9,17 @@
                     <img src="/marketplace_platform/static/src/img/logo_icon.png" class="aura-logo" alt="Logo"/>
                 </a>
 
-                <!-- 2. MENU LINKS (Home, Shop...) - Hidden on mobile -->
+                <!-- 2. MENU LINKS (Home, Categories, About, Contact) - Hidden on mobile -->
                 <div class="d-none d-xl-flex align-items-center me-auto">
                     <a href="/" class="aura-nav-link">Home</a>
-                    <a href="/shop" class="aura-nav-link">Shop</a>
-                    <a href="/vendors" class="aura-nav-link">Vendors</a>
+                    <a href="/categories" class="aura-nav-link">Categories</a>
+                    <a href="/about" class="aura-nav-link">About</a>
                     <a href="/contactus" class="aura-nav-link">Contact</a>
                 </div>
 
                 <!-- 3. SEARCH BAR (Centered & Wide) -->
                 <div class="flex-grow-1 d-none d-md-flex justify-content-center mx-4">
-                    <form action="/shop" method="get" class="aura-search-container">
+                    <form action="/search" method="get" class="aura-search-container">
                         <i class="fa fa-microphone text-muted ms-2"/>
                         <input type="text" name="search" class="aura-search-input" placeholder="Search for products..."/>
                         <button type="submit" class="btn btn-link p-0 text-muted">
@@ -31,18 +31,32 @@
                 <!-- 4. RIGHT SIDE ACTIONS -->
                 <div class="d-flex align-items-center">
                     
-                    <!-- Icons (Wishlist, Chat) -->
-                    <a href="/shop/wishlist" class="aura-icon-btn text-decoration-none" title="Wishlist">
-                        <i class="fa fa-heart-o"/>
-                    </a>
-                    <a href="/chat" class="aura-icon-btn text-decoration-none" title="Messages">
-                        <i class="fa fa-comment-o"/>
+                    <!-- Wishlist Icon - Only visible for logged-in users -->
+                    <t t-if="not user_id._is_public()">
+                        <a href="/shop/wishlist" class="aura-icon-btn text-decoration-none position-relative" title="Wishlist">
+                            <i class="fa fa-heart-o"/>
+                            <!-- Badge for wishlist count (placeholder for future) -->
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px; display: none;">
+                                0
+                            </span>
+                        </a>
+                    </t>
+                    
+                    <!-- Cart Icon - Visible for all users -->
+                    <a href="/cart" class="aura-icon-btn text-decoration-none position-relative" title="Cart">
+                        <i class="fa fa-shopping-cart"/>
+                        <t t-set="website_sale_order" t-value="request.website.sale_get_order()"/>
+                        <t t-if="website_sale_order and website_sale_order.cart_quantity > 0">
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill aura-badge">
+                                <t t-esc="website_sale_order.cart_quantity"/>
+                            </span>
+                        </t>
                     </a>
 
                     <!-- Auth Buttons -->
                     <t t-if="user_id._is_public()">
-                        <a href="/web/login" class="btn btn-aura-signin ms-3">Sign in</a>
-                        <a href="/web/signup" class="btn btn-aura-join">Join</a>
+                        <a href="/login" class="btn btn-aura-signin ms-3">Sign in</a>
+                        <a href="/signup" class="btn btn-aura-join">Join</a>
                     </t>
                     <t t-else="">
                         <!-- User Dropdown if logged in -->
@@ -59,17 +73,6 @@
                             </ul>
                         </div>
                     </t>
-
-                    <!-- Cart Icon (Always last) -->
-                    <a href="/shop/cart" class="position-relative ms-4 text-dark">
-                        <i class="fa fa-shopping-cart fa-lg" style="font-size: 24px;"/>
-                        <t t-set="website_sale_order" t-value="request.website.sale_get_order()"/>
-                        <t t-if="website_sale_order and website_sale_order.cart_quantity > 0">
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill aura-badge">
-                                <t t-esc="website_sale_order.cart_quantity"/>
-                            </span>
-                        </t>
-                    </a>
 
                 </div>
             </div>

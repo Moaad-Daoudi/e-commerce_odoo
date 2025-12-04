@@ -1,0 +1,92 @@
+<odoo>
+    <template id="all_categories_page" name="All Categories Page">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream">
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <!-- Hero Section -->
+                <t t-call="marketplace_platform.hero_component">
+                    <t t-set="hero_title" t-value="'Explore Categories'"/>
+                    <t t-set="hero_subtitle" t-value="'Discover unique handmade products across all our categories'"/>
+                    <t t-set="hero_breadcrumb" t-value="'Home / Categories'"/>
+                </t>
+
+                <!-- Main Content -->
+                <div class="container py-5">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div>
+                                    <h3 class="fw-bold mb-1">All Categories</h3>
+                                    <p class="text-muted mb-0"><t t-esc="len(category_data)"/> categories found</p>
+                                </div>
+                                
+                                <!-- Search Box -->
+                                <form action="/categories" method="get" class="d-flex gap-2">
+                                    <input type="text" name="search" class="form-control rounded-pill" 
+                                           placeholder="Search categories..." t-att-value="search_term" style="width: 300px;"/>
+                                    <button type="submit" class="btn btn-aura-primary rounded-pill px-4">Search</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Categories Grid -->
+                    <div class="row g-4">
+                        <t t-if="category_data" t-foreach="category_data" t-as="cat_data">
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                                <a t-att-href="'/category/%s' % slug(cat_data['category'])" class="text-decoration-none">
+                                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                                        <div class="category-img-wrapper" style="height: 200px; overflow: hidden; background: #f8f9fa;">
+                                            <t t-if="cat_data['category'].image_128">
+                                                <img t-att-src="image_data_uri(cat_data['category'].image_128)" 
+                                                     class="w-100 h-100 object-fit-cover" 
+                                                     t-att-alt="cat_data['category'].name"/>
+                                            </t>
+                                            <t t-else="">
+                                                <div class="d-flex align-items-center justify-content-center h-100">
+                                                    <i class="fa fa-folder-open fa-4x text-muted"/>
+                                                </div>
+                                            </t>
+                                        </div>
+                                        <div class="card-body text-center">
+                                            <h5 class="fw-bold mb-2 text-dark" t-esc="cat_data['category'].name"/>
+                                            <p class="text-muted small mb-0">
+                                                <i class="fa fa-cube me-1"/>
+                                                <t t-esc="cat_data['product_count']"/> Products
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </t>
+                        
+                        <!-- Empty State -->
+                        <t t-if="not category_data">
+                            <div class="col-12">
+                                <div class="text-center py-5">
+                                    <i class="fa fa-folder-open fa-4x text-muted mb-3"/>
+                                    <h4 class="text-muted">No categories found</h4>
+                                    <p class="text-muted">Try adjusting your search.</p>
+                                    <a href="/categories" class="btn btn-aura-primary rounded-pill mt-3 px-4">
+                                        View All Categories
+                                    </a>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- Pagination -->
+                    <t t-call="marketplace_platform.pagination_component">
+                        <t t-set="pager" t-value="pager"/>
+                        <t t-set="base_url" t-value="'/categories/page'"/>
+                        <t t-set="url_params" t-value="'?search=%s' % (search_term or '') if search_term else ''"/>
+                    </t>
+
+                </div>
+
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,113 @@
+<odoo>
+    <template id="about_page" name="About Us Page">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream">
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <!-- Hero Section -->
+                <t t-call="marketplace_platform.hero_component">
+                    <t t-set="hero_title" t-value="'About Us'"/>
+                    <t t-set="hero_subtitle" t-value="'Discover our story and mission'"/>
+                    <t t-set="hero_breadcrumb" t-value="'Home / About'"/>
+                </t>
+
+                <!-- Main Content -->
+                <div class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-10">
+                            
+                            <!-- Our Story Section -->
+                            <div class="bg-white rounded-4 shadow-sm p-5 mb-4">
+                                <h2 class="fw-bold mb-4 text-center">Our Story</h2>
+                                <p class="lead text-center mb-4">
+                                    Welcome to our marketplace, where creativity meets commerce.
+                                </p>
+                                <p class="text-muted">
+                                    We are a passionate team dedicated to bringing unique, handmade, and artisanal products to customers worldwide. 
+                                    Our platform connects talented makers and vendors with people who appreciate quality craftsmanship and authentic goods.
+                                </p>
+                                <p class="text-muted">
+                                    Founded with the vision of creating a sustainable marketplace, we believe in supporting small businesses and 
+                                    independent creators. Every product on our platform tells a story, and we're here to help share those stories with you.
+                                </p>
+                            </div>
+
+                            <!-- Mission & Values -->
+                            <div class="row g-4 mb-4">
+                                <div class="col-md-6">
+                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
+                                        <div class="text-center mb-3">
+                                            <i class="fa fa-bullseye fa-3x text-primary"/>
+                                        </div>
+                                        <h4 class="fw-bold text-center mb-3">Our Mission</h4>
+                                        <p class="text-muted text-center">
+                                            To empower creators and connect them with customers who value authenticity, 
+                                            quality, and the human touch in every product.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
+                                        <div class="text-center mb-3">
+                                            <i class="fa fa-heart fa-3x text-danger"/>
+                                        </div>
+                                        <h4 class="fw-bold text-center mb-3">Our Values</h4>
+                                        <p class="text-muted text-center">
+                                            Integrity, creativity, sustainability, and community. We believe in fair trade, 
+                                            ethical practices, and building lasting relationships.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Why Choose Us -->
+                            <div class="bg-white rounded-4 shadow-sm p-5 mb-4">
+                                <h3 class="fw-bold mb-4 text-center">Why Choose Us?</h3>
+                                <div class="row g-4">
+                                    <div class="col-md-4 text-center">
+                                        <i class="fa fa-shield fa-2x text-success mb-3"/>
+                                        <h5 class="fw-bold mb-2">Quality Assured</h5>
+                                        <p class="text-muted small">
+                                            Every vendor is carefully vetted to ensure the highest quality products.
+                                        </p>
+                                    </div>
+                                    <div class="col-md-4 text-center">
+                                        <i class="fa fa-users fa-2x text-info mb-3"/>
+                                        <h5 class="fw-bold mb-2">Community Driven</h5>
+                                        <p class="text-muted small">
+                                            Join a vibrant community of makers and conscious consumers.
+                                        </p>
+                                    </div>
+                                    <div class="col-md-4 text-center">
+                                        <i class="fa fa-leaf fa-2x text-success mb-3"/>
+                                        <h5 class="fw-bold mb-2">Sustainability</h5>
+                                        <p class="text-muted small">
+                                            We promote eco-friendly practices and sustainable production.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CTA Section -->
+                            <div class="text-center py-4">
+                                <h4 class="fw-bold mb-3">Ready to Start Shopping?</h4>
+                                <p class="text-muted mb-4">Explore our unique collection of handmade products</p>
+                                <div class="d-flex gap-3 justify-content-center">
+                                    <a href="/categories" class="btn btn-aura-primary rounded-pill px-4">
+                                        Browse Categories
+                                    </a>
+                                    <a href="/contactus" class="btn btn-outline-secondary rounded-pill px-4">
+                                        Contact Us
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>
