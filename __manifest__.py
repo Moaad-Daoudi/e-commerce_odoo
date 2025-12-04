@@ -35,20 +35,20 @@
         'portal',            # Customer/vendor portal
         'payment',           # Payment providers
         'contacts',          # Partner/customer management
+        'delivery',
     ],
 
     'data': [
         'security/groups.xml',
         'security/ir.model.access.csv',
-        'views/vendor_views.xml',
-        'views/product_views.xml',
-        'views/commission_views.xml',
-        'views/menu.xml',
+        'views/admin/vendor_views.xml',
+        'views/admin/product_views.xml',
+        'views/admin/commission_views.xml',
+        'views/admin/menu.xml',
         'views/components/navbar.xml',
         'views/components/footer.xml',
         'views/components/hero.xml',
         'views/home_page.xml',
-        'wizard/vendor_refuse_view.xml',
     ],
     
     'assets': {
