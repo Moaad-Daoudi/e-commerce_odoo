@@ -35,6 +35,7 @@
         'portal',            # Customer/vendor portal
         'payment',           # Payment providers
         'contacts',          # Partner/customer management
+        'delivery',
     ],
 
     'data': [
@@ -45,6 +46,10 @@
         'views/product_views.xml',
         'views/commission_views.xml',
         'views/menu.xml',
+        'views/admin/vendor_views.xml',
+        'views/admin/product_views.xml',
+        'views/admin/commission_views.xml',
+        'views/admin/menu.xml',
         'views/components/navbar.xml',
         'views/components/hero.xml',
         'views/components/featured_section.xml',
