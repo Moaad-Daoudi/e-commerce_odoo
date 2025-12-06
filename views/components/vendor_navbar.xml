@@ -1,0 +1,22 @@
+<odoo>
+    <template id="vendor_navbar_component" name="Vendor Sub-Navbar">
+        <div class="aura-vendor-subnav">
+            <div class="container">
+                <div class="d-flex overflow-auto">
+                    <a href="/my/marketplace" t-attf-class="vendor-nav-link #{'active' if page_name == 'dashboard' else ''}">
+                        <i class="fa fa-th-large me-2"/> Dashboard
+                    </a>
+                    <a href="/my/marketplace/products" t-attf-class="vendor-nav-link #{'active' if page_name == 'products' else ''}">
+                        <i class="fa fa-cube me-2"/> Products
+                    </a>
+                    <a href="/my/marketplace/orders" t-attf-class="vendor-nav-link #{'active' if page_name == 'orders' else ''}">
+                        <i class="fa fa-shopping-bag me-2"/> Orders
+                    </a>
+                    <a t-attf-href="/aura/vendor/#{user_id.partner_id.vendor_profile_id.id}" t-attf-class="vendor-nav-link #{'active' if page_name == 'profile' else ''}">
+                        <i class="fa fa-user me-2"/> Public Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

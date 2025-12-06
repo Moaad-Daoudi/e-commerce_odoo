@@ -36,11 +36,13 @@
         'payment',           # Payment providers
         'contacts',          # Partner/customer management
         'delivery',
+        'auth_signup',       # For signup functionality
     ],
 
     'data': [
         'security/groups.xml',
         'security/ir.model.access.csv',
+        'data/sequences.xml',
         'data/demo_data.xml',
         'views/admin/vendor_views.xml',
         'views/admin/product_views.xml',
@@ -51,6 +53,7 @@
         'views/components/featured_section.xml',
         'views/components/footer.xml',
         'views/components/pagination.xml',
+        'views/components/vendor_navbar.xml',
         'views/home_page.xml',
         'views/all_categories_page.xml',
         'views/categorie_listing_page.xml',
@@ -58,10 +61,17 @@
         'views/vendor_profile_page.xml',
         'views/search_results_page.xml',
         'views/cart_page.xml',
+        'views/customer_account_page.xml',
         'views/login_page.xml',
         'views/signup_page.xml',
         'views/about_page.xml',
         'views/contact_page.xml',
+        'views/vendor_registration.xml',
+        'views/vendor_dashboard.xml',
+        'views/vendor_product_list.xml',
+        'views/vendor_add_product.xml',
+        'views/vendor_edit_product.xml',
+        'views/vendor_order_list.xml',
         'wizard/vendor_refuse_view.xml',
     ],
     

@@ -25,6 +25,13 @@
               action="action_vendor_products" 
               sequence="20"/>
 
+    <menuitem id="menu_pending_products" 
+              name="Pending Approval" 
+              parent="menu_marketplace_vendors" 
+              action="action_pending_products" 
+              sequence="25"
+              groups="marketplace_platform.group_marketplace_manager"/>
+
     <!-- Finance Menu -->
     <menuitem id="menu_marketplace_finance" 
               name="Finance" 

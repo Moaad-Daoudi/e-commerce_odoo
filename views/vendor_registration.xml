@@ -1,0 +1,106 @@
+<odoo>
+    <!-- 1. REGISTRATION FORM -->
+    <template id="vendor_registration_form" name="Become a Seller">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream">
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <div class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            
+                            <!-- Header -->
+                            <div class="text-center mb-5">
+                                <h1 class="fw-bold display-5">Become a Maker</h1>
+                                <p class="lead text-muted">Join our community of unique creators and start selling today.</p>
+                            </div>
+
+                            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+                                <h4 class="fw-bold mb-4">Shop Details</h4>
+                                
+                                <t t-if="error">
+                                    <div class="alert alert-danger rounded-3"><t t-esc="error"/></div>
+                                </t>
+
+                                <form action="/marketplace/register/submit" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label class="aura-form-label">Shop Name <span class="text-danger">*</span></label>
+                                            <input type="text" name="shop_name" class="form-control aura-input" placeholder="e.g. Sarah's Pottery" required="required" t-att-value="values.get('shop_name')"/>
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <label class="aura-form-label">Shop URL ID <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-end-0">/aura/vendor/</span>
+                                                <input type="text" name="shop_url" class="form-control aura-input border-start-0" placeholder="sarahs-pottery" required="required" t-att-value="values.get('shop_url')"/>
+                                            </div>
+                                            <small class="text-muted">No spaces, use dashes. This will be your direct link.</small>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="aura-form-label">Business Email</label>
+                                            <input type="email" name="email" class="form-control aura-input" t-att-value="user_id.partner_id.email"/>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <label class="aura-form-label">Business Phone</label>
+                                            <input type="tel" name="phone" class="form-control aura-input" t-att-value="user_id.partner_id.phone"/>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="aura-form-label">About your Shop</label>
+                                            <textarea name="description" class="form-control aura-input" rows="4" placeholder="Tell us what you make..."></textarea>
+                                        </div>
+
+                                        <div class="col-12 mt-4">
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-aura-primary rounded-pill py-3 fw-bold">Submit Application</button>
+                                            </div>
+                                            <p class="text-center small text-muted mt-3">
+                                                By submitting, you agree to our <a href="#">Seller Terms</a>.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- 2. SUCCESS / PENDING PAGE -->
+    <template id="vendor_registration_success" name="Application Received">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream">
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <div class="container py-5" style="min-height: 60vh; display: flex; align-items: center;">
+                    <div class="text-center w-100">
+                        <div class="mb-4">
+                            <span class="bg-white p-4 rounded-circle shadow-sm d-inline-block">
+                                <i class="fa fa-clock-o fa-4x text-warning"/>
+                            </span>
+                        </div>
+                        <h1 class="fw-bold display-5 mb-3">Application Pending</h1>
+                        <p class="lead text-muted mb-5" style="max-width: 600px; margin: 0 auto;">
+                            Thanks for applying to become a maker! <br/>
+                            Our team is reviewing your details. You will receive an email once your shop is approved.
+                        </p>
+                        
+                        <a href="/" class="btn btn-outline-primary rounded-pill px-5">Back to Home</a>
+                    </div>
+                </div>
+                
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

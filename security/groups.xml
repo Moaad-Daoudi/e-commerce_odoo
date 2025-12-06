@@ -8,31 +8,38 @@
             <field name="sequence">10</field>
         </record>
 
-        <!-- GROUPS -->
-        <!-- Groupe Vendeur -->
+        <!-- 1. CUSTOMER GROUP (Base Level) -->
+        <!-- Inherits Portal: This defines the User Type as PORTAL -->
+        <record id="group_marketplace_customer" model="res.groups">
+            <field name="name">Customer</field>
+            <field name="category_id" ref="module_category_marketplace"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
+
+        <!-- 2. VENDOR GROUP (Seller Level) -->
+        <!-- Inherits Customer: Keeps them as PORTAL, adds Vendor rights -->
         <record id="group_marketplace_vendor" model="res.groups">
             <field name="name">Vendeur</field>
             <field name="category_id" ref="module_category_marketplace"/>
-            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/> <!-- Ou base.group_portal pour accès externe -->
+            <field name="implied_ids" eval="[(4, ref('group_marketplace_customer'))]"/>
         </record>
 
-        <!-- Groupe Manager (Admin) -->
+        <!-- 3. MANAGER GROUP (Admin Level) -->
+        <!-- For Internal Admins only. Does NOT inherit Vendor/Portal -->
         <record id="group_marketplace_manager" model="res.groups">
             <field name="name">Manager Marketplace</field>
             <field name="category_id" ref="module_category_marketplace"/>
-            <field name="implied_ids" eval="[(4, ref('group_marketplace_vendor'))]"/>
             <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         </record>
 
-        <!-- RECORD RULES (Règles de visibilité) -->
-
-        <!-- Règle 1: Le vendeur ne voit que son propre profil -->
+        <!-- RECORD RULES -->
         <record id="rule_marketplace_vendor_own_profile" model="ir.rule">
             <field name="name">Vendeur: voir son propre profil</field>
             <field name="model_id" ref="model_marketplace_vendor"/>
             <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
             <field name="groups" eval="[(4, ref('group_marketplace_vendor'))]"/>
         </record>
+        
         <record id="rule_marketplace_manager_all_vendors" model="ir.rule">
             <field name="name">Manager: voir tous les vendeurs</field>
             <field name="model_id" ref="model_marketplace_vendor"/>
@@ -40,7 +47,6 @@
             <field name="groups" eval="[(4, ref('group_marketplace_manager'))]"/>
         </record>
 
-        <!-- Règle 2: Le vendeur ne voit que ses propres commissions -->
         <record id="rule_marketplace_vendor_own_commission" model="ir.rule">
             <field name="name">Vendeur: voir ses propres commissions</field>
             <field name="model_id" ref="model_marketplace_commission"/>
@@ -48,7 +54,6 @@
             <field name="groups" eval="[(4, ref('group_marketplace_vendor'))]"/>
         </record>
 
-        <!-- Règle 3: Le vendeur ne voit que ses propres produits -->
         <record id="rule_marketplace_vendor_own_product" model="ir.rule">
             <field name="name">Vendeur: voir ses propres produits</field>
             <field name="model_id" ref="product.model_product_template"/>

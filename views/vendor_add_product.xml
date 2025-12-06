@@ -1,0 +1,123 @@
+<odoo>
+    <template id="vendor_add_product_page" name="Add Product">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream" style="min-height: 100vh;">
+                
+                <!-- Navbars -->
+                <t t-call="marketplace_platform.navbar_component"/>
+                <t t-call="marketplace_platform.vendor_navbar_component"/>
+                
+                <div class="container py-5 vendor-dashboard-container">
+                    
+                    <!-- Header -->
+                    <div class="mb-4">
+                        <a href="/my/marketplace/products" class="text-decoration-none text-muted small fw-bold">
+                            <i class="fa fa-arrow-left"/> Back to Products
+                        </a>
+                        <h2 class="fw-bold text-dark mt-2">Add New Product</h2>
+                    </div>
+
+                    <!-- Error Alert -->
+                    <t t-if="error">
+                        <div class="alert alert-danger rounded-3 mb-4">
+                            <i class="fa fa-exclamation-triangle me-2"/> <t t-esc="error"/>
+                        </div>
+                    </t>
+
+                    <form action="/my/marketplace/products/submit" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        
+                        <div class="row g-4">
+                            
+                            <!-- LEFT COLUMN: MAIN INFO -->
+                            <div class="col-lg-8">
+                                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                                    <h5 class="fw-bold mb-4">Basic Information</h5>
+                                    
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Product Title <span class="text-danger">*</span></label>
+                                        <input type="text" name="name" class="form-control aura-input" placeholder="e.g. Handmade Wool Scarf" required="required"/>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Description</label>
+                                        <textarea name="description" class="form-control aura-input" rows="5" placeholder="Describe your product..."></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="card border-0 shadow-sm rounded-4 p-4">
+                                    <h5 class="fw-bold mb-4">Media</h5>
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Main Image</label>
+                                        <input type="file" name="image" class="form-control aura-input" accept="image/*" required="required"/>
+                                        <small class="text-muted">Recommended size: 1024x1024px</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- RIGHT COLUMN: SETTINGS -->
+                            <div class="col-lg-4">
+                                
+                                <!-- Pricing Card -->
+                                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                                    <h5 class="fw-bold mb-4">Pricing</h5>
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Price ($) <span class="text-danger">*</span></label>
+                                        <input type="number" name="price" class="form-control aura-input" step="0.01" placeholder="0.00" required="required"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Compare at Price ($)</label>
+                                        <input type="number" name="compare_price" class="form-control aura-input" step="0.01" placeholder="0.00"/>
+                                        <small class="text-muted">Original price (for discounts)</small>
+                                    </div>
+                                </div>
+
+                                <!-- Inventory & Organization -->
+                                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                                    <h5 class="fw-bold mb-4">Organization</h5>
+                                    
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Category</label>
+                                        <select name="category_id" class="form-select aura-input">
+                                            <option value="">Select Category...</option>
+                                            <t t-foreach="categories" t-as="cat">
+                                                <option t-att-value="cat.id"><t t-esc="cat.name"/></option>
+                                            </t>
+                                        </select>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-6 mb-3">
+                                            <label class="aura-form-label">Stock Qty</label>
+                                            <input type="number" name="quantity" class="form-control aura-input" placeholder="0"/>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <label class="aura-form-label">Weight (kg)</label>
+                                            <input type="number" name="weight" class="form-control aura-input" step="0.1" placeholder="0.0"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Publish Actions -->
+                                <div class="card border-0 shadow-sm rounded-4 p-4">
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" id="is_published" name="is_published"/>
+                                        <label class="form-check-label fw-bold" for="is_published">Publish on Site</label>
+                                    </div>
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-aura-primary rounded-pill py-2 fw-bold">Save Product</button>
+                                        <a href="/my/marketplace/products" class="btn btn-light rounded-pill py-2">Cancel</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

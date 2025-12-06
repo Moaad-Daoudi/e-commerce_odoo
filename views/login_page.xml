@@ -20,9 +20,9 @@
                         </p>
 
                         <!-- Form submitting to standard Odoo Login -->
-                        <form class="role" method="post" action="/web/login">
+                        <form class="role" method="post" action="/login">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            <input type="hidden" name="redirect" t-att-value="redirect"/>
+                            <input type="hidden" name="redirect" t-att-value="redirect or '/'"/>
 
                             <!-- Email -->
                             <div class="mb-3">

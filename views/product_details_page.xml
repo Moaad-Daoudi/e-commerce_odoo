@@ -99,7 +99,7 @@
                             <!-- Action Buttons -->
                             <div class="d-flex gap-3">
                                 <!-- Add to Cart Form -->
-                                <form action="/shop/cart/update" method="POST" class="flex-grow-1">
+                                <form action="/cart/update" method="POST" class="flex-grow-1">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                     <input type="hidden" name="product_id" t-att-value="product.product_variant_id.id"/>
                                     <input type="hidden" name="add_qty" value="1"/>
