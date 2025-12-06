@@ -454,6 +454,13 @@ class MarketplaceController(http.Controller):
         user = request.env.user
         
         try:
+            # Handle profile image upload
+            if 'image' in request.params:
+                file = request.params['image']
+                if hasattr(file, 'read') and hasattr(file, 'filename') and file.filename:
+                    image_data = base64.b64encode(file.read())
+                    partner.sudo().write({'image_1920': image_data})
+            
             # Update basic info
             if post.get('name'):
                 partner.sudo().write({'name': post.get('name')})
@@ -951,6 +958,240 @@ class MarketplaceController(http.Controller):
             'user_id': request.env.user,
         }
         return request.render("marketplace_platform.vendor_order_list", values)
+    
+    # VIEW ORDER DETAILS
+    @http.route('/my/marketplace/order/<int:order_id>', type='http', auth="user", website=True)
+    def vendor_order_detail(self, order_id, **kw):
+        partner = request.env.user.partner_id
+        vendor = request.env['marketplace.vendor'].search([('partner_id', '=', partner.id)], limit=1)
+        
+        if not vendor:
+            return request.redirect('/marketplace/register')
+
+        # Sudo to read order details
+        order = request.env['sale.order'].sudo().browse(order_id)
+        
+        # Security: Ensure this order actually contains products from this vendor
+        vendor_lines = order.order_line.filtered(lambda l: l.product_id.product_tmpl_id.vendor_id.id == vendor.id)
+        
+        if not vendor_lines:
+            return request.redirect('/my/marketplace/orders')
+
+        # Calculate Vendor specific totals
+        vendor_total = sum(vendor_lines.mapped('price_subtotal'))
+        
+        # Find related delivery (Picking) for status update
+        # Assuming stock logic splits pickings by vendor (standard Odoo behavior if routes are set)
+        # OR we just look for any picking containing these products
+        picking = request.env['stock.picking'].sudo().search([
+            ('origin', '=', order.name),
+            ('move_ids.product_id', 'in', vendor_lines.mapped('product_id').ids),
+            ('state', 'not in', ['cancel', 'done'])
+        ], limit=1)
+
+        return request.render("marketplace_platform.vendor_order_detail", {
+            'page_name': 'orders',
+            'vendor': vendor,
+            'order': order,
+            'vendor_lines': vendor_lines,
+            'vendor_total': vendor_total,
+            'picking': picking, # To show "Ship" button
+        })
+
+    # ACTION: MARK AS SHIPPED
+    @http.route('/my/marketplace/order/ship/<int:picking_id>', type='http', auth="user", website=True)
+    def vendor_order_ship(self, picking_id, **kw):
+        # Allow vendor to validate the delivery
+        picking = request.env['stock.picking'].sudo().browse(picking_id)
+        
+        if picking.exists() and picking.state not in ['done', 'cancel']:
+            # Simple validation: Mark all qty as done and validate
+            for move in picking.move_ids:
+                move.quantity = move.product_uom_qty
+            picking.button_validate()
+            
+        return request.redirect(request.httprequest.referrer or '/my/marketplace/orders')
+    
+    # ... inside MarketplaceController ...
+
+    # 1. RENDER SETTINGS PAGE
+    @http.route('/my/marketplace/settings', type='http', auth="user", website=True)
+    def vendor_settings(self, **kw):
+        partner = request.env.user.partner_id
+        vendor = request.env['marketplace.vendor'].search([('partner_id', '=', partner.id)], limit=1)
+        
+        if not vendor:
+            return request.redirect('/marketplace/register')
+            
+        countries = request.env['res.country'].sudo().search([])
+
+        return request.render("marketplace_platform.vendor_settings_page", {
+            'page_name': 'profile', # Highlights 'Profile' in navbar
+            'vendor': vendor,
+            'countries': countries,
+            'success': kw.get('success')
+        })
+
+    # 2. HANDLE SETTINGS SAVE
+    @http.route('/my/marketplace/settings/submit', type='http', auth="user", methods=['POST'], website=True, csrf=True)
+    def vendor_settings_submit(self, **post):
+        partner = request.env.user.partner_id
+        vendor = request.env['marketplace.vendor'].search([('partner_id', '=', partner.id)], limit=1)
+        
+        if not vendor:
+            return request.redirect('/marketplace/register')
+
+        vals = {
+            'shop_name': post.get('shop_name'),
+            'description': post.get('description'),
+            'phone': post.get('phone'),
+            'email': post.get('email'),
+            # Socials
+            'social_facebook': post.get('social_facebook'),
+            'social_instagram': post.get('social_instagram'),
+            'social_twitter': post.get('social_twitter'),
+            # Address (Writing to related partner fields)
+            'street': post.get('street'),
+            'city': post.get('city'),
+            'zip': post.get('zip'),
+        }
+        
+        if post.get('country_id'):
+            vals['country_id'] = int(post.get('country_id'))
+
+        # Handle Images
+        if 'image_banner' in request.params:
+            file = request.params['image_banner']
+            if hasattr(file, 'read') and file.filename:
+                vals['image_1920'] = base64.b64encode(file.read())
+
+        if 'image_logo' in request.params:
+            file = request.params['image_logo']
+            if hasattr(file, 'read') and file.filename:
+                vals['image_128'] = base64.b64encode(file.read())
+
+        # Write changes
+        vendor.sudo().write(vals)
+        
+        return request.redirect('/my/marketplace/settings?success=1')
+    
+    # ... inside MarketplaceController ...
+
+    # 1. WISHLIST PAGE
+    @http.route(['/wishlist'], type='http', auth="public", website=True)
+    def aura_wishlist_view(self, sort='date_desc', **kw):
+        # Guests store wishlist in session or cookies usually, but Odoo's model requires a partner.
+        # For simplicity in this custom build, we enforce login or use the public user (not recommended for persistent wishlist).
+        # Assuming User is logged in for full features:
+        if request.env.user._is_public():
+            return request.redirect('/web/login?redirect=/wishlist')
+
+        try:
+            Wishlist = request.env['product.wishlist'].sudo()
+            domain = [('partner_id', '=', request.env.user.partner_id.id)]
+            
+            # Sorting Logic
+            order = 'create_date desc'
+            if sort == 'date_asc': order = 'create_date asc'
+            elif sort == 'price_desc': order = 'price desc' # price is a related field in wishlist
+            elif sort == 'price_asc': order = 'price asc'
+            
+            wishlist_items = Wishlist.search(domain, order=order)
+
+            return request.render("marketplace_platform.wishlist_page", {
+                'wishlist_items': wishlist_items,
+                'sort': sort,
+            })
+        except Exception as e:
+            import logging
+            import traceback
+            _logger = logging.getLogger(__name__)
+            _logger.error("Error loading wishlist: %s", str(e))
+            _logger.error("Traceback: %s", traceback.format_exc())
+            # Return empty wishlist on error
+            return request.render("marketplace_platform.wishlist_page", {
+                'wishlist_items': request.env['product.wishlist'].sudo(),
+                'sort': sort,
+            })
+
+
+    # ADD TO WISHLIST ACTION
+    @http.route('/wishlist/add/<int:product_tmpl_id>', type='http', auth="public", website=True)
+    def aura_wishlist_add(self, product_tmpl_id, **kw):
+        import logging
+        _logger = logging.getLogger(__name__)
+        
+        # Check if user is logged in
+        if request.env.user._is_public():
+            # Redirect to login with return URL
+            referrer = request.httprequest.referrer or '/'
+            return request.redirect('/web/login?redirect=' + referrer)
+        
+        try:
+            partner = request.env.user.partner_id
+            
+            # Get the product template
+            product_tmpl = request.env['product.template'].sudo().browse(product_tmpl_id)
+            if not product_tmpl.exists():
+                raise Exception("Product not found")
+            
+            # Get the first product variant
+            if not product_tmpl.product_variant_ids:
+                raise Exception("No product variant available")
+            
+            product_variant = product_tmpl.product_variant_ids[0]
+            
+            # Add to wishlist using our custom model
+            Wishlist = request.env['product.wishlist'].sudo()
+            wishlist_item = Wishlist._add_to_wishlist(
+                partner_id=partner.id,
+                product_id=product_variant.id,
+                website_id=request.website.id if hasattr(request, 'website') else None
+            )
+            
+            # Redirect back with success
+            referrer = request.httprequest.referrer or '/'
+            separator = '&' if '?' in referrer else '?'
+            return request.redirect(referrer + separator + 'wishlist_added=1')
+                
+        except Exception as e:
+            _logger.error("Error adding to wishlist: %s", str(e))
+            # Redirect back with error
+            referrer = request.httprequest.referrer or '/'
+            separator = '&' if '?' in referrer else '?'
+            return request.redirect(referrer + separator + 'wishlist_error=1')
+    
+    # 3. ACTION: REMOVE SINGLE ITEM
+    @http.route(['/wishlist/remove/<int:wishlist_id>'], type='http', auth="user", website=True)
+    def wishlist_remove(self, wishlist_id, **kw):
+        wish_item = request.env['product.wishlist'].browse(wishlist_id)
+        if wish_item.exists() and wish_item.partner_id == request.env.user.partner_id:
+            wish_item.unlink()
+        return request.redirect('/wishlist')
+
+    # 4. BULK: MOVE ALL TO CART
+    @http.route(['/wishlist/move_all'], type='http', auth="user", website=True)
+    def wishlist_move_all(self, **kw):
+        partner = request.env.user.partner_id
+        wishlist_items = request.env['product.wishlist'].search([('partner_id', '=', partner.id)])
+        
+        if wishlist_items:
+            order = request.website.sale_get_order(force_create=True)
+            for item in wishlist_items:
+                # Add to cart
+                order._cart_update(product_id=item.product_id.id, add_qty=1)
+                # Delete from wishlist
+                item.unlink()
+                
+        return request.redirect('/cart')
+
+    # 5. BULK: CLEAR ALL
+    @http.route(['/wishlist/clear'], type='http', auth="user", website=True)
+    def wishlist_clear(self, **kw):
+        partner = request.env.user.partner_id
+        wishlist_items = request.env['product.wishlist'].search([('partner_id', '=', partner.id)])
+        wishlist_items.unlink()
+        return request.redirect('/wishlist')
         
     @http.route(['/my/marketplace'], type='http', auth="user", website=True)
     def vendor_dashboard(self, **kw):

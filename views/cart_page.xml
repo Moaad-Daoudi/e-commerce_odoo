@@ -41,7 +41,7 @@
                                     <div class="aura-cart-item mb-3 d-flex align-items-center gap-4">
                                         
                                         <!-- Image -->
-                                        <a t-attf-href="/aura/product/#{line.product_id.product_tmpl_id.id}">
+                                        <a t-attf-href="/product/#{line.product_id.product_tmpl_id.id}">
                                             <span t-field="line.product_id.image_128" 
                                                   t-options="{'widget': 'image', 'class': 'aura-cart-img'}"/>
                                         </a>
@@ -51,7 +51,7 @@
                                             <div class="d-flex justify-content-between align-items-start">
                                                 <div>
                                                     <h5 class="fw-bold text-dark mb-1">
-                                                        <a t-attf-href="/aura/product/#{line.product_id.product_tmpl_id.id}" class="text-decoration-none text-dark">
+                                                        <a t-attf-href="/product/#{line.product_id.product_tmpl_id.id}" class="text-decoration-none text-dark">
                                                             <t t-esc="line.name_short"/>
                                                         </a>
                                                     </h5>

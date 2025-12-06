@@ -19,7 +19,7 @@
 
                 <!-- 3. SEARCH BAR -->
                 <div class="flex-grow-1 d-none d-md-flex justify-content-center mx-4">
-                    <form action="/aura/search" method="get" class="aura-search-container">
+                    <form action="/search" method="get" class="aura-search-container">
                         <i class="fa fa-microphone text-muted ms-2"/>
                         <input type="text" name="search" class="aura-search-input" placeholder="Search for unique finds..."/>
                         <button type="submit" class="btn btn-link p-0 text-muted">
@@ -31,12 +31,12 @@
                 <!-- 4. RIGHT SIDE ACTIONS -->
                 <div class="d-flex align-items-center">
                     
-                    <a href="/shop/wishlist" class="aura-icon-btn text-decoration-none" title="Wishlist">
+                    <a href="/wishlist" class="aura-icon-btn text-decoration-none" title="Wishlist">
                         <i class="fa fa-heart-o"/>
                     </a>
                     
                     <!-- Cart Icon -->
-                    <a href="/aura/cart" class="position-relative ms-4 text-dark">
+                    <a href="/cart" class="position-relative ms-4 text-dark">
                         <i class="fa fa-shopping-cart fa-lg" style="font-size: 24px;"/>
                         <t t-set="website_sale_order" t-value="request.website.sale_get_order()"/>
                         <t t-if="website_sale_order and website_sale_order.cart_quantity > 0">

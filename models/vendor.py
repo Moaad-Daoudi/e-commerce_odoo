@@ -18,6 +18,17 @@ class MarketplaceVendor(models.Model):
     # Store images
     image_1920 = fields.Image("Shop Banner", max_width=1920, max_height=500)
     image_128 = fields.Image("Shop Logo", max_width=128, max_height=128)
+    
+    # Social Media Fields
+    social_facebook = fields.Char(string="Facebook")
+    social_twitter = fields.Char(string="X (Twitter)")
+    social_instagram = fields.Char(string="Instagram")
+    
+    # Store Location (linking to partner fields for simplicity)
+    street = fields.Char(related='partner_id.street', readonly=False)
+    city = fields.Char(related='partner_id.city', readonly=False)
+    zip = fields.Char(related='partner_id.zip', readonly=False)
+    country_id = fields.Many2one(related='partner_id.country_id', readonly=False)
 
     state = fields.Selection([
         ('new', 'New Request'),

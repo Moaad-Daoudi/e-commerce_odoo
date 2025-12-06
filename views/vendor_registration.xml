@@ -34,7 +34,7 @@
                                         <div class="col-12">
                                             <label class="aura-form-label">Shop URL ID <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <span class="input-group-text bg-light border-end-0">/aura/vendor/</span>
+                                                <span class="input-group-text bg-light border-end-0">vendor</span>
                                                 <input type="text" name="shop_url" class="form-control aura-input border-start-0" placeholder="sarahs-pottery" required="required" t-att-value="values.get('shop_url')"/>
                                             </div>
                                             <small class="text-muted">No spaces, use dashes. This will be your direct link.</small>

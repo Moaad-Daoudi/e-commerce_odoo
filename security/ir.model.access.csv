@@ -11,3 +11,6 @@ access_marketplace_payout_public,marketplace.payout.public,model_marketplace_pay
 access_marketplace_payout_portal,marketplace.payout.portal,model_marketplace_payout,base.group_portal,1,0,0,0
 access_marketplace_payout_manager,marketplace.payout.manager,model_marketplace_payout,group_marketplace_manager,1,1,1,1
 access_marketplace_payout_user,marketplace.payout.user,model_marketplace_payout,group_marketplace_vendor,1,1,1,0
+access_product_wishlist_public,product.wishlist.public,model_product_wishlist,,1,0,0,0
+access_product_wishlist_portal,product.wishlist.portal,model_product_wishlist,base.group_portal,1,1,1,1
+access_product_wishlist_user,product.wishlist.user,model_product_wishlist,base.group_user,1,1,1,1

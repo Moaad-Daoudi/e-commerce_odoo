@@ -1,0 +1,131 @@
+<odoo>
+    <template id="wishlist_page" name="My Wishlist">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream" style="min-height: 100vh;">
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <div class="container py-5 vendor-dashboard-container">
+                    
+                    <!-- 1. Header & Controls -->
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-3">
+                        <div>
+                            <h1 class="fw-bold mb-1">My Wishlist</h1>
+                            <p class="text-muted mb-0">
+                                <t t-esc="len(wishlist_items)"/> items saved for later
+                            </p>
+                        </div>
+                        
+                        <div class="d-flex gap-2" t-if="wishlist_items">
+                            <!-- Sort Dropdown -->
+                            <div class="dropdown">
+                                <button class="btn btn-white border rounded-pill px-3 shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="fa fa-sort me-2"/> Sort
+                                </button>
+                                <ul class="dropdown-menu shadow-sm border-0 rounded-4">
+                                    <li><a class="dropdown-item" href="?sort=date_desc">Recently Added</a></li>
+                                    <li><a class="dropdown-item" href="?sort=price_asc">Price: Low to High</a></li>
+                                    <li><a class="dropdown-item" href="?sort=price_desc">Price: High to Low</a></li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Bulk Actions -->
+                            <a href="/wishlist/move_all" class="btn btn-aura-primary rounded-pill px-4 shadow-sm">
+                                <i class="fa fa-shopping-cart me-2"/> Add All to Cart
+                            </a>
+                            <a href="/wishlist/clear" class="btn btn-outline-danger rounded-pill px-3 shadow-sm" 
+                               onclick="return confirm('Clear your entire wishlist?');">
+                                <i class="fa fa-trash"/>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 2. Wishlist Items -->
+                    <div class="row g-3">
+                        <t t-if="wishlist_items">
+                            <t t-foreach="wishlist_items" t-as="wish">
+                                <t t-set="product" t-value="wish.product_id"/>
+                                
+                                <div class="col-12">
+                                    <div class="aura-wishlist-card d-flex flex-column flex-md-row align-items-center gap-4">
+                                        
+                                        <!-- Image -->
+                                        <a t-attf-href="/product/#{product.product_tmpl_id.id}" class="wishlist-img-wrapper">
+                                            <img t-att-src="website.image_url(product, 'image_128')" alt="Product"/>
+                                        </a>
+
+                                        <!-- Info -->
+                                        <div class="flex-grow-1 text-center text-md-start">
+                                            <!-- Vendor (if exists) -->
+                                            <div class="small text-muted mb-1" t-if="product.product_tmpl_id.vendor_id">
+                                                <i class="fa fa-store me-1"/> <t t-esc="product.product_tmpl_id.vendor_id.shop_name"/>
+                                            </div>
+                                            
+                                            <h5 class="fw-bold mb-1">
+                                                <a t-attf-href="/product/#{product.product_tmpl_id.id}" class="text-dark text-decoration-none">
+                                                    <t t-esc="product.name"/>
+                                                </a>
+                                            </h5>
+                                            
+                                            <!-- Stock Status -->
+                                            <div class="mb-2">
+                                                <t t-if="product.qty_available > 0">
+                                                    <span class="stock-indicator in-stock">
+                                                        <i class="fa fa-check-circle"/> In Stock
+                                                    </span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="stock-indicator out-stock">
+                                                        <i class="fa fa-times-circle"/> Out of Stock
+                                                    </span>
+                                                </t>
+                                            </div>
+                                        </div>
+
+                                        <!-- Price -->
+                                        <div class="text-center text-md-end">
+                                            <h4 class="fw-bold text-aura-orange mb-0">
+                                                <span t-field="product.list_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                            </h4>
+                                        </div>
+
+                                        <!-- Actions -->
+                                        <div class="d-flex gap-2">
+                                            <a t-attf-href="/wishlist/add_to_cart/#{wish.id}" class="btn-wish-action cart" title="Move to Cart">
+                                                <i class="fa fa-cart-plus"/>
+                                            </a>
+                                            <a t-attf-href="/wishlist/remove/#{wish.id}" class="btn-wish-action remove" title="Remove">
+                                                <i class="fa fa-trash-o"/>
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                        
+                        <!-- 3. Empty State -->
+                        <t t-else="">
+                            <div class="col-12 text-center py-5">
+                                <div class="bg-white rounded-4 p-5 shadow-sm">
+                                    <div class="mb-4">
+                                        <span class="bg-light p-4 rounded-circle d-inline-block">
+                                            <i class="fa fa-heart-o fa-3x text-muted opacity-50"/>
+                                        </span>
+                                    </div>
+                                    <h3 class="fw-bold text-dark">Your wishlist is empty</h3>
+                                    <p class="text-muted mb-4">Start exploring unique finds and save them here!</p>
+                                    <a href="/shop" class="btn btn-aura-primary rounded-pill px-5 py-2">
+                                        Explore Products
+                                    </a>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+
+                </div>
+                
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

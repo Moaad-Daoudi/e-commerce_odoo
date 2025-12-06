@@ -15,7 +15,7 @@
                         <form class="search-input-group" method="get">
                             <input type="hidden" name="status" t-att-value="status"/>
                             <i class="fa fa-search text-muted"/>
-                            <input type="text" name="search" placeholder="Order # or Customer..." t-att-value="search"/>
+                            <input type="text" name="search" placeholder="Order or Customer..." t-att-value="search"/>
                             <button type="submit" class="btn btn-sm btn-light">Search</button>
                         </form>
                     </div>

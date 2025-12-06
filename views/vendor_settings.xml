@@ -1,0 +1,167 @@
+<odoo>
+    <template id="vendor_settings_page" name="Vendor Settings">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream" style="min-height: 100vh;">
+                
+                <t t-call="marketplace_platform.navbar_component"/>
+                <t t-call="marketplace_platform.vendor_navbar_component"/>
+                
+                <div class="container py-5 vendor-dashboard-container">
+                    
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="fw-bold text-dark m-0">Store Settings</h2>
+                        <a t-attf-href="/vendor/#{vendor.id}" target="_blank" class="btn btn-outline-secondary rounded-pill btn-sm">
+                            <i class="fa fa-external-link"/> View Public Store
+                        </a>
+                    </div>
+
+                    <!-- Success Alert -->
+                    <t t-if="success">
+                        <div class="alert alert-success rounded-3 mb-4 shadow-sm border-0 bg-white text-success">
+                            <i class="fa fa-check-circle me-2"/> Profile updated successfully!
+                        </div>
+                    </t>
+
+                    <form action="/my/marketplace/settings/submit" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        
+                        <!-- 1. VISUAL IDENTITY (Banner & Logo) -->
+                        <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                            <h5 class="fw-bold mb-3">Storefront Identity</h5>
+                            
+                            <!-- Banner Upload -->
+                            <div class="settings-banner-zone mb-3">
+                                <t t-if="vendor.image_1920">
+                                    <img t-att-src="image_data_uri(vendor.image_1920)" alt="Banner"/>
+                                </t>
+                                <t t-else="">
+                                    <div class="d-flex align-items-center justify-content-center h-100 text-muted bg-light">
+                                        <div class="text-center">
+                                            <i class="fa fa-picture-o fa-2x mb-2"/><br/>
+                                            <span>Upload Banner (1920x500)</span>
+                                        </div>
+                                    </div>
+                                </t>
+                                <div class="overlay"><i class="fa fa-camera fa-2x"/></div>
+                                <input type="file" name="image_banner" accept="image/*"/>
+                            </div>
+
+                            <!-- Logo Upload -->
+                            <div class="ps-4">
+                                <div class="settings-logo-wrapper">
+                                    <div class="settings-logo-zone">
+                                        <t t-if="vendor.image_128">
+                                            <img t-att-src="image_data_uri(vendor.image_128)" alt="Logo"/>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="d-flex align-items-center justify-content-center h-100 text-muted bg-light">
+                                                <i class="fa fa-user fa-2x"/>
+                                            </div>
+                                        </t>
+                                        <div class="overlay"><i class="fa fa-camera"/></div>
+                                        <input type="file" name="image_logo" accept="image/*"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-4">
+                            
+                            <!-- LEFT COL: Basic Info -->
+                            <div class="col-lg-8">
+                                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                                    <h5 class="fw-bold mb-4">Basic Information</h5>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="aura-form-label">Store Name</label>
+                                            <input type="text" name="shop_name" class="form-control aura-input" t-att-value="vendor.shop_name" required="required"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="aura-form-label">Phone</label>
+                                            <input type="text" name="phone" class="form-control aura-input" t-att-value="vendor.phone"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Email (Public)</label>
+                                        <input type="email" name="email" class="form-control aura-input" t-att-value="vendor.email"/>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Bio / Description</label>
+                                        <textarea name="description" class="form-control aura-input" rows="5" placeholder="Tell your story..."><t t-esc="vendor.description"/></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- RIGHT COL: Location & Socials -->
+                            <div class="col-lg-4">
+                                
+                                <!-- Location -->
+                                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                                    <h5 class="fw-bold mb-4">Location</h5>
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Street</label>
+                                        <input type="text" name="street" class="form-control aura-input" t-att-value="vendor.street"/>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6 mb-3">
+                                            <label class="aura-form-label">City</label>
+                                            <input type="text" name="city" class="form-control aura-input" t-att-value="vendor.city"/>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <label class="aura-form-label">Zip</label>
+                                            <input type="text" name="zip" class="form-control aura-input" t-att-value="vendor.zip"/>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Country</label>
+                                        <select name="country_id" class="form-select aura-input">
+                                            <option value="">Select Country...</option>
+                                            <t t-foreach="countries" t-as="c">
+                                                <option t-att-value="c.id" t-att-selected="vendor.country_id.id == c.id">
+                                                    <t t-esc="c.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Socials -->
+                                <div class="card border-0 shadow-sm rounded-4 p-4">
+                                    <h5 class="fw-bold mb-4">Social Media</h5>
+                                    
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-light border-end-0"><i class="fa fa-facebook text-muted"/></span>
+                                        <input type="text" name="social_facebook" class="form-control aura-input border-start-0 ps-0" placeholder="Facebook URL" t-att-value="vendor.social_facebook"/>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-light border-end-0"><i class="fa fa-instagram text-muted"/></span>
+                                        <input type="text" name="social_instagram" class="form-control aura-input border-start-0 ps-0" placeholder="Instagram URL" t-att-value="vendor.social_instagram"/>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-light border-end-0"><i class="fa fa-twitter text-muted"/></span>
+                                        <input type="text" name="social_twitter" class="form-control aura-input border-start-0 ps-0" placeholder="X (Twitter) URL" t-att-value="vendor.social_twitter"/>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Sticky Bottom Save Bar -->
+                        <div class="fixed-bottom bg-white border-top shadow p-3 d-flex justify-content-center" style="z-index: 1000;">
+                            <button type="submit" class="btn btn-aura-primary rounded-pill px-5 py-2 fw-bold shadow-sm">
+                                Save Changes
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+                
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

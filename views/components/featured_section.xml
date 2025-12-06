@@ -46,6 +46,15 @@
                                 <div class="card h-100 aura-product-card border-0 shadow-sm">
                                     <div class="product-img-box position-relative overflow-hidden">
                                         <img t-att-src="website.image_url(product, 'image_512')" class="card-img-top object-fit-cover" style="height: 250px;" alt="Product"/>
+                                        <!-- Wishlist Button -->
+                                        <t t-set="in_wishlist" t-value="request.env['product.wishlist'].sudo().search_count([('partner_id', '=', request.env.user.partner_id.id), ('product_id', '=', product.product_variant_ids[0].id if product.product_variant_ids else False)]) > 0 if not request.env.user._is_public() else False"/>
+                                        <a t-attf-href="/wishlist/add/#{product.id}" 
+                                           t-attf-class="btn-wish-float #{in_wishlist and 'in-wishlist' or ''}"
+                                           t-attf-data-product-id="#{product.id}"
+                                           title="Save for Later" 
+                                           onclick="event.stopPropagation();">
+                                            <i t-attf-class="fa fa-heart#{'-' if in_wishlist else '-o'}" t-attf-style="#{in_wishlist and 'color: #dc3545;' or ''}"/>
+                                        </a>
                                     </div>
                                     <div class="card-body">
                                         <h6 class="fw-bold text-dark mb-1 text-truncate" t-field="product.name"/>

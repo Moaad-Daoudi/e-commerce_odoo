@@ -33,15 +33,29 @@
                                 <div class="flex-grow-1 text-center text-md-start">
                                     <h2 class="fw-bold mb-1" t-field="vendor.shop_name"/>
                                     
+                                    <!-- Vendor Contact Info -->
                                     <div class="d-flex flex-wrap justify-content-center justify-content-md-start gap-3 text-muted small mb-3">
-                                        <span><i class="fa fa-map-marker me-1"/> <t t-if="vendor_partner"><span t-field="vendor_partner.city"/>, <span t-field="vendor_partner.country_id.code"/></t></span>
-                                        <span><i class="fa fa-star text-warning me-1"/> 4.8 (120 Reviews)</span>
+                                        <span t-if="vendor_partner and vendor_partner.city">
+                                            <i class="fa fa-map-marker me-1"/> 
+                                            <span t-field="vendor_partner.city"/><t t-if="vendor_partner.country_id">, <span t-field="vendor_partner.country_id.name"/></t>
+                                        </span>
+                                        <span t-if="vendor.email">
+                                            <i class="fa fa-envelope me-1"/> <t t-esc="vendor.email"/>
+                                        </span>
+                                        <span t-if="vendor.phone">
+                                            <i class="fa fa-phone me-1"/> <t t-esc="vendor.phone"/>
+                                        </span>
                                         <span><i class="fa fa-cube me-1"/> <t t-esc="len(products)"/> Products</span>
                                     </div>
                                     
+                                    <!-- Vendor Description -->
                                     <p class="text-muted mb-0" style="max-width: 600px;">
-                                        <!-- Placeholder bio if field doesn't exist yet -->
-                                        We are creators of fine handmade goods. We believe in quality, sustainability, and bringing joy to your home through our craft.
+                                        <t t-if="vendor.description">
+                                            <t t-esc="vendor.description"/>
+                                        </t>
+                                        <t t-else="">
+                                            Welcome to <t t-esc="vendor.shop_name"/>. Browse our collection of quality products.
+                                        </t>
                                     </p>
                                 </div>
 
@@ -95,6 +109,10 @@
                                                             <i class="fa fa-image fa-3x text-muted"/>
                                                         </div>
                                                     </t>
+                                                    <!-- Wishlist Button -->
+                                                    <a t-attf-href="/wishlist/add/#{product.id}" class="btn-wish-float" title="Save for Later" onclick="event.stopPropagation();">
+                                                        <i class="fa fa-heart-o"/>
+                                                    </a>
                                                 </div>
                                                 <div class="card-body">
                                                     <h6 class="fw-bold text-dark mb-1 text-truncate" t-esc="product.name"/>

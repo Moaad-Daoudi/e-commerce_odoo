@@ -72,12 +72,16 @@
         'views/vendor_add_product.xml',
         'views/vendor_edit_product.xml',
         'views/vendor_order_list.xml',
+        'views/vendor_order_detail.xml',
+        'views/vendor_settings.xml',
+        'views/wishlist_page.xml', 
         'wizard/vendor_refuse_view.xml',
     ],
     
     'assets': {
         'web.assets_frontend': [
             'marketplace_platform/static/src/scss/aura_style.scss',
+            'marketplace_platform/static/src/js/wishlist.js',
         ],
     },
 

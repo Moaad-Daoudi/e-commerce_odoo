@@ -119,6 +119,10 @@
                                                             <i class="fa fa-image fa-3x text-muted"/>
                                                         </div>
                                                     </t>
+                                                    <!-- Wishlist Button -->
+                                                    <a t-attf-href="/wishlist/add/#{product.id}" class="btn-wish-float" title="Save for Later" onclick="event.stopPropagation();">
+                                                        <i class="fa fa-heart-o"/>
+                                                    </a>
                                                 </div>
                                                 <div class="card-body">
                                                     <div class="d-flex justify-content-between">

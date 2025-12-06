@@ -12,8 +12,9 @@
                     <a href="/my/marketplace/orders" t-attf-class="vendor-nav-link #{'active' if page_name == 'orders' else ''}">
                         <i class="fa fa-shopping-bag me-2"/> Orders
                     </a>
-                    <a t-attf-href="/aura/vendor/#{user_id.partner_id.vendor_profile_id.id}" t-attf-class="vendor-nav-link #{'active' if page_name == 'profile' else ''}">
-                        <i class="fa fa-user me-2"/> Public Profile
+                    <a href="/my/marketplace/settings" 
+                        t-attf-class="vendor-nav-link #{'active' if page_name == 'profile' else ''}">
+                        <i class="fa fa-user me-2"/> Profile
                     </a>
                 </div>
             </div>
