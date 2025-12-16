@@ -37,6 +37,9 @@
         'contacts',          # Partner/customer management
         'delivery',
         'auth_signup',       # For signup functionality
+        'website_hr_recruitment',
+        'hr_recruitment',
+        'website_blog',
     ],
 
     'data': [
@@ -44,6 +47,7 @@
         'security/ir.model.access.csv',
         'data/sequences.xml',
         'data/demo_data.xml',
+        'data/recruitment_data.xml',
         'views/admin/vendor_views.xml',
         'views/admin/product_views.xml',
         'views/admin/commission_views.xml',
@@ -51,8 +55,11 @@
         'views/pages/about_us.xml',
         'views/pages/careers.xml',
         'views/pages/blog.xml',
+        'views/pages/blog_post.xml',
+        'views/pages/blog_views.xml',
         'views/pages/support.xml',
         'views/pages/shop_extras.xml',
+        'views/pages/job_application.xml',
         'views/components/navbar.xml',
         'views/components/hero.xml',
         'views/components/featured_section.xml',

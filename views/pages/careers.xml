@@ -3,17 +3,18 @@
         <t t-call="marketplace_platform.minimal_layout">
             <div id="wrap" class="o_aura_careers">
                 <t t-call="marketplace_platform.navbar_component"/>
-				
+                
                 <!-- HEADER -->
                 <div class="py-5 text-center bg-gradient-primary text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                     <div class="container py-5">
                         <h1 class="display-3 fw-bold mb-3">Build the Future of Commerce</h1>
                         <p class="lead mb-4" style="opacity: 0.9;">Join a team of passionate individuals revolutionizing how the world buys and sells.</p>
+                        <!-- BOUTON 1: Lien vers l'ancre -->
                         <a href="#openings" class="btn btn-light btn-lg rounded-pill px-4 text-primary fw-bold">View Openings</a>
                     </div>
                 </div>
 
-                <!-- PERKS -->
+                <!-- PERKS (Code inchangé pour abréger, gardez votre bloc existant ici) -->
                 <div class="container py-5">
                     <div class="row g-4 py-4">
                         <div class="col-md-3 text-center">
@@ -52,7 +53,8 @@
                     <div class="container">
                         <div class="d-flex justify-content-between align-items-end mb-4">
                             <h3 class="fw-bold m-0">Open Positions</h3>
-                            <a href="#" class="text-decoration-none">View all departments <i class="fa fa-arrow-right ms-1"></i></a>
+                            <!-- BOUTON 1 (bis): Lien vers l'ancre ou filtre -->
+                            <a href="#openings" class="text-decoration-none">View all departments <i class="fa fa-arrow-right ms-1"></i></a>
                         </div>
 
                         <div class="row g-3">
@@ -68,7 +70,8 @@
                                                     <i class="fa fa-clock-o me-1"></i> <span t-esc="job['type']"/>
                                                 </div>
                                             </div>
-                                            <a href="#" class="btn btn-outline-primary rounded-pill px-4">Apply Now</a>
+                                            <!-- BOUTON 2: Apply Now avec ID dynamique -->
+                                            <a t-att-href="'/jobs/apply/%s' % job['id']" class="btn btn-outline-primary rounded-pill px-4">Apply Now</a>
                                         </div>
                                     </div>
                                 </div>
@@ -76,11 +79,12 @@
                         </div>
                         
                         <div class="text-center mt-5">
-                            <p class="text-muted">Don't see a perfect fit? <a href="#">Send us a general application.</a></p>
+                            <!-- BOUTON 3: General Application -->
+                            <p class="text-muted">Don't see a perfect fit? <a href="/jobs/apply/general" class="fw-bold text-primary">Send us a general application.</a></p>
                         </div>
                     </div>
                 </div>
-				<t t-call="marketplace_platform.footer_component"/>
+                <t t-call="marketplace_platform.footer_component"/>
             </div>
         </t>
     </template>

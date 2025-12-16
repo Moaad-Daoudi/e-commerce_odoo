@@ -16,7 +16,7 @@
                         <p class="lead text-muted mb-5 mx-auto" style="max-width: 600px;">
                             Not sure what to get? Let them choose from thousands of unique items created by independent makers.
                         </p>
-                        <img src="/web/static/img/payment.svg" class="img-fluid" style="max-height: 200px; opacity: 0.8;" alt="Gift Card"/>
+                        <img src="/marketplace_platform/static/src/img/gift_card.png" class="img-fluid" style="opacity: 0.8;" alt="Gift Card"/>
                     </div>
                 </div>
 
@@ -153,11 +153,20 @@
                         <a href="/marketplace/register" class="btn btn-outline-primary rounded-pill">Become a Maker</a>
                     </div>
                     
-                    <!-- Search Bar (Visual Only for now) -->
-                    <div class="bg-white p-2 rounded-pill shadow-sm d-flex align-items-center" style="max-width: 400px;">
-                        <i class="fa fa-search text-muted ms-3 me-2"></i>
-                        <input type="text" class="form-control border-0 shadow-none" placeholder="Find a shop..."/>
-                    </div>
+                    <!-- Search Bar (Fonctionnelle) -->
+					<form action="/makers" method="get" class="bg-white p-2 rounded-pill shadow-sm d-flex align-items-center" style="max-width: 400px;">
+						<!-- Bouton loupe clickable -->
+						<button type="submit" class="btn btn-link text-muted p-0 ms-3 me-2 border-0 text-decoration-none">
+							<i class="fa fa-search"></i>
+						</button>
+						
+						<!-- Input avec valeur pré-remplie (t-att-value) -->
+						<input type="text" 
+							   name="search" 
+							   class="form-control border-0 shadow-none bg-transparent" 
+							   placeholder="Find a shop..." 
+							   t-att-value="search_term"/>
+					</form>
                 </div>
 
                 <!-- Vendors Grid -->

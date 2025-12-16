@@ -1,0 +1,22 @@
+<odoo>
+    <!-- Extension du formulaire Article de Blog standard -->
+    <record id="view_blog_post_form_marketplace_extend" model="ir.ui.view">
+        <field name="name">blog.post.form.marketplace</field>
+        <field name="model">blog.post</field>
+        <field name="inherit_id" ref="website_blog.view_blog_post_form"/>
+        <field name="arch" type="xml">
+            <!-- On ajoute le champ Image Aperçu en haut du formulaire -->
+            <xpath expr="//sheet/group[1]" position="before">
+                <div class="row mb-4 bg-view p-3 border rounded">
+                    <div class="col-md-12">
+                        <h3>Configuration Marketplace</h3>
+                        <p class="text-muted">Cette image sera utilisée sur la page d'accueil du Blog Marketplace.</p>
+                        <group>
+                            <field name="image_preview" widget="image" class="oe_avatar" options="{'size': [200, 200]}"/>
+                        </group>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

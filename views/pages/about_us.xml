@@ -19,7 +19,7 @@
                                 <!-- Placeholder Image -->
                                 <div class="position-relative">
                                     <div class="bg-primary position-absolute top-0 end-0 w-100 h-100 rounded-4" style="transform: translate(20px, 20px); opacity: 0.1;"></div>
-                                    <img src="/web/static/img/feedback.png" class="img-fluid rounded-4 shadow-lg position-relative" alt="Our Team"/>
+                                    <img src="/marketplace_platform/static/src/img/team.png" class="img-fluid rounded-4 shadow-lg position-relative" alt="Our Team"/>
                                 </div>
                             </div>
                         </div>

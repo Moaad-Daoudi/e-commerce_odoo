@@ -49,5 +49,63 @@
               parent="menu_marketplace_finance" 
               action="action_payout" 
               sequence="20"/>
+			  
+	<!-- DÉFINITION D'UNE ACTION PROPRE (Indépendante du contexte active_id) -->
+    <record id="action_marketplace_all_applicants" model="ir.actions.act_window">
+        <field name="name">Toutes les Candidatures</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
+        <!-- On force un contexte vide ou simple pour éviter l'erreur active_id -->
+        <field name="context">{}</field> 
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune candidature reçue pour le moment.
+            </p>
+            <p>
+                Les candidats qui postulent via le formulaire web apparaîtront ici.
+            </p>
+        </field>
+    </record>
 
+    <!-- MENU PARENT -->
+    <menuitem id="menu_marketplace_hr" 
+              name="Carrières &amp; RH" 
+              parent="menu_marketplace_root" 
+              sequence="30"/>
+
+    <!-- LIENS MENUS -->
+    
+    <!-- Lien vers notre ACTION CORRIGÉE -->
+    <menuitem id="menu_hr_applicants" 
+              name="Candidatures Reçues" 
+              parent="menu_marketplace_hr" 
+              action="action_marketplace_all_applicants"
+              sequence="10"/>
+
+    <!-- Lien vers les Postes (Celui-ci fonctionne généralement sans modif) -->
+    <menuitem id="menu_hr_jobs" 
+              name="Postes Ouverts" 
+              parent="menu_marketplace_hr" 
+              action="hr_recruitment.action_hr_job"
+              sequence="20"/>
+
+	<!-- SECTION CONTENU (CMS) -->
+    <menuitem id="menu_marketplace_cms" 
+              name="Contenu &amp; Blog" 
+              parent="menu_marketplace_root" 
+              sequence="40"/>
+
+    <!-- Lien vers les Articles de Blog -->
+    <menuitem id="menu_blog_posts" 
+              name="Articles de Blog" 
+              parent="menu_marketplace_cms" 
+              action="website_blog.action_blog_post"
+              sequence="10"/>
+              
+    <!-- Lien vers les Catégories de Blog -->
+    <menuitem id="menu_blog_config" 
+              name="Blogs (Catégories)" 
+              parent="menu_marketplace_cms" 
+              action="website_blog.action_blog_blog"
+              sequence="20"/>
 </odoo>
