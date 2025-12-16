@@ -1,0 +1,283 @@
+<odoo>
+    <template id="customer_account_page" name="Customer Account Page">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="aura-account-page">
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <!-- Header Background -->
+                <div class="aura-account-header">
+                    <h1 class="fw-bold mb-2">Welcome, <t t-esc="user_id.name"/>!</h1>
+                    <p class="opacity-75">Manage your orders and account settings</p>
+                </div>
+                
+                <div class="aura-account-container">
+                    <div class="row g-4">
+                        
+                        <!-- LEFT SIDEBAR -->
+                        <div class="col-lg-3">
+                            <div class="aura-account-sidebar">
+                                <div class="p-4 border-bottom bg-light">
+                                    <h6 class="fw-bold m-0 text-uppercase text-muted small ls-1">My Account</h6>
+                                </div>
+                                <div class="py-2">
+                                    <a href="/my/account?section=dashboard" t-attf-class="account-nav-link #{'active' if section == 'dashboard' else ''}">
+                                        <i class="fa fa-th-large"/> Dashboard
+                                    </a>
+                                    <a href="/my/account?section=orders" t-attf-class="account-nav-link #{'active' if section == 'orders' else ''}">
+                                        <i class="fa fa-shopping-bag"/> Order History
+                                    </a>
+                                    <a href="/my/account?section=profile" t-attf-class="account-nav-link #{'active' if section == 'profile' else ''}">
+                                        <i class="fa fa-user-circle"/> Profile Settings
+                                    </a>
+                                    <a href="/my/account?section=addresses" t-attf-class="account-nav-link #{'active' if section == 'addresses' else ''}">
+                                        <i class="fa fa-map-marker"/> Addresses
+                                    </a>
+                                    <a href="/web/session/logout?redirect=/" class="account-nav-link account-logout">
+                                        <i class="fa fa-sign-out"/> Log Out
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MAIN CONTENT -->
+                        <div class="col-lg-9">
+                            <div class="aura-account-content">
+                                
+                                <!-- 1. DASHBOARD -->
+                                <t t-if="section == 'dashboard'">
+                                    <h3 class="fw-bold mb-4">Dashboard Overview</h3>
+                                    <div class="stat-card-grid">
+                                        <div class="stat-card">
+                                            <h2><t t-esc="total_orders"/></h2>
+                                            <p>Total Orders</p>
+                                        </div>
+                                        <div class="stat-card">
+                                            <h2><t t-esc="pending_orders"/></h2>
+                                            <p>Pending</p>
+                                        </div>
+                                        <div class="stat-card">
+                                            <h2>0</h2>
+                                            <p>Wishlist</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <h5 class="fw-bold mb-3 mt-5">Recent Orders</h5>
+                                    <t t-if="orders">
+                                        <div class="table-responsive rounded-3 border">
+                                            <table class="aura-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Order #</th>
+                                                        <th>Date</th>
+                                                        <th>Status</th>
+                                                        <th>Total</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <t t-foreach="orders[:3]" t-as="order">
+                                                        <tr>
+                                                            <td class="fw-bold"><t t-esc="order.name"/></td>
+                                                            <td><t t-esc="order.date_order" t-options='{"widget": "date"}'/></td>
+                                                            <td>
+                                                                <span t-attf-class="status-badge #{'sale' if order.state == 'sale' else 'draft'}">
+                                                                    <t t-esc="order.state"/>
+                                                                </span>
+                                                            </td>
+                                                            <td class="fw-bold">$<t t-esc="'%.2f' % order.amount_total"/></td>
+                                                            <td>
+                                                                <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">View</a>
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="text-center py-5 bg-light rounded-3">
+                                            <p class="text-muted mb-0">No recent activity.</p>
+                                        </div>
+                                    </t>
+                                </t>
+
+                                <!-- 2. PROFILE SETTINGS -->
+                                <t t-if="section == 'profile'">
+                                    <h3 class="fw-bold mb-4">Edit Profile</h3>
+                                    <form method="post" action="/my/account/update" enctype="multipart/form-data">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        
+                                        <!-- Profile Photo Section -->
+                                        <div class="row mb-4">
+                                            <div class="col-12">
+                                                <label class="aura-form-label d-block mb-3">Profile Photo</label>
+                                                <div class="d-flex align-items-center gap-4">
+                                                    <div class="position-relative">
+                                                        <t t-if="partner.image_128">
+                                                            <img t-att-src="image_data_uri(partner.image_128)" 
+                                                                 class="rounded-circle border border-3 border-white shadow"
+                                                                 style="width: 100px; height: 100px; object-fit: cover;"
+                                                                 alt="Profile"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center border border-3 border-white shadow"
+                                                                 style="width: 100px; height: 100px;">
+                                                                <i class="fa fa-user fa-3x text-muted"/>
+                                                            </div>
+                                                        </t>
+                                                    </div>
+                                                    <div>
+                                                        <input type="file" name="image" id="profile_image" class="d-none" accept="image/*"/>
+                                                        <label for="profile_image" class="btn btn-outline-primary rounded-pill mb-2" style="cursor: pointer;">
+                                                            <i class="fa fa-camera me-2"/> Change Photo
+                                                        </label>
+                                                        <p class="text-muted small mb-0">JPG, PNG or GIF (max 5MB)</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="aura-form-label">Full Name</label>
+                                                <input type="text" name="name" class="form-control aura-input" t-att-value="partner.name"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="aura-form-label">Email</label>
+                                                <input type="email" name="email" class="form-control aura-input" t-att-value="partner.email"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="aura-form-label">Phone</label>
+                                                <input type="text" name="phone" class="form-control aura-input" t-att-value="partner.phone"/>
+                                            </div>
+                                            
+                                            <div class="col-12 mt-4">
+                                                <button type="submit" class="btn btn-aura-primary rounded-pill px-5">Save Changes</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </t>
+
+                                <!-- 3. ADDRESSES -->
+                                <t t-if="section == 'addresses'">
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <h3 class="fw-bold m-0">Shipping Addresses</h3>
+                                        <button class="btn btn-outline-primary rounded-pill btn-sm" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                                            <i class="fa fa-plus"/> Add New
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="row g-3">
+                                        <t t-foreach="addresses" t-as="addr">
+                                            <div class="col-md-6">
+                                                <div class="address-card">
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <h6 class="fw-bold"><t t-esc="addr.name or 'Address'"/></h6>
+                                                        <t t-if="addr.id == partner.id">
+                                                            <span class="badge bg-success rounded-pill">Default</span>
+                                                        </t>
+                                                    </div>
+                                                    <p class="small text-muted mb-3">
+                                                        <t t-esc="addr.street"/><br/>
+                                                        <t t-esc="addr.city"/>, <t t-esc="addr.zip"/>
+                                                    </p>
+                                                    <div class="d-flex gap-2">
+                                                        <a href="#" class="btn btn-sm btn-light rounded-pill text-muted">Edit</a>
+                                                        <a t-if="addr.id != partner.id" t-attf-href="/my/account/address/delete/#{addr.id}" class="btn btn-sm btn-light rounded-pill text-danger">Remove</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+
+                                <!-- 4. ORDERS LIST -->
+                                <t t-if="section == 'orders'">
+                                    <h3 class="fw-bold mb-4">Order History</h3>
+                                    <t t-if="orders">
+                                        <div class="table-responsive rounded-3 border">
+                                            <table class="aura-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Order #</th>
+                                                        <th>Date</th>
+                                                        <th>Total</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <t t-foreach="orders" t-as="order">
+                                                        <tr>
+                                                            <td class="fw-bold"><t t-esc="order.name"/></td>
+                                                            <td><t t-esc="order.date_order" t-options='{"widget": "date"}'/></td>
+                                                            <td class="fw-bold text-dark">$<t t-esc="'%.2f' % order.amount_total"/></td>
+                                                            <td>
+                                                                <span t-attf-class="status-badge #{'sale' if order.state == 'sale' else 'draft'}">
+                                                                    <t t-esc="order.state"/>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="text-center py-5 bg-light rounded-3">
+                                            <i class="fa fa-shopping-basket fa-3x text-muted mb-3"/>
+                                            <p class="text-muted">You haven't placed any orders yet.</p>
+                                            <a href="/categories" class="btn btn-aura-primary rounded-pill mt-2">Start Shopping</a>
+                                        </div>
+                                    </t>
+                                </t>
+
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <!-- ADD ADDRESS MODAL -->
+                <div class="modal fade" id="addAddressModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content rounded-4 border-0 shadow">
+                            <div class="modal-header border-bottom-0 pb-0">
+                                <h5 class="modal-title fw-bold">Add Address</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form method="post" action="/my/account/address/add">
+                                <div class="modal-body">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Name</label>
+                                        <input type="text" name="name" class="form-control aura-input" placeholder="Home, Work..." required="required"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Street</label>
+                                        <input type="text" name="street" class="form-control aura-input" required="required"/>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6 mb-3">
+                                            <label class="aura-form-label">City</label>
+                                            <input type="text" name="city" class="form-control aura-input" required="required"/>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <label class="aura-form-label">Zip</label>
+                                            <input type="text" name="zip" class="form-control aura-input" required="required"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer border-top-0 pt-0">
+                                    <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-aura-primary rounded-pill px-4">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

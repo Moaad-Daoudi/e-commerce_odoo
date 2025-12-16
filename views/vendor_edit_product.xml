@@ -1,0 +1,147 @@
+<odoo>
+    <template id="vendor_edit_product_page" name="Edit Product">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream" style="min-height: 100vh;">
+                
+                <!-- Navbars -->
+                <t t-call="marketplace_platform.navbar_component"/>
+                <t t-call="marketplace_platform.vendor_navbar_component"/>
+                
+                <div class="container py-5 vendor-dashboard-container">
+                    
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <a href="/my/marketplace/products" class="text-decoration-none text-muted small fw-bold">
+                                <i class="fa fa-arrow-left"/> Back to Products
+                            </a>
+                            <h2 class="fw-bold text-dark mt-2">Edit Product</h2>
+                        </div>
+                        <!-- View on Site Button -->
+                        <a t-attf-href="/aura/product/#{product.id}" target="_blank" class="btn btn-outline-secondary rounded-pill btn-sm">
+                            <i class="fa fa-external-link"/> View Live
+                        </a>
+                    </div>
+
+                    <!-- Error Alert -->
+                    <t t-if="error">
+                        <div class="alert alert-danger rounded-3 mb-4">
+                            <i class="fa fa-exclamation-triangle me-2"/> <t t-esc="error"/>
+                        </div>
+                    </t>
+
+                    <form t-attf-action="/my/marketplace/product/edit/submit/#{product.id}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        
+                        <div class="row g-4">
+                            
+                            <!-- LEFT COLUMN: MAIN INFO -->
+                            <div class="col-lg-8">
+                                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                                    <h5 class="fw-bold mb-4">Basic Information</h5>
+                                    
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Product Title</label>
+                                        <input type="text" name="name" class="form-control aura-input" required="required" t-att-value="product.name"/>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Description</label>
+                                        <textarea name="description" class="form-control aura-input" rows="5"><t t-esc="product.description_sale"/></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="card border-0 shadow-sm rounded-4 p-4">
+                                    <h5 class="fw-bold mb-4">Media</h5>
+                                    
+                                    <!-- Current Image Preview -->
+                                    <div class="mb-3 d-flex align-items-center gap-3">
+                                        <div class="border rounded p-1 bg-light">
+                                            <img t-att-src="website.image_url(product, 'image_128')" width="64" height="64" class="object-fit-cover rounded"/>
+                                        </div>
+                                        <div>
+                                            <label class="aura-form-label mb-1">Update Image</label>
+                                            <input type="file" name="image" class="form-control aura-input" accept="image/*"/>
+                                            <small class="text-muted">Leave empty to keep current image</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- RIGHT COLUMN: SETTINGS -->
+                            <div class="col-lg-4">
+                                
+                                <!-- Pricing Card -->
+                                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                                    <h5 class="fw-bold mb-4">Pricing</h5>
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Price ($)</label>
+                                        <input type="number" name="price" class="form-control aura-input" step="0.01" required="required" t-att-value="product.list_price"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Compare at Price ($)</label>
+                                        <input type="number" name="compare_price" class="form-control aura-input" step="0.01" t-att-value="product.compare_list_price"/>
+                                    </div>
+                                </div>
+
+                                <!-- Inventory & Organization -->
+                                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                                    <h5 class="fw-bold mb-4">Organization</h5>
+                                    
+                                    <div class="mb-3">
+                                        <label class="aura-form-label">Category</label>
+                                        <select name="category_id" class="form-select aura-input">
+                                            <option value="">Select Category...</option>
+                                            <t t-foreach="categories" t-as="cat">
+                                                <option t-att-value="cat.id" t-att-selected="product.public_categ_ids and cat.id == product.public_categ_ids[0].id">
+                                                    <t t-esc="cat.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-6 mb-3">
+                                            <label class="aura-form-label">Stock Qty</label>
+                                            <input type="number" name="quantity" class="form-control aura-input" t-att-value="product.qty_available"/>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <label class="aura-form-label">Weight (kg)</label>
+                                            <input type="number" name="weight" class="form-control aura-input" step="0.1" t-att-value="product.weight"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Publish Actions -->
+                                <div class="card border-0 shadow-sm rounded-4 p-4">
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" id="is_published" name="is_published" t-att-checked="'checked' if product.is_published else None"/>
+                                        <label class="form-check-label fw-bold" for="is_published">Published</label>
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-aura-primary rounded-pill py-2 fw-bold">Save Changes</button>
+                                        <a href="/my/marketplace/products" class="btn btn-light rounded-pill py-2">Cancel</a>
+                                    </div>
+                                    
+                                    <!-- Archive/Delete Link -->
+                                    <div class="text-center mt-3 pt-3 border-top">
+                                        <a t-attf-href="/my/marketplace/product/delete/#{product.id}" 
+                                           class="text-danger small text-decoration-none" 
+                                           onclick="return confirm('Are you sure? This cannot be undone.');">
+                                            <i class="fa fa-trash"/> Delete Product
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

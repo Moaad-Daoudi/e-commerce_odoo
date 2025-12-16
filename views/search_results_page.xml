@@ -1,0 +1,184 @@
+<odoo>
+    <template id="search_results_page" name="Search Results">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream">
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <!-- 1. STICKY SEARCH HEADER -->
+                <div class="bg-white border-bottom sticky-top shadow-sm py-3" style="top: 0px; z-index: 95;">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h4 class="fw-bold m-0 text-dark">
+                                    <t t-if="search_term">
+                                        Results for "<span class="text-aura-primary" t-esc="search_term"/>"
+                                    </t>
+                                    <t t-else="">All Products</t>
+                                </h4>
+                                <small class="text-muted"><t t-esc="len(products)"/> products found</small>
+                            </div>
+                            <div class="col-md-6 mt-3 mt-md-0">
+                                <form action="/search" method="get" class="d-flex gap-2">
+                                    <input type="text" name="search" class="form-control rounded-pill bg-light border-0" 
+                                           placeholder="Search again..." t-att-value="search_term"/>
+                                    <button type="submit" class="btn btn-aura-primary rounded-pill px-4">Search</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. MAIN CONTENT -->
+                <div class="container py-5">
+                    <div class="row">
+                        
+                        <!-- LEFT SIDEBAR: FILTERS -->
+                        <div class="col-lg-3 mb-5">
+                            <div class="aura-sidebar p-4 bg-white shadow-sm rounded-4">
+                                <div class="d-flex align-items-center gap-2 mb-4">
+                                    <i class="fa fa-sliders text-primary"/>
+                                    <h5 class="fw-bold m-0">Filter Results</h5>
+                                </div>
+
+                                <form action="/search" method="get">
+                                    <!-- Keep Search Term -->
+                                    <input type="hidden" name="search" t-att-value="filters['search']"/>
+
+                                    <!-- Price Filter -->
+                                    <div class="mb-4">
+                                        <h6 class="fw-bold small text-uppercase text-muted mb-3">Price Range</h6>
+                                        <div class="input-group input-group-sm mb-2">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" name="min_price" class="form-control" placeholder="0" t-att-value="filters['min_price']"/>
+                                            <span class="input-group-text">-</span>
+                                            <input type="number" name="max_price" class="form-control" placeholder="Max" t-att-value="filters['max_price']"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Categories Filter -->
+                                    <div class="mb-4">
+                                        <h6 class="fw-bold small text-uppercase text-muted mb-3">Categories</h6>
+                                        <div class="aura-filter-scroll" style="max-height: 150px; overflow-y: auto;">
+                                            <div class="d-flex flex-column gap-2">
+                                                <t t-foreach="categories" t-as="c">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="category" 
+                                                               t-att-value="c.id" t-att-id="'c_%s' % c.id"
+                                                               t-att-checked="'checked' if filters['category'] == c.id else None"/>
+                                                        <label class="form-check-label small" t-att-for="'c_%s' % c.id">
+                                                            <t t-esc="c.name"/>
+                                                        </label>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Vendor Filter -->
+                                    <div class="mb-4">
+                                        <h6 class="fw-bold small text-uppercase text-muted mb-3">Makers</h6>
+                                        <div class="aura-filter-scroll" style="max-height: 150px; overflow-y: auto;">
+                                            <div class="d-flex flex-column gap-2">
+                                                <t t-foreach="vendors" t-as="v">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="vendor" 
+                                                               t-att-value="v.id" t-att-id="'v_%s' % v.id"
+                                                               t-att-checked="'checked' if filters['vendor'] == v.id else None"/>
+                                                        <label class="form-check-label small" t-att-for="'v_%s' % v.id">
+                                                            <t t-esc="v.shop_name"/>
+                                                        </label>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-primary btn-sm rounded-pill">Apply</button>
+                                        <a href="/search" class="btn btn-light btn-sm rounded-pill text-muted">Reset</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT COLUMN: GRID -->
+                        <div class="col-lg-9">
+                            
+                            <!-- Product Grid -->
+                            <div class="row g-4">
+                                <t t-if="products" t-foreach="products" t-as="product">
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <a t-attf-href="/product/#{product.id}" class="text-decoration-none">
+                                            <div class="card h-100 aura-product-card border-0 shadow-sm bg-white">
+                                                <div class="product-img-box position-relative overflow-hidden" style="height: 220px; background: #f3f4f6;">
+                                                    <t t-if="product.image_1920">
+                                                        <img t-att-src="image_data_uri(product.image_1920)" class="card-img-top w-100 h-100 object-fit-cover"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                                            <i class="fa fa-image fa-3x text-muted"/>
+                                                        </div>
+                                                    </t>
+                                                    <!-- Wishlist Button -->
+                                                    <a t-attf-href="/wishlist/add/#{product.id}" class="btn-wish-float" title="Save for Later" onclick="event.stopPropagation();">
+                                                        <i class="fa fa-heart-o"/>
+                                                    </a>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="flex-grow-1" style="min-width: 0;">
+                                                            <h6 class="fw-bold text-dark mb-1 text-truncate" t-esc="product.name"/>
+                                                            <p class="small text-muted mb-0 text-truncate" t-if="product.vendor_id">
+                                                                by <t t-esc="product.vendor_id.shop_name"/>
+                                                            </p>
+                                                        </div>
+                                                        <div class="text-end ms-2">
+                                                            <span class="fw-bold fs-6 text-aura-orange">
+                                                                $<t t-esc="'%.2f' % product.list_price"/>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </t>
+                                
+                                <!-- NO RESULTS FOUND STATE -->
+                                <t t-if="not products">
+                                    <div class="col-12 text-center py-5">
+                                        <div class="bg-white p-5 rounded-4 shadow-sm border">
+                                            <div class="mb-3">
+                                                <span class="bg-light p-4 rounded-circle d-inline-block">
+                                                    <i class="fa fa-search fa-3x text-muted"/>
+                                                </span>
+                                            </div>
+                                            <h3 class="fw-bold text-dark">No matches found</h3>
+                                            <p class="text-muted">
+                                                We couldn't find any products matching "<span t-esc="search_term"/>".<br/>
+                                                Try checking your spelling or using more general terms.
+                                            </p>
+                                            <a href="/search" class="btn btn-outline-primary rounded-pill mt-3 px-4">
+                                                Clear Search
+                                            </a>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+
+                            <!-- PAGINATION -->
+                            <t t-call="marketplace_platform.pagination_component">
+                                <t t-set="pager" t-value="pager"/>
+                                <t t-set="base_url" t-value="'/search/page'"/>
+                                <t t-set="url_params" t-value="'?%s' % pager.get('keep_query', '') if pager.get('keep_query') else ''"/>
+                            </t>
+
+                        </div>
+                    </div>
+                </div>
+
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

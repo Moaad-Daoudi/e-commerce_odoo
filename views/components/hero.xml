@@ -1,0 +1,61 @@
+<odoo>
+    <!-- Reusable Hero Component with Dynamic Content -->
+    <template id="hero_component" name="Aura Hero Section">
+        <section class="aura-hero-section position-relative overflow-hidden">
+            
+            <!-- Background Shape/Gradient -->
+            <div class="aura-hero-bg"></div>
+
+            <div class="container position-relative z-1 pt-5 pb-5">
+                <div class="row align-items-center g-5">
+                    
+                    <!-- LEFT COLUMN: Text Content (Dynamic) -->
+                    <div class="col-lg-6">
+                        <!-- Breadcrumb (optional) -->
+                        <t t-if="hero_breadcrumb">
+                            <div class="text-muted small fw-bold mb-3">
+                                <t t-raw="hero_breadcrumb"/>
+                            </div>
+                        </t>
+                        
+                        <h1 class="display-3 fw-bold mb-4 text-dark" style="letter-spacing: -1px; line-height: 1.1;">
+                            <t t-if="hero_title" t-raw="hero_title"/>
+                            <t t-else="">
+                                Crafted with Soul.<br/>
+                                <span class="text-primary-gradient">Discover Unique</span>
+                            </t>
+                        </h1>
+                        
+                        <p class="lead text-muted mb-5" style="max-width: 450px;">
+                            <t t-if="hero_subtitle" t-esc="hero_subtitle"/>
+                            <t t-else="">
+                                Handmade goods, art, and artisanal finds from independent creators around the world.
+                            </t>
+                        </p>
+                        
+                        <t t-if="hero_button_text and hero_button_url">
+                            <a t-att-href="hero_button_url" class="btn btn-aura-primary btn-lg px-5 py-3 rounded-pill shadow-sm">
+                                <t t-esc="hero_button_text"/>
+                            </a>
+                        </t>
+                        <t t-else="">
+                            <a href="/shop" class="btn btn-aura-primary btn-lg px-5 py-3 rounded-pill shadow-sm">
+                                Explore Makers
+                            </a>
+                        </t>
+                    </div>
+
+                    <!-- RIGHT COLUMN: Image (Same for all pages) -->
+                    <div class="col-lg-6 position-relative">
+                        
+                        <!-- Main Image with Custom Shape -->
+                        <div class="aura-hero-img-wrapper">
+                            <img src="/marketplace_platform/static/src/img/hero_photo.png" class="img-fluid aura-hero-img" alt="Artisans working"/>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+</odoo>

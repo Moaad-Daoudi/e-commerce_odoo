@@ -1,0 +1,81 @@
+<odoo>
+    <template id="vendor_order_list" name="Vendor Orders">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream" style="min-height: 100vh;">
+                <t t-call="marketplace_platform.navbar_component"/>
+                <t t-call="marketplace_platform.vendor_navbar_component"/>
+                
+                <div class="container py-5 vendor-dashboard-container">
+                    <!-- Header -->
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+                        <div>
+                            <h2 class="fw-bold text-dark mb-1">Orders</h2>
+                            <p class="text-muted mb-0">Track and manage your incoming orders</p>
+                        </div>
+                        <form class="search-input-group" method="get">
+                            <input type="hidden" name="status" t-att-value="status"/>
+                            <i class="fa fa-search text-muted"/>
+                            <input type="text" name="search" placeholder="Order or Customer..." t-att-value="search"/>
+                            <button type="submit" class="btn btn-sm btn-light">Search</button>
+                        </form>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="vendor-filter-tabs">
+                        <a t-attf-href="?status=all&amp;search=#{search}" t-attf-class="filter-tab #{'active' if status == 'all' else ''}">All Orders</a>
+                        <a t-attf-href="?status=sale&amp;search=#{search}" t-attf-class="filter-tab #{'active' if status == 'sale' else ''}">Confirmed</a>
+                        <a t-attf-href="?status=draft&amp;search=#{search}" t-attf-class="filter-tab #{'active' if status == 'draft' else ''}">Pending</a>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="vendor-table-card">
+                        <div class="table-responsive">
+                            <table class="vendor-table">
+                                <thead>
+                                    <tr>
+                                        <th>Order</th>
+                                        <th>Customer</th>
+                                        <th>Your Items</th>
+                                        <th>Your Share</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="orders_data" t-as="data">
+                                        <t t-set="order" t-value="data['order']"/>
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold text-primary"><t t-esc="order.name"/></div>
+                                                <div class="small text-muted"><span t-field="order.date_order" t-options='{"widget": "date"}'/></div>
+                                            </td>
+                                            <td><t t-esc="order.partner_id.name"/></td>
+                                            <td>
+                                                <div class="text-truncate" style="max-width: 200px;"><t t-esc="data['products_display']"/></div>
+                                                <small class="text-muted"><t t-esc="data['item_count']"/> items</small>
+                                            </td>
+                                            <td class="fw-bold">
+                                                <span t-esc="data['vendor_total']" t-options="{'widget': 'monetary', 'display_currency': order.currency_id}"/>
+                                            </td>
+                                            <td>
+                                                <span t-attf-class="badge rounded-pill #{'bg-success' if order.state == 'sale' else 'bg-warning'}">
+                                                    <t t-esc="order.state"/>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <tr t-if="not orders_data">
+                                        <td colspan="5" class="text-center py-5 text-muted">No orders found.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-3 border-top" t-if="pager['page_count'] > 1">
+                            <t t-call="website.pager"/>
+                        </div>
+                    </div>
+                </div>
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

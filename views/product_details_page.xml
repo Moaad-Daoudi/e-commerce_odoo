@@ -1,0 +1,188 @@
+<odoo>
+    <template id="placeholder_product_page" name="Product Detail Page">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream">
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <div class="container py-5">
+                    
+                    <!-- TOP SECTION: IMAGES & INFO -->
+                    <div class="row gx-5">
+                        
+                        <!-- LEFT COL: PRODUCT IMAGES -->
+                        <div class="col-lg-6 mb-5">
+                            <!-- Main Image -->
+                            <div class="aura-gallery-main shadow-sm mb-4 d-flex align-items-center justify-content-center bg-white">
+                                <t t-if="product.image_1920">
+                                    <img t-att-src="image_data_uri(product.image_1920)" t-att-alt="product.name"/>
+                                </t>
+                                <t t-else="">
+                                    <i class="fa fa-picture-o fa-5x text-muted opacity-25"/>
+                                </t>
+                            </div>
+                            
+                            <!-- Thumbnails (Main + Extra Images) -->
+                            <div class="d-flex gap-3 justify-content-center">
+                                <!-- Main Thumb -->
+                                <img t-att-src="website.image_url(product, 'image_128')" class="aura-thumb-img shadow-sm" alt="Main"/>
+                                
+                                <!-- Loop Extra Images (if any) -->
+                                <t t-foreach="product.product_template_image_ids" t-as="p_img">
+                                    <img t-att-src="website.image_url(p_img, 'image_128')" class="aura-thumb-img shadow-sm" alt="Thumbnail"/>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT COL: INFO & ACTIONS -->
+                        <div class="col-lg-6">
+                            
+                            <!-- Title & Price -->
+                            <h1 class="display-5 fw-bold text-dark mb-2" t-field="product.name"/>
+                            
+                            <div class="d-flex align-items-center gap-3 mb-4">
+                                <h3 class="fw-bold text-dark mb-0">
+                                    <span t-field="product.list_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                </h3>
+                                <!-- Static Rating Mockup for Design -->
+                                <div class="aura-rating d-flex align-items-center gap-1">
+                                    <i class="fa fa-star"/>
+                                    <i class="fa fa-star"/>
+                                    <i class="fa fa-star"/>
+                                    <i class="fa fa-star"/>
+                                    <i class="fa fa-star-half-o"/>
+                                    <span class="text-muted small ms-1">(124 reviews)</span>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="mb-5">
+                                <h5 class="fw-bold mb-2">Description</h5>
+                                <div class="text-muted" style="line-height: 1.6;">
+                                    <t t-if="product.description_sale">
+                                        <span t-field="product.description_sale"/>
+                                    </t>
+                                    <t t-else="">
+                                        <p>Wrap yourself in warmth with this handmade throw. Crafted from organic materials, perfect for cozy evenings by the fire.</p>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <!-- Vendor Info Box -->
+                            <div class="aura-vendor-card mb-4 d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3">
+                                    <!-- Vendor Avatar -->
+                                    <t t-if="vendor_partner and vendor_partner.image_128">
+                                        <img t-att-src="image_data_uri(vendor_partner.image_128)" class="vendor-avatar" alt="Vendor"/>
+                                    </t>
+                                    <t t-else="">
+                                        <img src="/web/static/img/placeholder.png" class="vendor-avatar" alt="Vendor"/>
+                                    </t>
+                                    
+                                    <!-- Vendor Name -->
+                                    <div>
+                                        <div class="fw-bold text-dark">
+                                            <t t-if="product.vendor_id">
+                                                <a t-attf-href="/vendor/#{product.vendor_id.id}" class="text-decoration-none text-dark hover-primary">
+                                                    <t t-esc="product.vendor_id.shop_name"/>
+                                                </a>
+                                            </t>
+                                            <t t-else="">Unknown Maker</t>
+                                        </div>
+                                        <div class="small text-muted">
+                                            by <t t-if="vendor_partner" t-esc="vendor_partner.name"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn-sm-follow">Follow</a>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex gap-3">
+                                <!-- Add to Cart -->
+                                <form action="/shop/cart/update" method="POST" class="flex-grow-1">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="product_id" t-att-value="product.product_variant_id.id"/>
+                                    <input type="hidden" name="add_qty" value="1"/>
+                                    <button type="submit" class="btn btn-aura-green w-100 shadow-sm">
+                                        Add to Cart
+                                    </button>
+                                </form>
+                                
+                                <!-- Contact -->
+                                <a t-attf-href="mailto:#{product.vendor_id.partner_id.email if product.vendor_id else ''}" 
+                                class="btn btn-aura-light px-4" title="Contact Vendor">
+                                    <i class="fa fa-envelope-o"/>
+                                </a>
+
+                                <!-- Wishlist Button -->
+                                <t t-set="in_wishlist" t-value="request.env['product.wishlist'].sudo().search_count([('partner_id', '=', request.env.user.partner_id.id), ('product_id', '=', product.product_variant_ids[0].id if product.product_variant_ids else False)]) > 0 if not request.env.user._is_public() else False"/>
+                                <a t-attf-href="/wishlist/add/#{product.id}" 
+                                   t-attf-class="btn-wish-outline #{in_wishlist and 'in-wishlist' or ''}" 
+                                   t-attf-data-product-id="#{product.id}"
+                                   title="Save for Later">
+                                    <i t-attf-class="fa fa-heart#{'-' if in_wishlist else '-o'} fs-5" t-attf-style="color: #{in_wishlist and '#dc3545' or ''}"/>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BOTTOM SECTION: RELATED PRODUCTS -->
+                    <div class="row mt-5 pt-5 border-top">
+                        <div class="col-12 d-flex justify-content-between align-items-center mb-4">
+                            <h4 class="fw-bold m-0">Related Products</h4>
+                            <a href="/shop" class="text-decoration-none fw-bold small text-muted">View all</a>
+                        </div>
+                        
+                        <div class="row g-4">
+                            <t t-foreach="related_products" t-as="rel_prod">
+                                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                                    <a t-att-href="'/product/%s' % rel_prod.id" class="text-decoration-none">
+                                        <div class="card h-100 aura-product-card border-0 shadow-sm bg-white">
+                                            <div class="product-img-box position-relative overflow-hidden" style="height: 200px; background: #f8f9fa;">
+                                                <img t-att-src="website.image_url(rel_prod, 'image_512')" class="card-img-top w-100 h-100 object-fit-cover" alt="Product"/>
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="fw-bold text-dark mb-1 text-truncate" t-field="rel_prod.name"/>
+                                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                                    <span class="fw-bold text-aura-orange" t-field="rel_prod.list_price" 
+                                                          t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </t>
+                            <t t-if="not related_products">
+                                <div class="col-12 text-center text-muted">
+                                    No related products found.
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- BOTTOM SECTION: SHOP BY VIBE (Categories) -->
+                    <div class="row mt-5">
+                        <div class="col-12 mb-3">
+                             <h4 class="fw-bold">Shop by Vibe</h4>
+                        </div>
+                        <div class="col-12">
+                             <div class="d-flex flex-wrap gap-4">
+                                <t t-foreach="categories" t-as="cat">
+                                    <a t-att-href="'/category/%s' % slug(cat)" class="aura-cat-circle text-decoration-none text-center">
+                                        <div class="cat-img-wrapper shadow-sm mb-3">
+                                            <img t-att-src="website.image_url(cat, 'image_128')" class="img-fluid" alt="Category"/>
+                                        </div>
+                                        <span class="fw-bold text-dark small" t-field="cat.name"/>
+                                    </a>
+                                </t>
+                             </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

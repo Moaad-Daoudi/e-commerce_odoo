@@ -1,0 +1,168 @@
+<odoo>
+    <template id="portal_vendor_dashboard" name="Vendor Dashboard">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream" style="min-height: 100vh;">
+                
+                <!-- 1. Global Header -->
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <!-- 2. Vendor Sub-Navbar -->
+                <t t-call="marketplace_platform.vendor_navbar_component"/>
+                
+                <!-- 3. Dashboard Content -->
+                <div class="vendor-content-wrapper">
+                    <div class="container py-5">
+                    
+                    <!-- Welcome & Quick Actions -->
+                    <div class="d-flex justify-content-between align-items-center mb-5">
+                        <div>
+                            <h2 class="fw-bold text-dark mb-1">Dashboard</h2>
+                            <p class="text-muted mb-0">Welcome back, <span class="text-aura-primary"><t t-esc="vendor.shop_name"/></span></p>
+                        </div>
+                        <a href="/my/marketplace/products/add" class="btn btn-aura-primary rounded-pill px-4 shadow-sm">
+                            <i class="fa fa-plus me-2"/> Add Product
+                        </a>
+                    </div>
+
+                    <!-- Metrics Grid -->
+                    <div class="row g-4 mb-5">
+                        <!-- Total Sales -->
+                        <div class="col-md-3 col-sm-6">
+                            <div class="vendor-stat-card">
+                                <div class="stat-icon-wrapper green">
+                                    <i class="fa fa-dollar"/>
+                                </div>
+                                <h3 class="fw-bold mb-1" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" t-esc="metrics['sales']"/>
+                                <p class="text-muted small mb-0">Total Sales</p>
+                            </div>
+                        </div>
+                        <!-- Total Orders -->
+                        <div class="col-md-3 col-sm-6">
+                            <div class="vendor-stat-card">
+                                <div class="stat-icon-wrapper blue">
+                                    <i class="fa fa-shopping-bag"/>
+                                </div>
+                                <h3 class="fw-bold mb-1" t-esc="metrics['orders']"/>
+                                <p class="text-muted small mb-0">Total Orders</p>
+                            </div>
+                        </div>
+                        <!-- Active Products -->
+                        <div class="col-md-3 col-sm-6">
+                            <div class="vendor-stat-card">
+                                <div class="stat-icon-wrapper purple">
+                                    <i class="fa fa-cube"/>
+                                </div>
+                                <h3 class="fw-bold mb-1" t-esc="metrics['products']"/>
+                                <p class="text-muted small mb-0">Active Products</p>
+                            </div>
+                        </div>
+                        <!-- Balance -->
+                        <div class="col-md-3 col-sm-6">
+                            <div class="vendor-stat-card">
+                                <div class="stat-icon-wrapper orange">
+                                    <i class="fa fa-wallet"/>
+                                </div>
+                                <h3 class="fw-bold mb-1" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" t-esc="metrics['balance']"/>
+                                <p class="text-muted small mb-0">Available Balance</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Grid: Recent Orders & Shortcuts -->
+                    <div class="row g-4">
+                        
+                        <!-- Left: Recent Orders -->
+                        <div class="col-lg-8">
+                            <div class="bg-white rounded-4 shadow-sm p-4 border h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h5 class="fw-bold m-0">Recent Orders</h5>
+                                    <a href="/my/marketplace/orders" class="text-decoration-none text-muted small">View all</a>
+                                </div>
+                                
+                                <t t-if="recent_orders">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th class="border-0 rounded-start">Order ID</th>
+                                                    <th class="border-0">Date</th>
+                                                    <th class="border-0">Customer</th>
+                                                    <th class="border-0">Status</th>
+                                                    <th class="border-0 rounded-end">Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="recent_orders" t-as="order">
+                                                    <tr>
+                                                        <td class="fw-bold"><t t-esc="order.name"/></td>
+                                                        <td class="small text-muted"><t t-esc="order.date_order" t-options='{"widget": "date"}'/></td>
+                                                        <td><t t-esc="order.partner_id.name"/></td>
+                                                        <td>
+                                                            <span t-attf-class="badge rounded-pill #{'bg-success' if order.state == 'sale' else 'bg-warning'}">
+                                                                <t t-esc="order.state"/>
+                                                            </span>
+                                                        </td>
+                                                        <td class="fw-bold"><span t-field="order.amount_total" t-options="{'widget': 'monetary'}"/></td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="text-center py-5 text-muted">
+                                        <i class="fa fa-inbox fa-3x mb-3 opacity-25"/>
+                                        <p>No orders received yet.</p>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Right: Notifications & Shortcuts -->
+                        <div class="col-lg-4">
+                            
+                            <!-- Shortcuts -->
+                            <div class="d-flex flex-column gap-3 mb-4">
+                                <a href="/my/marketplace/products/add" class="vendor-shortcut-btn shadow-sm">
+                                    <span class="d-flex align-items-center gap-3">
+                                        <span class="bg-primary bg-opacity-10 p-2 rounded-circle text-primary"><i class="fa fa-plus"/></span>
+                                        <span class="fw-bold">Add New Product</span>
+                                    </span>
+                                    <i class="fa fa-chevron-right text-muted small"/>
+                                </a>
+                                <a href="/my/marketplace/orders" class="vendor-shortcut-btn shadow-sm">
+                                    <span class="d-flex align-items-center gap-3">
+                                        <span class="bg-warning bg-opacity-10 p-2 rounded-circle text-warning"><i class="fa fa-list"/></span>
+                                        <span class="fw-bold">Manage Orders</span>
+                                    </span>
+                                    <i class="fa fa-chevron-right text-muted small"/>
+                                </a>
+                            </div>
+
+                            <!-- Notifications / System Status -->
+                            <div class="bg-white rounded-4 shadow-sm p-4 border">
+                                <h5 class="fw-bold mb-3">Notifications</h5>
+                                <div class="d-flex flex-column gap-0">
+                                    <!-- Dynamic Logic: Check Low Stock -->
+                                    <div class="vendor-notif-item">
+                                        <i class="fa fa-exclamation-circle text-danger mt-1"/>
+                                        <div>
+                                            <div class="fw-bold text-dark small">System Update</div>
+                                            <div class="text-muted small">Welcome to your new dashboard! Start by adding products.</div>
+                                        </div>
+                                    </div>
+                                    <!-- Add more dynamic notifications later -->
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+                
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

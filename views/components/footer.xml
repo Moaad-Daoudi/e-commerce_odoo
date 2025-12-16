@@ -1,0 +1,100 @@
+<odoo>
+    <template id="footer_component" name="Aura Footer Component">
+        <footer class="aura-footer pt-5 pb-3">
+            <div class="container">
+                <div class="row g-4 justify-content-between">
+                    
+                    <!-- COLUMN 1: Brand & Image -->
+                    <div class="col-lg-3 col-md-6">
+                        <!-- Logo -->
+                        <!-- <a href="/" class="d-flex align-items-center gap-2 text-decoration-none mb-3">
+                            <img src="/marketplace_platform/static/src/img/logo_icon.png" style="height: 10%; width: 60%" alt="Logo"/>
+                        </a> -->
+                        <p class="text-muted small mb-4">
+                            Discover Unique Crafted Goods from independent creators around the world.
+                        </p>
+                        
+                        <!-- The Product Image Card (Decorative) -->
+                        <div class="footer-promo-card mb-4">
+                            <!-- Replace with a real image path if you have one, or keep this placeholder styling -->
+                            <img src="/marketplace_platform/static/src/img/logo_icon.png" class="img-fluid rounded-4 shadow-sm" style="height: 120px; width: 100%; object-fit: cover; opacity: 0.8;" alt="Collection"/>
+                        </div>
+
+                        <!-- Social Icons -->
+                        <div class="d-flex gap-3 social-icons">
+                            <a href="#"><i class="fa fa-facebook-f"/></a>
+                            <a href="#"><i class="fa fa-instagram"/></a>
+                            <a href="#"><i class="fa fa-pinterest-p"/></a>
+                            <a href="#"><i class="fa fa-twitter"/></a>
+                            <a href="#"><i class="fa fa-youtube-play"/></a>
+                        </div>
+                    </div>
+
+                    <!-- COLUMN 2: Shop -->
+                    <div class="col-lg-2 col-md-3 col-6">
+                        <h6 class="fw-bold mb-3 text-dark">Shop</h6>
+                        <ul class="list-unstyled d-flex flex-column gap-2">
+                            <li><a href="/shop" class="footer-link">All Products</a></li>
+							<li><a href="/categories" class="footer-link">Collections</a></li>
+                            <li><a href="/shop?order=create_date+desc" class="footer-link">New Arrivals</a></li>
+							<li><a href="/shop/gift-cards" class="footer-link">Gift Cards</a></li>
+							<li><a href="/shop/chem-your" class="footer-link">Chem Your</a></li>
+							<li><a href="/makers" class="footer-link">The Makers</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- COLUMN 3: About & Support -->
+                    <div class="col-lg-3 col-md-3 col-6">
+                        <div class="row">
+                            <div class="col-12 mb-4">
+                                <h6 class="fw-bold mb-3 text-dark">About Us</h6>
+                                <ul class="list-unstyled d-flex flex-column gap-2">
+                                    <li><a href="/about-us" class="footer-link">Our Story</a></li>
+                                    <li><a href="/jobs" class="footer-link">Careers</a></li>
+                                    <li><a href="/blog" class="footer-link">Blog</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-12">
+                                <h6 class="fw-bold mb-3 text-dark">Support</h6>
+                                <ul class="list-unstyled d-flex flex-column gap-2">
+                                    <li><a href="/contactus" class="footer-link">Contact Us</a></li>
+                                    <li><a href="/faq" class="footer-link">FAQ</a></li>
+									<li><a href="/shipping" class="footer-link">Shipping &amp; Returns</a></li>
+									<li><a href="/terms" class="footer-link">Terms of Service</a></li>
+									<li><a href="/privacy" class="footer-link">Privacy Policy</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMN 4: Newsletter -->
+                    <div class="col-lg-3 col-md-6">
+                        <h6 class="fw-bold mb-3 text-dark">Stay Connected</h6>
+                        <form action="/website/newsletter" method="post" class="mb-4">
+                            <div class="input-group">
+                                <input type="email" name="email" class="form-control rounded-start-pill border-0 py-2 ps-3" placeholder="Enter your email" required="required"/>
+                                <button class="btn btn-primary rounded-end-pill px-4" type="submit">Subscribe</button>
+                            </div>
+                        </form>
+
+                        <!-- Payment Icons -->
+                        <div class="payment-icons d-flex gap-2 text-muted opacity-75">
+                            <i class="fa fa-cc-visa fa-2x"/>
+                            <i class="fa fa-cc-mastercard fa-2x"/>
+                            <i class="fa fa-cc-amex fa-2x"/>
+                            <i class="fa fa-cc-paypal fa-2x"/>
+                            <i class="fa fa-cc-stripe fa-2x"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Copyright -->
+                <div class="row mt-5 pt-3 border-top border-secondary-subtle">
+                    <div class="col-12 text-center text-md-start">
+                        <p class="small text-muted mb-0">© 2025 Global Market. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </template>
+</odoo>

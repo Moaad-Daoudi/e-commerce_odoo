@@ -1,0 +1,175 @@
+<odoo>
+    <template id="vendor_order_detail" name="Order Details">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream" style="min-height: 100vh;">
+                
+                <t t-call="marketplace_platform.navbar_component"/>
+                <t t-call="marketplace_platform.vendor_navbar_component"/>
+                
+                <div class="container py-5 vendor-dashboard-container">
+                    
+                    <!-- 1. Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <div class="d-flex align-items-center gap-3">
+                                <a href="/my/marketplace/orders" class="text-muted"><i class="fa fa-arrow-left"/></a>
+                                <h2 class="fw-bold text-dark mb-0">Order <t t-esc="order.name"/></h2>
+                                <span t-attf-class="order-badge #{order.state}">
+                                    <t t-esc="order.state"/>
+                                </span>
+                            </div>
+                            <p class="text-muted ms-4 ps-2 mt-1 mb-0">
+                                Placed on <span t-field="order.date_order" t-options='{"widget": "datetime"}'/>
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <!-- Update Status Button (Only if pending delivery exists) -->
+                            <t t-if="picking">
+                                <a t-attf-href="/my/marketplace/order/ship/#{picking.id}" class="btn btn-aura-primary rounded-pill px-4 shadow-sm">
+                                    <i class="fa fa-truck me-2"/> Mark as Shipped
+                                </a>
+                            </t>
+                            <a href="#" class="btn btn-print rounded-pill px-3 shadow-sm" onclick="window.print()">
+                                <i class="fa fa-print"/> Print
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 2. Timeline -->
+                    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                        <div class="aura-timeline">
+                            <!-- Step 1: Placed -->
+                            <div t-attf-class="timeline-step #{'completed' if order.state in ['sale', 'done'] else 'active'}">
+                                <div class="circle"><i class="fa fa-check"/></div>
+                                <span>Order Placed</span>
+                            </div>
+                            <!-- Step 2: Confirmed -->
+                            <div t-attf-class="timeline-step #{'completed' if order.state in ['sale', 'done'] else 'active' if order.state == 'sent' else ''}">
+                                <div class="circle"><i class="fa fa-credit-card"/></div>
+                                <span>Confirmed</span>
+                            </div>
+                            <!-- Step 3: Shipped (Check picking state) -->
+                            <t t-set="is_shipped" t-value="not picking or picking.state == 'done'"/>
+                            <div t-attf-class="timeline-step #{'completed' if is_shipped and order.state == 'sale' else ''}">
+                                <div class="circle"><i class="fa fa-truck"/></div>
+                                <span>Shipped</span>
+                            </div>
+                            <!-- Step 4: Delivered -->
+                            <div t-attf-class="timeline-step #{'active' if is_shipped and order.state == 'done' else ''}">
+                                <div class="circle"><i class="fa fa-home"/></div>
+                                <span>Delivered</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        
+                        <!-- LEFT COL: Products -->
+                        <div class="col-lg-8">
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                                <div class="p-4 border-bottom bg-white">
+                                    <h5 class="fw-bold m-0">Product Details</h5>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table mb-0">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th class="ps-4 py-3 border-0">Product</th>
+                                                <th class="py-3 border-0">Price</th>
+                                                <th class="py-3 border-0">Qty</th>
+                                                <th class="pe-4 py-3 border-0 text-end">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="vendor_lines" t-as="line">
+                                                <tr>
+                                                    <td class="ps-4 py-3">
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <img t-att-src="website.image_url(line.product_id, 'image_128')" 
+                                                                 class="rounded border bg-light" width="50" height="50" style="object-fit: cover;"/>
+                                                            <div>
+                                                                <div class="fw-bold text-dark"><t t-esc="line.name_short"/></div>
+                                                                <small class="text-muted" t-if="line.product_id.default_code">SKU: <t t-esc="line.product_id.default_code"/></small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="py-3 text-muted">
+                                                        <span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': order.currency_id}"/>
+                                                    </td>
+                                                    <td class="py-3 fw-bold"><t t-esc="int(line.product_uom_qty)"/></td>
+                                                    <td class="pe-4 py-3 text-end fw-bold text-dark">
+                                                        <span t-field="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': order.currency_id}"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="p-4 bg-light border-top d-flex justify-content-end">
+                                    <div class="text-end">
+                                        <div class="text-muted small">Vendor Subtotal</div>
+                                        <div class="fw-bold fs-4 text-aura-primary">
+                                            <span t-esc="vendor_total" t-options="{'widget': 'monetary', 'display_currency': order.currency_id}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT COL: Info -->
+                        <div class="col-lg-4">
+                            <div class="d-flex flex-column gap-4">
+                                
+                                <!-- Customer Info -->
+                                <div class="order-info-card shadow-sm">
+                                    <h6>Customer</h6>
+                                    <div class="d-flex align-items-center gap-3 mb-3">
+                                        <img t-att-src="image_data_uri(order.partner_id.image_128)" class="rounded-circle border" width="50" height="50"/>
+                                        <div>
+                                            <div class="fw-bold text-dark"><t t-esc="order.partner_id.name"/></div>
+                                            <div class="small text-muted"><t t-esc="order.partner_id.email"/></div>
+                                        </div>
+                                    </div>
+                                    <t t-if="order.partner_id.phone">
+                                        <div class="d-flex align-items-center gap-2 text-muted small">
+                                            <i class="fa fa-phone"/> <t t-esc="order.partner_id.phone"/>
+                                        </div>
+                                    </t>
+                                </div>
+
+                                <!-- Shipping Address -->
+                                <div class="order-info-card shadow-sm">
+                                    <h6>Shipping Address</h6>
+                                    <address class="text-muted mb-0 small" style="line-height: 1.6;">
+                                        <strong class="text-dark"><t t-esc="order.partner_shipping_id.name"/></strong><br/>
+                                        <t t-esc="order.partner_shipping_id.street"/><br/>
+                                        <t t-if="order.partner_shipping_id.street2">
+                                            <t t-esc="order.partner_shipping_id.street2"/><br/>
+                                        </t>
+                                        <t t-esc="order.partner_shipping_id.city"/>, <t t-esc="order.partner_shipping_id.state_id.code"/> <t t-esc="order.partner_shipping_id.zip"/><br/>
+                                        <t t-esc="order.partner_shipping_id.country_id.name"/>
+                                    </address>
+                                </div>
+
+                                <!-- Payment Status (Static for MVP) -->
+                                <div class="order-info-card shadow-sm">
+                                    <h6>Payment Status</h6>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fa fa-check-circle text-success fs-5"/>
+                                        <span class="fw-bold text-dark">Payment Confirmed</span>
+                                    </div>
+                                    <p class="small text-muted mt-2 mb-0">Payment processed via Stripe on <span t-field="order.date_order" t-options='{"widget": "date"}'/></p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

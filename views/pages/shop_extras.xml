@@ -1,0 +1,217 @@
+<odoo>
+
+    <!-- ======================================================= -->
+    <!-- 1. GIFT CARDS PAGE -->
+    <!-- ======================================================= -->
+    <template id="gift_cards_page" name="Gift Cards">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light">
+				<t t-call="marketplace_platform.navbar_component"/>
+                
+                <!-- Hero -->
+                <div class="position-relative overflow-hidden text-center bg-white py-5">
+                    <div class="container py-5">
+                        <span class="badge bg-warning text-dark rounded-pill mb-3">The Perfect Gift</span>
+                        <h1 class="display-3 fw-bold mb-4">Give the Gift of Choice</h1>
+                        <p class="lead text-muted mb-5 mx-auto" style="max-width: 600px;">
+                            Not sure what to get? Let them choose from thousands of unique items created by independent makers.
+                        </p>
+                        <img src="/web/static/img/payment.svg" class="img-fluid" style="max-height: 200px; opacity: 0.8;" alt="Gift Card"/>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="container py-5">
+                    <div class="row g-4 justify-content-center">
+                        <!-- Mockup Cards if no products found -->
+                        <t t-if="not cards">
+                            <div class="col-md-6 col-lg-4" t-foreach="[25, 50, 100]" t-as="amount">
+                                <div class="card border-0 shadow-sm h-100 text-center hover-transform transition">
+                                    <div class="card-body p-5 d-flex flex-column justify-content-center bg-gradient-primary text-white rounded-3" 
+                                         style="background: linear-gradient(135deg, #FF9966 0%, #FF5E62 100%); min-height: 250px;">
+                                        <h3 class="display-4 fw-bold">$<t t-esc="amount"/></h3>
+                                        <p class="mb-0">Digital Gift Card</p>
+                                    </div>
+                                    <div class="card-footer bg-white border-0 pt-3">
+                                        <h5 class="fw-bold">Virtual Gift Card</h5>
+                                        <a href="#" class="btn btn-dark rounded-pill px-4 mt-2">Add to Cart</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                        
+                        <!-- Real Products -->
+                        <t t-foreach="cards" t-as="card">
+                            <div class="col-md-6 col-lg-4">
+                                <t t-call="website_sale.products_item">
+                                    <t t-set="product" t-value="card"/>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="container py-5 border-top">
+                    <div class="row text-center g-4">
+                        <div class="col-md-4">
+                            <i class="fa fa-envelope-o fa-2x text-primary mb-3"></i>
+                            <h5>Instant Delivery</h5>
+                            <p class="text-muted small">Sent directly to their email inbox.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fa fa-calendar-check-o fa-2x text-primary mb-3"></i>
+                            <h5>Never Expires</h5>
+                            <p class="text-muted small">Valid forever on all marketplace items.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fa fa-gift fa-2x text-primary mb-3"></i>
+                            <h5>Personal Message</h5>
+                            <p class="text-muted small">Add a custom note at checkout.</p>
+                        </div>
+                    </div>
+                </div>
+				<t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- ======================================================= -->
+    <!-- 2. CHEM YOUR (CURATED COLLECTION) -->
+    <!-- ======================================================= -->
+    <template id="chem_your_page" name="Chem Your Space">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="o_aura_collection">
+                <t t-call="marketplace_platform.navbar_component"/>
+				
+                <!-- Immersive Banner -->
+                <div class="position-relative d-flex align-items-center justify-content-center" style="height: 60vh; background-color: #2c3e50;">
+                    <div class="position-absolute w-100 h-100" style="background: url('/web/static/img/unsplash/s_living_room.jpg') center/cover; opacity: 0.6;"></div>
+                    <div class="position-relative z-1 text-center text-white p-4">
+                        <h1 class="display-1 fw-bold mb-3" style="letter-spacing: -2px;">Chem Your Space</h1>
+                        <p class="fs-4 fw-light mb-4">Curated chemistry for your modern lifestyle.</p>
+                        <a href="#collection" class="btn btn-outline-light rounded-pill px-5 py-2">Explore the Edit</a>
+                    </div>
+                </div>
+
+                <!-- Intro Text -->
+                <div class="container py-5 text-center">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <p class="lead text-muted">
+                                "Chem your" is our exclusive selection of items that spark a reaction. 
+                                From handcrafted ceramics to organic textiles, find the elements that bond perfectly with your environment.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collection Grid -->
+                <div id="collection" class="container pb-5">
+                    <div class="row g-4">
+                        <t t-foreach="products" t-as="product">
+                            <div class="col-6 col-md-3">
+                                <div class="card h-100 border-0">
+                                    <div class="position-relative overflow-hidden rounded-3 mb-3">
+										<a t-att-href="'/product/%s' % slug(product)">
+											<img t-att-src="'/web/image/product.template/%s/image_1024' % product.id" 
+												 class="img-fluid w-100 hover-zoom transition" 
+												 style="object-fit: cover; aspect-ratio: 1/1;" 
+												 t-att-alt="product.name"/>
+										</a>
+										<span class="position-absolute top-0 end-0 m-2 badge bg-white text-dark shadow-sm">
+											<t t-esc="product.list_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+										</span>
+									</div>
+                                    <h6 class="mb-1"><a t-att-href="'/product/%s' % slug(product)" class="text-dark text-decoration-none"><t t-esc="product.name"/></a></h6>
+                                    <small class="text-muted">by <t t-esc="product.vendor_id.shop_name"/></small>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+				<t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- ======================================================= -->
+    <!-- 3. THE MAKERS (VENDOR DIRECTORY) -->
+    <!-- ======================================================= -->
+    <template id="makers_page" name="The Makers">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light">
+                <t t-call="marketplace_platform.navbar_component"/>
+				
+                <!-- Header -->
+                <div class="container pt-5 pb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1 class="fw-bold mb-1">The Makers</h1>
+                            <p class="text-muted mb-0">Meet the artisans behind the products.</p>
+                        </div>
+                        <a href="/marketplace/register" class="btn btn-outline-primary rounded-pill">Become a Maker</a>
+                    </div>
+                    
+                    <!-- Search Bar (Visual Only for now) -->
+                    <div class="bg-white p-2 rounded-pill shadow-sm d-flex align-items-center" style="max-width: 400px;">
+                        <i class="fa fa-search text-muted ms-3 me-2"></i>
+                        <input type="text" class="form-control border-0 shadow-none" placeholder="Find a shop..."/>
+                    </div>
+                </div>
+
+                <!-- Vendors Grid -->
+                <div class="container pb-5">
+                    <div class="row g-4">
+                        <t t-foreach="vendors" t-as="vendor">
+                            <div class="col-md-4 col-lg-3">
+                                <a t-att-href="'/vendor/%s' % slug(vendor)" class="text-decoration-none">
+                                    <div class="card h-100 border-0 shadow-sm hover-shadow transition overflow-hidden rounded-3">
+                                        <!-- Cover / Banner -->
+                                        <div class="bg-dark" style="height: 100px; background: linear-gradient(45deg, #e0e0e0, #f5f5f5);">
+                                            <!-- Ideally use vendor.banner_image here -->
+                                        </div>
+                                        
+                                        <div class="card-body text-center pt-0 position-relative">
+										<!-- Avatar -->
+										<div class="position-relative mx-auto mb-3" style="margin-top: -40px; width: 80px; height: 80px;">
+											<!-- CORRECTION APPLIQUÉE ICI -->
+											<img t-att-src="'/web/image/res.partner/%s/image_128' % vendor.partner_id.id" 
+												 class="rounded-circle border border-4 border-white shadow-sm w-100 h-100 object-fit-cover" 
+												 t-att-alt="vendor.shop_name"/>
+										</div>
+										
+										<h5 class="fw-bold text-dark mb-1"><t t-esc="vendor.shop_name"/></h5>
+                                            
+                                            <!-- Stats / Badges -->
+                                            <div class="mb-3">
+                                                <span class="badge bg-light text-muted border"><t t-esc="vendor.sale_count"/> Sales</span>
+                                            </div>
+                                            
+                                            <p class="text-muted small line-clamp-2 px-2" style="min-height: 40px;">
+                                                <!-- Fallback description if empty -->
+                                                <t t-if="not vendor.partner_id.comment">
+                                                    Unique handcrafted items made with passion.
+                                                </t>
+                                                <t t-else="" t-esc="vendor.partner_id.comment"/>
+                                            </p>
+                                            
+                                            <button class="btn btn-sm btn-outline-dark rounded-pill px-4 w-100 mt-2">Visit Shop</button>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </t>
+                    </div>
+                    
+                    <!-- Pager -->
+                    <div class="d-flex justify-content-center mt-5">
+                        <t t-call="website.pager"/>
+                    </div>
+                </div>
+				<t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+
+</odoo>

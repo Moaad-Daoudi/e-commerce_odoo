@@ -1,7 +1,16 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_marketplace_vendor_public,marketplace.vendor.public,model_marketplace_vendor,,1,0,0,0
+access_marketplace_vendor_portal,marketplace.vendor.portal,model_marketplace_vendor,base.group_portal,1,0,0,0
 access_marketplace_vendor_manager,marketplace.vendor.manager,model_marketplace_vendor,group_marketplace_manager,1,1,1,1
 access_marketplace_vendor_user,marketplace.vendor.user,model_marketplace_vendor,group_marketplace_vendor,1,1,0,0
+access_marketplace_commission_public,marketplace.commission.public,model_marketplace_commission,,1,0,0,0
+access_marketplace_commission_portal,marketplace.commission.portal,model_marketplace_commission,base.group_portal,1,0,0,0
 access_marketplace_commission_manager,marketplace.commission.manager,model_marketplace_commission,group_marketplace_manager,1,1,1,1
 access_marketplace_commission_user,marketplace.commission.user,model_marketplace_commission,group_marketplace_vendor,1,0,0,0
+access_marketplace_payout_public,marketplace.payout.public,model_marketplace_payout,,1,0,0,0
+access_marketplace_payout_portal,marketplace.payout.portal,model_marketplace_payout,base.group_portal,1,0,0,0
 access_marketplace_payout_manager,marketplace.payout.manager,model_marketplace_payout,group_marketplace_manager,1,1,1,1
 access_marketplace_payout_user,marketplace.payout.user,model_marketplace_payout,group_marketplace_vendor,1,1,1,0
+access_product_wishlist_public,product.wishlist.public,model_product_wishlist,,1,0,0,0
+access_product_wishlist_portal,product.wishlist.portal,model_product_wishlist,base.group_portal,1,1,1,1
+access_product_wishlist_user,product.wishlist.user,model_product_wishlist,base.group_user,1,1,1,1

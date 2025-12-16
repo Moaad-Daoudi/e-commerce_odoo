@@ -1,0 +1,87 @@
+<odoo>
+    <template id="blog_page" name="Marketplace Blog">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="o_aura_blog">
+                <t t-call="marketplace_platform.navbar_component"/>
+				
+                <!-- HEADER -->
+                <div class="container py-5">
+                    <div class="row justify-content-center text-center">
+                        <div class="col-lg-8">
+                            <span class="text-primary fw-bold small text-uppercase ls-1">The Journal</span>
+                            <h1 class="display-4 fw-bold mt-2 mb-4">Stories from the Community</h1>
+                            <p class="lead text-muted">Insights, guides, and stories from our makers and the team.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FEATURED POST -->
+                <div class="container mb-5">
+                    <div class="card border-0 shadow-lg overflow-hidden text-white rounded-4" style="min-height: 400px;">
+                        <!-- Simulated Background Image -->
+                        <div class="position-absolute w-100 h-100 bg-dark" style="z-index: 0;">
+                            <!-- In real Odoo, use actual image field -->
+                            <img src="/web/static/img/unsplash/s_blog_1.jpg" class="w-100 h-100 object-fit-cover opacity-50" alt="Featured"/>
+                        </div>
+                        <div class="card-body position-relative d-flex flex-column justify-content-end p-5" style="z-index: 1;">
+                            <span class="badge bg-primary mb-3 align-self-start">Featured</span>
+                            <h2 class="display-5 fw-bold mb-3">The State of Independent E-commerce in 2025</h2>
+                            <p class="fs-5 mb-4" style="max-width: 700px;">An in-depth look at how local artisans are reclaiming the market share from retail giants.</p>
+                            <a href="#" class="btn btn-light rounded-pill px-4 fw-bold align-self-start">Read Article</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LATEST POSTS GRID -->
+                <div class="container pb-5">
+                    <h3 class="fw-bold mb-4">Latest Articles</h3>
+                    <div class="row g-4">
+                        <t t-foreach="posts" t-as="post">
+                            <div class="col-md-4">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <!-- Placeholder Image -->
+                                    <div class="bg-secondary-subtle" style="height: 200px;">
+                                        <!-- Replace src with post['image'] if available -->
+                                        <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted">
+                                            <i class="fa fa-picture-o fa-3x"></i>
+                                        </div>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <div class="d-flex justify-content-between small text-muted mb-2">
+                                            <span t-esc="post['date']"/>
+                                            <span t-esc="post['author']"/>
+                                        </div>
+                                        <h5 class="card-title fw-bold mb-3">
+                                            <a href="#" class="text-dark text-decoration-none hover-primary" t-esc="post['title']"/>
+                                        </h5>
+                                        <p class="card-text text-muted small" t-esc="post['preview']"/>
+                                    </div>
+                                    <div class="card-footer bg-white border-0 p-4 pt-0">
+                                        <a href="#" class="text-primary fw-bold text-decoration-none small">Read More <i class="fa fa-arrow-right ms-1"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- NEWSLETTER CTA -->
+                <div class="bg-light py-5">
+                    <div class="container text-center">
+                        <div class="row justify-content-center">
+                            <div class="col-md-6">
+                                <h3 class="fw-bold mb-3">Don't miss a story</h3>
+                                <p class="text-muted mb-4">Get the latest trends and guides delivered to your inbox.</p>
+                                <form class="d-flex gap-2">
+                                    <input type="email" class="form-control rounded-pill" placeholder="Your email address"/>
+                                    <button class="btn btn-dark rounded-pill px-4">Subscribe</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+			<t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

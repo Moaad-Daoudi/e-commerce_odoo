@@ -1,0 +1,27 @@
+<odoo>
+    <!-- Minimal layout without default header/footer -->
+    <template id="minimal_layout" name="Minimal Layout">
+        <t t-call="web.frontend_layout">
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+            <t t-out="0"/>
+        </t>
+    </template>
+
+    <!-- Home page using minimal layout -->
+    <template id="home_page" name="Marketplace Home Page">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap">
+                <!-- Your custom navbar -->
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <!-- Main content -->
+                <div class="container mt-4">
+                    <t t-call="marketplace_platform.hero_component"/>
+                    <t t-call="marketplace_platform.featured_section"/>
+                </div>
+                    <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

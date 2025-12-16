@@ -1,0 +1,81 @@
+<odoo>
+    <template id="featured_section" name="Aura Featured Section">
+        <section class="aura-featured-section py-5">
+            <div class="container">
+                
+                <!-- 1. CATEGORIES CIRCLES -->
+                <div class="row mb-5">
+                    <div class="col-12 text-center mb-4">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                             <!-- Simple icon styling -->
+                            <span class="bg-secondary bg-opacity-10 p-2 rounded-circle">
+                                <i class="fa fa-th-large text-muted"/>
+                            </span>
+                            <h5 class="fw-bold m-0 text-dark">Categories</h5>
+                        </div>
+                        <p class="text-muted text-start">Overview</p>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="d-flex flex-wrap gap-4 justify-content-center justify-content-lg-start">
+                            <t t-foreach="categories" t-as="cat">
+                                <!-- Link to category route -->
+                                <a t-att-href="'/category/%s' % slug(cat)" class="aura-cat-circle text-decoration-none text-center">
+                                    <div class="cat-img-wrapper shadow-sm mb-3">
+                                        <!-- Using Odoo's image controller -->
+                                        <img t-att-src="website.image_url(cat, 'image_128')" class="img-fluid" alt="Category"/>
+                                    </div>
+                                    <span class="fw-bold text-dark small" t-field="cat.name"/>
+                                </a>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. FEATURED PRODUCTS GRID -->
+                <div class="row mt-5">
+                    <div class="col-12 mb-4">
+                        <h4 class="fw-bold text-dark">Featured Products Grid</h4>
+                    </div>
+
+                    <!-- Products Loop -->
+                    <t t-foreach="products" t-as="product">
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <!-- Link to product page -->
+                            <a t-att-href="'/product/%s' % product.id" class="text-decoration-none">
+                                <div class="card h-100 aura-product-card border-0 shadow-sm">
+                                    <div class="product-img-box position-relative overflow-hidden">
+                                        <img t-att-src="website.image_url(product, 'image_512')" class="card-img-top object-fit-cover" style="height: 250px;" alt="Product"/>
+                                        <!-- Wishlist Button -->
+                                        <t t-set="in_wishlist" t-value="request.env['product.wishlist'].sudo().search_count([('partner_id', '=', request.env.user.partner_id.id), ('product_id', '=', product.product_variant_ids[0].id if product.product_variant_ids else False)]) > 0 if not request.env.user._is_public() else False"/>
+                                        <a t-attf-href="/wishlist/add/#{product.id}" 
+                                           t-attf-class="btn-wish-float #{in_wishlist and 'in-wishlist' or ''}"
+                                           t-attf-data-product-id="#{product.id}"
+                                           title="Save for Later" 
+                                           onclick="event.stopPropagation();">
+                                            <i t-attf-class="fa fa-heart#{'-' if in_wishlist else '-o'}" t-attf-style="#{in_wishlist and 'color: #dc3545;' or ''}"/>
+                                        </a>
+                                    </div>
+                                    <div class="card-body">
+                                        <h6 class="fw-bold text-dark mb-1 text-truncate" t-field="product.name"/>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <span class="fw-bold fs-5 text-aura-orange" t-field="product.list_price" 
+                                                  t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- PAGINATION CONTROLS -->
+                <t t-call="marketplace_platform.pagination_component">
+                    <t t-set="pager" t-value="pager"/>
+                    <t t-set="base_url" t-value="'/page'"/>
+                </t>
+
+            </div>
+        </section>
+    </template>
+</odoo>

@@ -6,4 +6,4 @@ from . import sale_order
 from . import commission
 from . import payout
 from . import stock_picking
-from . import account_move
+from . import wishlist
