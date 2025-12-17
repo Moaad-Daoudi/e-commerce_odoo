@@ -1,0 +1,91 @@
+<odoo>
+    <template id="careers_page" name="Careers">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="o_aura_careers">
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <!-- HEADER -->
+                <div class="py-5 text-center bg-gradient-primary text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="container py-5">
+                        <h1 class="display-3 fw-bold mb-3">Build the Future of Commerce</h1>
+                        <p class="lead mb-4" style="opacity: 0.9;">Join a team of passionate individuals revolutionizing how the world buys and sells.</p>
+                        <!-- BOUTON 1: Lien vers l'ancre -->
+                        <a href="#openings" class="btn btn-light btn-lg rounded-pill px-4 text-primary fw-bold">View Openings</a>
+                    </div>
+                </div>
+
+                <!-- PERKS (Code inchangé pour abréger, gardez votre bloc existant ici) -->
+                <div class="container py-5">
+                    <div class="row g-4 py-4">
+                        <div class="col-md-3 text-center">
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                <i class="fa fa-laptop fa-2x text-primary"></i>
+                            </div>
+                            <h5>Remote First</h5>
+                            <p class="small text-muted">Work from anywhere.</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                <i class="fa fa-heartbeat fa-2x text-primary"></i>
+                            </div>
+                            <h5>Full Health</h5>
+                            <p class="small text-muted">Comprehensive coverage.</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                <i class="fa fa-plane fa-2x text-primary"></i>
+                            </div>
+                            <h5>Unlimited PTO</h5>
+                            <p class="small text-muted">Rest when you need it.</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                <i class="fa fa-rocket fa-2x text-primary"></i>
+                            </div>
+                            <h5>Growth</h5>
+                            <p class="small text-muted">Learning budget included.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JOB LISTINGS -->
+                <div id="openings" class="bg-light py-5">
+                    <div class="container">
+                        <div class="d-flex justify-content-between align-items-end mb-4">
+                            <h3 class="fw-bold m-0">Open Positions</h3>
+                            <!-- BOUTON 1 (bis): Lien vers l'ancre ou filtre -->
+                            <a href="#openings" class="text-decoration-none">View all departments <i class="fa fa-arrow-right ms-1"></i></a>
+                        </div>
+
+                        <div class="row g-3">
+                            <t t-foreach="jobs" t-as="job">
+                                <div class="col-12">
+                                    <div class="card border-0 shadow-sm hover-shadow transition">
+                                        <div class="card-body p-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+                                            <div>
+                                                <h5 class="fw-bold mb-1" t-esc="job['title']"/>
+                                                <div class="text-muted small">
+                                                    <i class="fa fa-building-o me-1"></i> <span t-esc="job['dept']"/> | 
+                                                    <i class="fa fa-map-marker me-1"></i> <span t-esc="job['location']"/> | 
+                                                    <i class="fa fa-clock-o me-1"></i> <span t-esc="job['type']"/>
+                                                </div>
+                                            </div>
+                                            <!-- BOUTON 2: Apply Now avec ID dynamique -->
+                                            <a t-att-href="'/jobs/apply/%s' % job['id']" class="btn btn-outline-primary rounded-pill px-4">Apply Now</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                        
+                        <div class="text-center mt-5">
+                            <!-- BOUTON 3: General Application -->
+                            <p class="text-muted">Don't see a perfect fit? <a href="/jobs/apply/general" class="fw-bold text-primary">Send us a general application.</a></p>
+                        </div>
+                    </div>
+                </div>
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

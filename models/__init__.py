@@ -7,3 +7,4 @@ from . import commission
 from . import payout
 from . import stock_picking
 from . import wishlist
+from . import blog_extension

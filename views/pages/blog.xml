@@ -1,0 +1,76 @@
+<odoo>
+    <template id="blog_page" name="Marketplace Blog">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="o_aura_blog">
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <!-- HEADER -->
+                <div class="container py-5">
+                    <div class="row justify-content-center text-center">
+                        <div class="col-lg-8">
+                            <span class="text-primary fw-bold small text-uppercase ls-1">The Journal</span>
+                            <h1 class="display-4 fw-bold mt-2 mb-4">Stories from the Community</h1>
+                            <p class="lead text-muted">Insights, guides, and stories from our makers and the team.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FEATURED POST (Dynamique) -->
+                <t t-if="featured_post">
+                    <div class="container mb-5">
+                        <div class="card border-0 shadow-lg overflow-hidden text-white rounded-4" style="min-height: 400px;">
+                            <div class="position-absolute w-100 h-100 bg-dark" style="z-index: 0;">
+                                <!-- Image de fond réelle -->
+                                <img t-att-src="'/web/image/blog.post/%s/image_preview' % featured_post.id" 
+                                     class="w-100 h-100 object-fit-cover opacity-50" 
+                                     alt="Featured"/>
+                            </div>
+                            <div class="card-body position-relative d-flex flex-column justify-content-end p-5" style="z-index: 1;">
+                                <span class="badge bg-primary mb-3 align-self-start">Featured</span>
+                                <h2 class="display-5 fw-bold mb-3" t-field="featured_post.name"/>
+                                <p class="fs-5 mb-4" style="max-width: 700px;" t-field="featured_post.subtitle"/>
+                                <a t-att-href="'/blog/post/%s' % featured_post.id" class="btn btn-light rounded-pill px-4 fw-bold align-self-start">Read Article</a>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- LATEST POSTS GRID (Dynamique) -->
+                <div class="container pb-5">
+                    <h3 class="fw-bold mb-4">Latest Articles</h3>
+                    <div class="row g-4">
+                        <t t-foreach="posts" t-as="post">
+                            <div class="col-md-4">
+                                <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+                                    <div class="bg-secondary-subtle position-relative overflow-hidden" style="height: 200px;">
+                                        <!-- Image dynamique -->
+                                        <img t-att-src="'/web/image/blog.post/%s/image_preview' % post.id" 
+                                             class="w-100 h-100 object-fit-cover" 
+                                             alt="Cover"/>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <div class="d-flex justify-content-between small text-muted mb-2">
+                                            <span t-field="post.post_date" t-options='{"widget": "date"}'/>
+                                            <span t-field="post.author_id.name"/>
+                                        </div>
+                                        <h5 class="card-title fw-bold mb-3">
+                                            <a t-att-href="'/blog/post/%s' % post.id" class="text-dark text-decoration-none hover-primary" t-field="post.name"/>
+                                        </h5>
+                                        <p class="card-text text-muted small text-truncate" t-field="post.subtitle"/>
+                                    </div>
+                                    <div class="card-footer bg-white border-0 p-4 pt-0">
+                                        <a t-att-href="'/blog/post/%s' % post.id" class="text-primary fw-bold text-decoration-none small">
+                                            Read More <i class="fa fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+</odoo>

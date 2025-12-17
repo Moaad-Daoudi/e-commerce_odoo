@@ -1,0 +1,49 @@
+<odoo>
+    <template id="blog_post_detail_page" name="Blog Post Detail">
+        <t t-call="marketplace_platform.minimal_layout">
+		<t t-call="marketplace_platform.navbar_component"/>
+            <div id="wrap" class="bg-white">
+                
+                <!-- Hero Image -->
+                <div class="position-relative" style="height: 400px; overflow: hidden;">
+                    <div class="w-100 h-100 bg-dark">
+                        <img t-att-src="'/web/image/blog.post/%s/image_preview' % post.id" 
+                             class="w-100 h-100 object-fit-cover opacity-75" 
+                             alt="Cover"/>
+                    </div>
+                    <div class="position-absolute bottom-0 start-0 w-100 p-5 bg-gradient-to-t" style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
+                        <div class="container">
+                            <span class="badge bg-primary mb-2">Article</span>
+                            <h1 class="display-4 fw-bold text-white mb-2" t-field="post.name"/>
+                            <div class="text-white-50">
+                                By <span class="text-white fw-bold" t-field="post.author_id.name"/> • <span t-field="post.post_date" t-options='{"widget": "date"}'/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="lead text-muted mb-5 fw-bold fst-italic" t-field="post.subtitle"/>
+                            
+                            <!-- CONTENU COMPLET DE L'ARTICLE (Odoo Rich Text) -->
+                            <div class="blog-content text-break" t-field="post.content"/>
+
+                            <hr class="my-5"/>
+                            
+                            <div class="text-center">
+                                <a href="/blog" class="btn btn-outline-dark rounded-pill px-4">
+                                    <i class="fa fa-arrow-left me-2"/> Back to Blog
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+		<t t-call="marketplace_platform.footer_component"/>
+        </t>
+    </template>
+</odoo>

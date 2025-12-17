@@ -1240,3 +1240,199 @@ class MarketplaceController(http.Controller):
         }
         
         return request.render("marketplace_platform.portal_vendor_dashboard", values)
+        
+    # OUR STORY (About Us)
+    @http.route('/about-us', type='http', auth="public", website=True)
+    def about_us_page(self, **kw):
+        return request.render("marketplace_platform.about_us_page")
+
+    # ==========================================================================
+    # 5. CAREERS & JOBS (Connecté au Backend hr.job)
+    # ==========================================================================
+
+    @http.route('/jobs', type='http', auth="public", website=True)
+    def jobs(self, **kw):
+        # 1. Récupération des postes ouverts et publiés depuis la DB
+        Job = request.env['hr.job'].sudo()
+        
+        # CORRECTION : On retire ('state', '=', 'recruit')
+        # On garde uniquement le filtre sur la publication web
+        job_records = Job.search([
+            ('website_published', '=', True) 
+        ])
+        
+        # 2. Transformation pour le template
+        jobs_data = []
+        for job in job_records:
+            # Sécurité : Si département ou adresse manquent, on met une valeur par défaut
+            dept_name = job.department_id.name if job.department_id else 'General'
+            loc_name = job.address_id.city if job.address_id else 'Remote'
+            
+            jobs_data.append({
+                'id': job.id,
+                'title': job.name,
+                'type': 'Full-time', 
+                'location': loc_name,
+                'dept': dept_name,
+            })
+
+        return request.render("marketplace_platform.careers_page", {'jobs': jobs_data})
+
+    @http.route(['/jobs/apply/<int:job_id>', '/jobs/apply/general'], type='http', auth="public", website=True)
+    def jobs_apply(self, job_id=None, **kw):
+        job_title = "General Application"
+        
+        # Récupération dynamique du titre
+        if job_id:
+            job = request.env['hr.job'].sudo().browse(job_id)
+            if job.exists():
+                job_title = job.name
+        
+        return request.render("marketplace_platform.job_application_page", {
+            'job_title': job_title,
+            'job_id': job_id
+        })
+
+    @http.route('/jobs/submit', type='http', auth="public", methods=['POST'], website=True, csrf=True)
+    def jobs_submit(self, **post):
+        # Récupération des données
+        job_id = post.get('job_id')
+        partner_name = f"{post.get('name')} {post.get('surname')}"
+        
+        # Création dynamique de la candidature
+        vals = {
+            'name': f"{partner_name} - {post.get('email')}", # Sujet
+            'partner_name': partner_name,
+            'email_from': post.get('email'),
+            'description': f"LinkedIn: {post.get('linkedin')}\n\nLettre:\n{post.get('cover_letter')}",
+        }
+        
+        # Lier au poste spécifique si existant
+        if job_id:
+            vals['job_id'] = int(job_id)
+
+        # Création en base
+        applicant = request.env['hr.applicant'].sudo().create(vals)
+
+        # Gestion du CV (Pièce jointe)
+        resume_file = post.get('resume')
+        if resume_file:
+            request.env['ir.attachment'].sudo().create({
+                'name': resume_file.filename,
+                'datas': base64.b64encode(resume_file.read()),
+                'res_model': 'hr.applicant',
+                'res_id': applicant.id,
+                'type': 'binary',
+            })
+
+        return request.render("marketplace_platform.job_thank_you_page")
+
+    # BLOG (Custom Page)
+    @http.route('/blog', type='http', auth="public", website=True)
+    def blog(self, **kw):
+        # Récupération des articles publiés via l'ORM Odoo
+        BlogPost = request.env['blog.post'].sudo()
+        
+        # On récupère les articles publiés, triés par date décroissante
+        posts = BlogPost.search([
+            ('is_published', '=', True)
+        ], order='post_date desc', limit=12)
+        
+        # On identifie le dernier article comme "Featured" pour le design
+        featured_post = posts[0] if posts else None
+        other_posts = posts[1:] if len(posts) > 1 else []
+
+        return request.render("marketplace_platform.blog_page", {
+            'featured_post': featured_post,
+            'posts': other_posts
+        })
+
+    # ROUTE POUR LIRE UN ARTICLE
+    @http.route('/blog/post/<int:post_id>', type='http', auth="public", website=True)
+    def blog_post_detail(self, post_id, **kw):
+        # Récupération de l'article spécifique
+        post = request.env['blog.post'].sudo().browse(post_id)
+        
+        if not post.exists() or not post.is_published:
+            return request.redirect('/blog')
+            
+        return request.render("marketplace_platform.blog_post_detail_page", {'post': post})
+        
+    @http.route('/faq', type='http', auth="public", website=True)
+    def faq(self, **kw): return request.render("marketplace_platform.faq_page")
+
+    @http.route('/shipping', type='http', auth="public", website=True)
+    def shipping(self, **kw): return request.render("marketplace_platform.shipping_page")
+
+    @http.route('/terms', type='http', auth="public", website=True)
+    def terms(self, **kw): return request.render("marketplace_platform.terms_page")
+
+    @http.route('/privacy', type='http', auth="public", website=True)
+    def privacy(self, **kw): return request.render("marketplace_platform.privacy_page")
+    
+
+    # GIFT CARDS
+    @http.route('/shop/gift-cards', type='http', auth="public", website=True)
+    def gift_cards_page(self, **kw):
+        # On cherche les produits qui sont des cartes cadeaux (ou on simule)
+        # Dans un vrai Odoo, on filtrerait par 'is_gift_card' ou catégorie spécifique
+        cards = request.env['product.template'].sudo().search([
+            ('is_published', '=', True),
+            ('name', 'ilike', 'Card') # Filtre simple pour l'exemple
+        ], limit=4)
+        return request.render("marketplace_platform.gift_cards_page", {'cards': cards})
+
+    # CHEM YOUR (Collection Page)
+    # Interprété comme une page de campagne marketing "Charm Your Home/Life"
+    @http.route('/shop/chem-your', type='http', auth="public", website=True)
+    def chem_your_page(self, **kw):
+        # On récupère quelques produits phares pour cette collection
+        featured = request.env['product.template'].sudo().search([
+            ('is_published', '=', True)
+        ], limit=8, order='list_price desc')
+        return request.render("marketplace_platform.chem_your_page", {'products': featured})
+
+    @http.route('/makers', type='http', auth="public", website=True)
+    def makers_page(self, page=1, search=None, **kw):
+        items_per_page = 12
+        Vendor = request.env['marketplace.vendor'].sudo()
+        
+        # 1. Domaine de base : Vendeurs actifs uniquement
+        # ATTENTION : Vérifiez dans votre DB que vos vendeurs sont bien 'active'
+        # Si vous testez avec des vendeurs 'new', changez temporairement en :
+        # domain = [('state', 'in', ['new', 'active'])]
+        domain = [('state', '=', 'active')]
+        
+        # 2. Logique de Recherche Avancée
+        if search:
+            # Recherche insensible à la casse sur le Nom OU la Description
+            for srch in search.split(" "):
+                domain += [
+                    '|', 
+                    ('shop_name', 'ilike', srch),
+                    ('description', 'ilike', srch)
+                ]
+        
+        total_vendors = Vendor.search_count(domain)
+        
+        # Pagination
+        pager = request.website.pager(
+            url='/makers',
+            total=total_vendors,
+            page=page,
+            step=items_per_page,
+            url_args={'search': search} if search else {}
+        )
+        
+        offset = (page - 1) * items_per_page
+        
+        # Tri par pertinence (si recherche) ou par ventes (si pas de recherche)
+        order = 'sale_count desc'
+        
+        vendors = Vendor.search(domain, limit=items_per_page, offset=offset, order=order)
+        
+        return request.render("marketplace_platform.makers_page", {
+            'vendors': vendors,
+            'pager': pager,
+            'search_term': search,
+        })

@@ -35,11 +35,11 @@
                         <h6 class="fw-bold mb-3 text-dark">Shop</h6>
                         <ul class="list-unstyled d-flex flex-column gap-2">
                             <li><a href="/shop" class="footer-link">All Products</a></li>
-                            <li><a href="/shop" class="footer-link">Collections</a></li>
-                            <li><a href="/shop" class="footer-link">New Arrivals</a></li>
-                            <li><a href="#" class="footer-link">Gift Cards</a></li>
-                            <li><a href="#" class="footer-link">Chem your</a></li> <!-- Text from image -->
-                            <li><a href="#" class="footer-link">the Makers</a></li>
+							<li><a href="/categories" class="footer-link">Collections</a></li>
+                            <li><a href="/shop?order=create_date+desc" class="footer-link">New Arrivals</a></li>
+							<li><a href="/shop/gift-cards" class="footer-link">Gift Cards</a></li>
+							<li><a href="/shop/chem-your" class="footer-link">Chem Your</a></li>
+							<li><a href="/makers" class="footer-link">The Makers</a></li>
                         </ul>
                     </div>
 
@@ -58,10 +58,10 @@
                                 <h6 class="fw-bold mb-3 text-dark">Support</h6>
                                 <ul class="list-unstyled d-flex flex-column gap-2">
                                     <li><a href="/contactus" class="footer-link">Contact Us</a></li>
-                                    <li><a href="#" class="footer-link">FAQ</a></li>
-                                    <li><a href="#" class="footer-link">Shipping &amp; Returns</a></li>
-                                    <li><a href="#" class="footer-link">Terms of Service</a></li>
-                                    <li><a href="#" class="footer-link">Privacy Policy</a></li>
+                                    <li><a href="/faq" class="footer-link">FAQ</a></li>
+									<li><a href="/shipping" class="footer-link">Shipping &amp; Returns</a></li>
+									<li><a href="/terms" class="footer-link">Terms of Service</a></li>
+									<li><a href="/privacy" class="footer-link">Privacy Policy</a></li>
                                 </ul>
                             </div>
                         </div>

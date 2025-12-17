@@ -1,0 +1,81 @@
+<odoo>
+    <!-- PAGE FORMULAIRE -->
+    <template id="job_application_page" name="Apply for Job">
+        <t t-call="marketplace_platform.minimal_layout">
+		<t t-call="marketplace_platform.navbar_component"/>
+            <div id="wrap" class="bg-light py-5">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                                <div class="card-header bg-primary text-white p-5 text-center">
+                                    <h5 class="text-uppercase ls-1 opacity-75 mb-2">Join the Team</h5>
+                                    <h1 class="display-5 fw-bold mb-0" t-esc="job_title"/>
+                                </div>
+                                <div class="card-body p-5 bg-white">
+                                    <form action="/jobs/submit" method="POST" enctype="multipart/form-data">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="job_id" t-att-value="job_id"/>
+                                        
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">First Name</label>
+                                                <input type="text" name="name" class="form-control bg-light border-0 py-3" required="required" placeholder="Jane"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Last Name</label>
+                                                <input type="text" name="surname" class="form-control bg-light border-0 py-3" required="required" placeholder="Doe"/>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label fw-bold">Email Address</label>
+                                                <input type="email" name="email" class="form-control bg-light border-0 py-3" required="required" placeholder="jane@example.com"/>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label fw-bold">LinkedIn Profile / Portfolio</label>
+                                                <input type="url" name="linkedin" class="form-control bg-light border-0 py-3" placeholder="https://linkedin.com/in/jane-doe"/>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label fw-bold">Resume / CV</label>
+                                                <input type="file" name="resume" class="form-control bg-light border-0" required="required"/>
+                                                <div class="form-text">PDF, DOCX up to 5MB.</div>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label fw-bold">Why do you want to join us?</label>
+                                                <textarea name="cover_letter" class="form-control bg-light border-0" rows="5" placeholder="Tell us a bit about yourself..."></textarea>
+                                            </div>
+                                            <div class="col-12 mt-4">
+                                                <button type="submit" class="btn btn-primary btn-lg rounded-pill w-100 py-3 fw-bold">Submit Application</button>
+                                                <div class="text-center mt-3">
+                                                    <a href="/jobs" class="text-muted text-decoration-none small">Cancel and go back</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+			<t t-call="marketplace_platform.footer_component"/>
+        </t>
+    </template>
+
+    <!-- PAGE SUCCÈS -->
+    <template id="job_thank_you_page" name="Application Received">
+        <t t-call="marketplace_platform.minimal_layout">
+		<t t-call="marketplace_platform.navbar_component"/>
+            <div id="wrap" class="d-flex align-items-center justify-content-center" style="min-height: 70vh; background-color: #f8f9fa;">
+				<div class="text-center">
+                    <div class="mb-4">
+                        <i class="fa fa-check-circle text-success" style="font-size: 5rem;"></i>
+                    </div>
+                    <h1 class="display-4 fw-bold mb-3">Application Received!</h1>
+                    <p class="lead text-muted mb-5">Thanks for your interest. We'll be in touch soon.</p>
+                    <a href="/jobs" class="btn btn-outline-dark rounded-pill px-5">Back to Careers</a>
+                </div>
+            </div>
+			<t t-call="marketplace_platform.footer_component"/>
+        </t>
+    </template>
+</odoo>

@@ -44,16 +44,28 @@ class MarketplaceVendor(models.Model):
     # Relations
     product_ids = fields.One2many('product.template', 'vendor_id', string="Products")
     commission_ids = fields.One2many('marketplace.commission', 'vendor_id', string="Commissions")
+    
+    # store=True est OBLIGATOIRE pour pouvoir trier dessus dans le contrôleur (order='sale_count desc')
+    sale_count = fields.Integer(string="Ventes Totales", compute='_compute_kpi', store=True)
+    total_commission = fields.Monetary(string="Total Commissions", compute='_compute_kpi', currency_field='currency_id', store=True)
 
     _sql_constraints = [
         ('partner_uniq', 'unique(partner_id)', 'You already have a vendor profile!'),
         ('shop_url_uniq', 'unique(shop_url)', 'This Shop URL is already taken.')
     ]
 
+    @api.depends('commission_ids', 'commission_ids.state')
+    def _compute_kpi(self):
+        for rec in self:
+            # On compte les ventes confirmées (via les commissions générées)
+            confirmed_comms = rec.commission_ids.filtered(lambda c: c.state in ['confirmed', 'paid'])
+            rec.sale_count = len(confirmed_comms)
+            rec.total_commission = sum(confirmed_comms.mapped('amount_commission'))
+
     def action_approve(self):
         """ 
         1. Set state to Active 
-        2. Add the user to the 'Vendor' security group (without changing their base access type)
+        2. Add the user to the 'Vendor' security group
         """
         for record in self:
             record.state = 'active'
@@ -62,8 +74,10 @@ class MarketplaceVendor(models.Model):
             user = self.env['res.users'].search([('partner_id', '=', record.partner_id.id)], limit=1)
             if user:
                 # Add to Vendor Group (using sudo to bypass access rights)
-                group_vendor = self.env.ref('marketplace_platform.group_marketplace_vendor')
-                user.sudo().write({'groups_id': [(4, group_vendor.id)]})
+                # Note: Assurez-vous que l'ID XML 'group_marketplace_vendor' est correct dans votre security.xml
+                group_vendor = self.env.ref('marketplace_platform.group_marketplace_vendor', raise_if_not_found=False)
+                if group_vendor:
+                    user.sudo().write({'groups_id': [(4, group_vendor.id)]})
                 
                 record.partner_id.sudo().write({'is_vendor': True})
 

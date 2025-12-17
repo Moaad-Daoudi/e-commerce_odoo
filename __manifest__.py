@@ -2,22 +2,22 @@
 {
     'name': "Marketplace Platform",
     'summary': """
-        Plateforme Multi-vendeurs pour Odoo : 
-        Gestion des vendeurs, commissions, et séparation des commandes.
+        Multi-vendor platform for Odoo:
+        Vendor management, commissions, and order separation.
     """,
 
     'description': """
-        Marketplace Odoo - Module complet
+        Odoo Marketplace - Complete Module
         =================================
-        Ce module transforme Odoo en une place de marché B2B/B2C.
-        
-        Fonctionnalités principales :
-        - Inscription et approbation des vendeurs
-        - Gestion des produits par vendeur
-        - Split des commandes (une commande client = plusieurs ordres de livraison)
-        - Calcul automatique des commissions
-        - Gestion des demandes de versement (Payouts)
-        - Portail vendeur dédié
+        This module transforms Odoo into a B2B/B2C marketplace.
+
+        Main Features:
+        - Seller registration and approval
+        - Product management per seller
+        - Order splitting (one customer order = multiple delivery orders)
+        - Automatic commission calculation
+        - Payment request management (Payouts)
+        - Dedicated seller portal
     """,
 
     'author': "Ilyas BEL EL YAZID, Moaad Daoudi",
@@ -37,6 +37,9 @@
         'contacts',          # Partner/customer management
         'delivery',
         'auth_signup',       # For signup functionality
+        'website_hr_recruitment',
+        'hr_recruitment',
+        'website_blog',
     ],
 
     'data': [
@@ -44,10 +47,19 @@
         'security/ir.model.access.csv',
         'data/sequences.xml',
         'data/demo_data.xml',
+        'data/recruitment_data.xml',
         'views/admin/vendor_views.xml',
         'views/admin/product_views.xml',
         'views/admin/commission_views.xml',
         'views/admin/menu.xml',
+        'views/pages/about_us.xml',
+        'views/pages/careers.xml',
+        'views/pages/blog.xml',
+        'views/pages/blog_post.xml',
+        'views/pages/blog_views.xml',
+        'views/pages/support.xml',
+        'views/pages/shop_extras.xml',
+        'views/pages/job_application.xml',
         'views/components/navbar.xml',
         'views/components/hero.xml',
         'views/components/featured_section.xml',
