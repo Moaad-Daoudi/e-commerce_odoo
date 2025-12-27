@@ -38,14 +38,14 @@
                                 <a t-att-href="'/category/%s' % slug(cat_data['category'])" class="text-decoration-none">
                                     <div class="card h-100 border-0 shadow-sm hover-lift">
                                         <div class="category-img-wrapper" style="height: 200px; overflow: hidden; background: #f8f9fa;">
-                                            <t t-if="cat_data['category'].image_128">
-                                                <img t-att-src="image_data_uri(cat_data['category'].image_128)" 
-                                                     class="w-100 h-100 object-fit-cover" 
-                                                     t-att-alt="cat_data['category'].name"/>
+                                            <t t-if="cat_data['category'].image_1920">
+                                                <span t-field="cat_data['category'].image_1920" 
+                                                    t-options="{'widget': 'image', 'class': 'w-100 h-100 object-fit-cover'}"
+                                                    role="img"/>
                                             </t>
                                             <t t-else="">
                                                 <div class="d-flex align-items-center justify-content-center h-100">
-                                                    <i class="fa fa-folder-open fa-4x text-muted"/>
+                                                    <i t-attf-class="fa #{cat_data['category'].icon_class or 'fa-folder-open'} fa-4x text-muted"/>
                                                 </div>
                                             </t>
                                         </div>

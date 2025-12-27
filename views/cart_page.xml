@@ -10,7 +10,7 @@
                     <div class="mb-5">
                         <div class="d-flex align-items-center gap-3 text-muted small fw-bold mb-2">
                              <a href="/" class="text-decoration-none text-muted">Home</a> / 
-                             <a href="/shop" class="text-decoration-none text-muted">Shop</a> / 
+                             <a href="/categories" class="text-decoration-none text-muted">Shop</a> / 
                              <span>Cart</span>
                         </div>
                         <h1 class="fw-bold mb-0">Your Cart 
@@ -31,7 +31,7 @@
                                     <i class="fa fa-shopping-basket fa-4x text-muted opacity-25 mb-3"/>
                                     <h3>Your cart is empty</h3>
                                     <p class="text-muted mb-4">Looks like you haven't added any unique finds yet.</p>
-                                    <a href="/shop" class="btn btn-aura-primary rounded-pill px-5">Start Shopping</a>
+                                    <a href="/categories" class="btn btn-aura-primary rounded-pill px-5">Start Shopping</a>
                                 </div>
                             </t>
 
@@ -118,7 +118,7 @@
                                 
                                 <!-- CHECKOUT BUTTON -->
                                 <div class="mt-4">
-                                    <a href="/shop/checkout?express=1" class="btn btn-aura-orange w-100 py-3 rounded-pill fw-bold text-white shadow-sm" style="background-color: #E68A45;">
+                                    <a href="/shop/checkout/address" class="btn btn-aura-orange w-100 py-3 rounded-pill fw-bold text-white shadow-sm" style="background-color: #E68A45;">
                                         Proceed to Checkout
                                     </a>
                                 </div>

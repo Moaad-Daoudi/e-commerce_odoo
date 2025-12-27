@@ -170,7 +170,11 @@
                                 <t t-foreach="categories" t-as="cat">
                                     <a t-att-href="'/category/%s' % slug(cat)" class="aura-cat-circle text-decoration-none text-center">
                                         <div class="cat-img-wrapper shadow-sm mb-3">
-                                            <img t-att-src="website.image_url(cat, 'image_128')" class="img-fluid" alt="Category"/>
+                                            <img t-attf-src="/web/image/product.public.category/{{cat.id}}/category_logo" 
+                                                 t-att-alt="cat.name" 
+                                                 class="rounded-circle" 
+                                                 style="width: 80px; height: 80px; object-fit: cover;"
+                                                 onerror="this.src='/web/image/product.public.category/{{cat.id}}/image_128'"/>
                                         </div>
                                         <span class="fw-bold text-dark small" t-field="cat.name"/>
                                     </a>

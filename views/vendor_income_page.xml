@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vendor Income/Commission Tracking Page -->
+    <template id="vendor_income_page" name="Vendor Income and Commission">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="bg-light-cream" style="min-height: 100vh;">
+                
+                <!-- Global Header -->
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <!-- Vendor Sub-Navbar -->
+                <t t-call="marketplace_platform.vendor_navbar_component"/>
+                
+                <!-- Income Content -->
+                <div class="vendor-content-wrapper">
+                    <div class="container py-5">
+                        
+                        <!-- Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-5">
+                            <div>
+                                <h2 class="fw-bold text-dark mb-1">Income &amp; Commissions</h2>
+                                <p class="text-muted mb-0">Track your earnings and commission history</p>
+                            </div>
+                            <a href="/my/marketplace/payout/request" class="btn btn-success rounded-pill px-4 shadow-sm">
+                                <i class="fa fa-money me-2"/> Request Payout
+                            </a>
+                        </div>
+
+                        <!-- Income Summary Cards -->
+                        <div class="row g-4 mb-5">
+                            <!-- Total Earnings -->
+                            <div class="col-md-3 col-sm-6">
+                                <div class="vendor-stat-card">
+                                    <div class="stat-icon-wrapper green">
+                                        <i class="fa fa-dollar"/>
+                                    </div>
+                                    <h3 class="fw-bold mb-1" t-options="{'widget': 'monetary', 'display_currency': vendor.currency_id}" t-esc="total_earnings"/>
+                                    <p class="text-muted small mb-0">Total Earnings</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Platform Commission -->
+                            <div class="col-md-3 col-sm-6">
+                                <div class="vendor-stat-card">
+                                    <div class="stat-icon-wrapper orange">
+                                        <i class="fa fa-percent"/>
+                                    </div>
+                                    <h3 class="fw-bold mb-1" t-options="{'widget': 'monetary', 'display_currency': vendor.currency_id}" t-esc="total_commission"/>
+                                    <p class="text-muted small mb-0">Platform Commission</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Net Income -->
+                            <div class="col-md-3 col-sm-6">
+                                <div class="vendor-stat-card">
+                                    <div class="stat-icon-wrapper blue">
+                                        <i class="fa fa-chart-line"/>
+                                    </div>
+                                    <h3 class="fw-bold mb-1" t-options="{'widget': 'monetary', 'display_currency': vendor.currency_id}" t-esc="net_income"/>
+                                    <p class="text-muted small mb-0">Net Income</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Available Balance -->
+                            <div class="col-md-3 col-sm-6">
+                                <div class="vendor-stat-card">
+                                    <div class="stat-icon-wrapper purple">
+                                        <i class="fa fa-wallet"/>
+                                    </div>
+                                    <h3 class="fw-bold mb-1" t-options="{'widget': 'monetary', 'display_currency': vendor.currency_id}" t-esc="available_balance"/>
+                                    <p class="text-muted small mb-0">Available Balance</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Commission History Table -->
+                        <div class="bg-white rounded-4 shadow-sm p-4 border">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="fw-bold m-0">Commission History</h5>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-outline-primary active">All</button>
+                                    <button type="button" class="btn btn-outline-primary">Confirmed</button>
+                                    <button type="button" class="btn btn-outline-primary">Paid</button>
+                                </div>
+                            </div>
+                            
+                            <t t-if="commissions">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th class="border-0 rounded-start">Order</th>
+                                                <th class="border-0">Date</th>
+                                                <th class="border-0">Product</th>
+                                                <th class="border-0">Sale Amount</th>
+                                                <th class="border-0">Commission %</th>
+                                                <th class="border-0">Commission</th>
+                                                <th class="border-0">Your Earning</th>
+                                                <th class="border-0 rounded-end">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="commissions" t-as="comm">
+                                                <tr>
+                                                    <td class="fw-bold"><t t-esc="comm.sale_order_id.name"/></td>
+                                                    <td class="small text-muted"><t t-esc="comm.create_date" t-options='{"widget": "date"}'/></td>
+                                                    <td><t t-esc="comm.product_id.name"/></td>
+                                                    <td>
+                                                        <span t-field="comm.sale_amount" 
+                                                              t-options="{'widget': 'monetary', 'display_currency': comm.currency_id}"/>
+                                                    </td>
+                                                    <td><t t-esc="comm.commission_rate"/>%</td>
+                                                    <td class="text-danger">
+                                                        -<span t-field="comm.amount_commission" 
+                                                              t-options="{'widget': 'monetary', 'display_currency': comm.currency_id}"/>
+                                                    </td>
+                                                    <td class="text-success fw-bold">
+                                                        <span t-field="comm.vendor_amount" 
+                                                              t-options="{'widget': 'monetary', 'display_currency': comm.currency_id}"/>
+                                                    </td>
+                                                    <td>
+                                                        <span t-if="comm.state == 'draft'" class="badge bg-secondary">Draft</span>
+                                                        <span t-elif="comm.state == 'confirmed'" class="badge bg-primary">Confirmed</span>
+                                                        <span t-elif="comm.state == 'paid'" class="badge bg-success">Paid</span>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="text-center py-5">
+                                    <i class="fa fa-chart-line fa-3x text-muted opacity-25 mb-3"/>
+                                    <p class="text-muted">No commission records yet</p>
+                                </div>
+                            </t>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+        </t>
+    </template>
+</odoo>

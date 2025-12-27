@@ -1,0 +1,443 @@
+<odoo>
+    <template id="customer_order_detail_page" name="Order Details">
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap" class="aura-order-detail-page">
+                <t t-call="marketplace_platform.navbar_component"/>
+                
+                <!-- Header -->
+                <div class="aura-page-header bg-gradient-primary text-white py-5">
+                    <div class="container">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h1 class="fw-bold mb-2">Order Details</h1>
+                                <p class="opacity-75 mb-0">Order <t t-esc="order.name"/></p>
+                            </div>
+                            <a href="/my/account?section=orders" class="btn btn-light rounded-pill">
+                                <i class="fa fa-arrow-left me-2"/> Back to Orders
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="container my-5">
+                    <div class="row g-4">
+                        
+                        <!-- ORDER STATUS & TRACKING -->
+                        <div class="col-lg-8">
+                            
+                            <!-- Order Status Card -->
+                            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                                <div class="card-body p-4">
+                                    <h5 class="fw-bold mb-4">
+                                        <i class="fa fa-truck text-primary me-2"/> Order Status &amp; Tracking
+                                    </h5>
+                                    
+                                    <!-- Order Status Timeline -->
+                                    <div class="order-timeline">
+                                        <div t-attf-class="timeline-step #{order.state in ['sale', 'done'] and 'completed' or 'pending'}">
+                                            <div class="step-icon">
+                                                <i class="fa fa-check-circle"/>
+                                            </div>
+                                            <div class="step-content">
+                                                <h6 class="fw-bold mb-1">Order Placed</h6>
+                                                <small class="text-muted">
+                                                    <t t-esc="order.date_order" t-options='{"widget": "datetime"}'/>
+                                                </small>
+                                            </div>
+                                        </div>
+                                        
+                                        <div t-attf-class="timeline-step #{order.state == 'sale' and 'active' or (order.state == 'done' and 'completed' or 'pending')}">
+                                            <div class="step-icon">
+                                                <i class="fa fa-credit-card"/>
+                                            </div>
+                                            <div class="step-content">
+                                                <h6 class="fw-bold mb-1">Payment Confirmed</h6>
+                                                <small class="text-muted">
+                                                    <t t-if="order.state in ['sale', 'done']">
+                                                        Payment received successfully
+                                                    </t>
+                                                    <t t-else="">
+                                                        Waiting for payment confirmation
+                                                    </t>
+                                                </small>
+                                            </div>
+                                        </div>
+                                        
+                                        <div t-attf-class="timeline-step #{delivery_status == 'shipped' and 'active' or (delivery_status == 'delivered' and 'completed' or 'pending')}">
+                                            <div class="step-icon">
+                                                <i class="fa fa-box"/>
+                                            </div>
+                                            <div class="step-content">
+                                                <h6 class="fw-bold mb-1">Order Shipped</h6>
+                                                <small class="text-muted">
+                                                    <t t-if="delivery_status == 'shipped'">
+                                                        Your order is on the way
+                                                    </t>
+                                                    <t t-elif="delivery_status == 'delivered'">
+                                                        Shipped successfully
+                                                    </t>
+                                                    <t t-else="">
+                                                        Preparing for shipment
+                                                    </t>
+                                                </small>
+                                            </div>
+                                        </div>
+                                        
+                                        <div t-attf-class="timeline-step #{delivery_status == 'delivered' and 'completed' or 'pending'}">
+                                            <div class="step-icon">
+                                                <i class="fa fa-home"/>
+                                            </div>
+                                            <div class="step-content">
+                                                <h6 class="fw-bold mb-1">Delivered</h6>
+                                                <small class="text-muted">
+                                                    <t t-if="delivery_status == 'delivered'">
+                                                        Order delivered successfully
+                                                    </t>
+                                                    <t t-elif="estimated_delivery">
+                                                        Est. delivery: <t t-esc="estimated_delivery"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        Estimated 3-7 business days
+                                                    </t>
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Estimated Delivery -->
+                                    <t t-if="delivery_status != 'delivered'">
+                                        <div class="alert alert-info rounded-3 mt-4 mb-0 border-0">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fa fa-info-circle fa-2x me-3"/>
+                                                <div>
+                                                    <strong>Estimated Delivery:</strong>
+                                                    <t t-if="estimated_delivery">
+                                                        <t t-esc="estimated_delivery"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        3-7 business days from order confirmation
+                                                    </t>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                            
+                            <!-- Order Items -->
+                            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                                <div class="card-body p-4">
+                                    <h5 class="fw-bold mb-4">
+                                        <i class="fa fa-shopping-bag text-primary me-2"/> Order Items
+                                    </h5>
+                                    
+                                    <div class="order-items-list">
+                                        <t t-foreach="order.order_line" t-as="line">
+                                            <div class="order-item-row">
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <!-- Product Image -->
+                                                    <div class="flex-shrink-0">
+                                                        <t t-if="line.product_id.image_128">
+                                                            <img t-att-src="image_data_uri(line.product_id.image_128)" 
+                                                                 class="rounded-3 border"
+                                                                 style="width: 80px; height: 80px; object-fit: cover;"
+                                                                 alt="Product"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <div class="bg-light rounded-3 d-flex align-items-center justify-content-center border"
+                                                                 style="width: 80px; height: 80px;">
+                                                                <i class="fa fa-image fa-2x text-muted"/>
+                                                            </div>
+                                                        </t>
+                                                    </div>
+                                                    
+                                                    <!-- Product Info -->
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="fw-bold mb-1">
+                                                            <t t-esc="line.product_id.name"/>
+                                                        </h6>
+                                                        <p class="text-muted small mb-1">
+                                                            Qty: <t t-esc="int(line.product_uom_qty)"/> × 
+                                                            $<t t-esc="'%.2f' % line.price_unit"/>
+                                                        </p>
+                                                        <t t-if="line.product_id.product_tmpl_id.vendor_id">
+                                                            <small class="text-muted">
+                                                                <i class="fa fa-store me-1"/>
+                                                                Sold by: <t t-esc="line.product_id.product_tmpl_id.vendor_id.shop_name"/>
+                                                            </small>
+                                                        </t>
+                                                    </div>
+                                                    
+                                                    <!-- Price -->
+                                                    <div class="text-end">
+                                                        <h6 class="fw-bold text-primary mb-0">
+                                                            $<t t-esc="'%.2f' % line.price_subtotal"/>
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Shipping Address -->
+                            <div class="card border-0 shadow-sm rounded-4">
+                                <div class="card-body p-4">
+                                    <h5 class="fw-bold mb-3">
+                                        <i class="fa fa-map-marker text-primary me-2"/> Shipping Address
+                                    </h5>
+                                    <div class="address-box">
+                                        <p class="mb-1 fw-bold"><t t-esc="order.partner_id.name"/></p>
+                                        <p class="text-muted mb-1"><t t-esc="order.partner_id.street or ''"/></p>
+                                        <p class="text-muted mb-1">
+                                            <t t-esc="order.partner_id.city or ''"/>, 
+                                            <t t-esc="order.partner_id.zip or ''"/>
+                                        </p>
+                                        <p class="text-muted mb-1">
+                                            <t t-if="order.partner_id.country_id">
+                                                <t t-esc="order.partner_id.country_id.name"/>
+                                            </t>
+                                        </p>
+                                        <t t-if="order.partner_id.phone">
+                                            <p class="text-muted mb-0">
+                                                <i class="fa fa-phone me-2"/> <t t-esc="order.partner_id.phone"/>
+                                            </p>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- ORDER SUMMARY SIDEBAR -->
+                        <div class="col-lg-4">
+                            
+                            <!-- Payment Status -->
+                            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                                <div class="card-body p-4">
+                                    <h5 class="fw-bold mb-3">
+                                        <i class="fa fa-credit-card text-primary me-2"/> Payment Status
+                                    </h5>
+                                    
+                                    <div class="payment-status-box">
+                                        <t t-if="order.state == 'sale' or order.state == 'done'">
+                                            <div class="alert alert-success rounded-3 mb-3 border-0">
+                                                <i class="fa fa-check-circle me-2"/> Payment Confirmed
+                                            </div>
+                                        </t>
+                                        <t t-elif="order.state == 'draft'">
+                                            <div class="alert alert-warning rounded-3 mb-3 border-0">
+                                                <i class="fa fa-clock-o me-2"/> Payment Pending
+                                            </div>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="alert alert-secondary rounded-3 mb-3 border-0">
+                                                <i class="fa fa-info-circle me-2"/> <t t-esc="order.state.title()"/>
+                                            </div>
+                                        </t>
+                                        
+                                        <div class="payment-method">
+                                            <small class="text-muted d-block mb-1">Payment Method</small>
+                                            <p class="fw-bold mb-0">
+                                                <t t-if="order.payment_term_id">
+                                                    <t t-esc="order.payment_term_id.name"/>
+                                                </t>
+                                                <t t-else="">
+                                                    Standard Payment
+                                                </t>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Order Summary -->
+                            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                                <div class="card-body p-4">
+                                    <h5 class="fw-bold mb-4">Order Summary</h5>
+                                    
+                                    <div class="order-summary-details">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-muted">Subtotal:</span>
+                                            <span class="fw-semibold">$<t t-esc="'%.2f' % order.amount_untaxed"/></span>
+                                        </div>
+                                        
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-muted">Tax:</span>
+                                            <span class="fw-semibold">$<t t-esc="'%.2f' % (order.amount_total - order.amount_untaxed)"/></span>
+                                        </div>
+                                        
+                                        <t t-if="order.amount_delivery">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span class="text-muted">Shipping:</span>
+                                                <span class="fw-semibold">$<t t-esc="'%.2f' % order.amount_delivery"/></span>
+                                            </div>
+                                        </t>
+                                        
+                                        <hr class="my-3"/>
+                                        
+                                        <div class="d-flex justify-content-between mb-0">
+                                            <span class="fw-bold fs-5">Total:</span>
+                                            <span class="fw-bold fs-5 text-primary">$<t t-esc="'%.2f' % order.amount_total"/></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="d-grid gap-2">
+                                <t t-if="order.state == 'draft'">
+                                    <a href="/shop/checkout/payment" class="btn btn-aura-primary rounded-pill">
+                                        <i class="fa fa-credit-card me-2"/> Complete Payment
+                                    </a>
+                                </t>
+                                <t t-if="delivery_status == 'delivered'">
+                                    <a href="#" class="btn btn-outline-primary rounded-pill">
+                                        <i class="fa fa-download me-2"/> Download Invoice
+                                    </a>
+                                </t>
+                                <a href="/" class="btn btn-outline-secondary rounded-pill">
+                                    <i class="fa fa-shopping-cart me-2"/> Continue Shopping
+                                </a>
+                            </div>
+                            
+                            <!-- Need Help -->
+                            <div class="card border-0 bg-light rounded-4 mt-4">
+                                <div class="card-body p-4 text-center">
+                                    <i class="fa fa-headphones fa-3x text-primary mb-3"/>
+                                    <h6 class="fw-bold mb-2">Need Help?</h6>
+                                    <p class="small text-muted mb-3">Our customer support team is here to help</p>
+                                    <a href="/contact" class="btn btn-sm btn-primary rounded-pill">Contact Support</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <t t-call="marketplace_platform.footer_component"/>
+            </div>
+        </t>
+    </template>
+    
+    <!-- CSS Styles for Order Detail Page -->
+    <template id="order_detail_styles" name="Order Detail Styles">
+        <style>
+            .aura-page-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+            
+            .order-timeline {
+                position: relative;
+                padding-left: 0;
+            }
+            
+            .timeline-step {
+                display: flex;
+                align-items-start;
+                gap: 1rem;
+                position: relative;
+                padding-bottom: 2rem;
+            }
+            
+            .timeline-step:last-child {
+                padding-bottom: 0;
+            }
+            
+            .timeline-step::before {
+                content: '';
+                position: absolute;
+                left: 20px;
+                top: 40px;
+                bottom: 0;
+                width: 2px;
+                background: #e0e0e0;
+            }
+            
+            .timeline-step:last-child::before {
+                display: none;
+            }
+            
+            .timeline-step.completed::before {
+                background: #28a745;
+            }
+            
+            .timeline-step.active::before {
+                background: linear-gradient(to bottom, #28a745 0%, #e0e0e0 100%);
+            }
+            
+            .step-icon {
+                flex-shrink: 0;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #f5f5f5;
+                border: 2px solid #e0e0e0;
+                color: #999;
+                font-size: 18px;
+                position: relative;
+                z-index: 1;
+            }
+            
+            .timeline-step.completed .step-icon {
+                background: #28a745;
+                border-color: #28a745;
+                color: white;
+            }
+            
+            .timeline-step.active .step-icon {
+                background: #667eea;
+                border-color: #667eea;
+                color: white;
+                animation: pulse 2s infinite;
+            }
+            
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+            }
+            
+            .step-content {
+                flex-grow: 1;
+                padding-top: 0.5rem;
+            }
+            
+            .order-item-row {
+                padding: 1rem 0;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            
+            .order-item-row:last-child {
+                border-bottom: none;
+                padding-bottom: 0;
+            }
+            
+            .order-item-row:first-child {
+                padding-top: 0;
+            }
+            
+            .address-box {
+                padding: 1rem;
+                background: #f8f9fa;
+                border-radius: 0.5rem;
+            }
+            
+            .payment-status-box .alert {
+                margin-bottom: 1rem;
+            }
+            
+            .payment-method {
+                padding: 1rem;
+                background: #f8f9fa;
+                border-radius: 0.5rem;
+            }
+            
+            .order-summary-details {
+                font-size: 0.95rem;
+            }
+        </style>
+    </template>
+</odoo>

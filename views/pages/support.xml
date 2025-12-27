@@ -169,19 +169,6 @@
 			
                 <div class="container py-5">
                     <div class="row">
-                        <!-- Sidebar Navigation -->
-                        <div class="col-lg-3 d-none d-lg-block">
-                            <div class="sticky-top" style="top: 100px;">
-                                <h5 class="fw-bold mb-3">Contents</h5>
-                                <ul class="list-unstyled text-muted small border-start ps-3">
-                                    <li class="mb-2"><a href="#general" class="text-decoration-none text-dark fw-bold">General Conditions</a></li>
-                                    <li class="mb-2"><a href="#products" class="text-decoration-none text-muted">Products &amp; Services</a></li>
-                                    <li class="mb-2"><a href="#billing" class="text-decoration-none text-muted">Billing &amp; Accounts</a></li>
-                                    <li class="mb-2"><a href="#user-comments" class="text-decoration-none text-muted">User Comments</a></li>
-                                    <li class="mb-2"><a href="#liability" class="text-decoration-none text-muted">Limitation of Liability</a></li>
-                                </ul>
-                            </div>
-                        </div>
 
                         <!-- Legal Content -->
                         <div class="col-lg-8 offset-lg-1">

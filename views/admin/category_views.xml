@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend Category Form View -->
+    <record id="product_public_category_form_view_inherit" model="ir.ui.view">
+        <field name="name">product.public.category.form.inherit</field>
+        <field name="model">product.public.category</field>
+        <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Add logo field after the main image -->
+            <field name="image_1920" position="after">
+                <field name="category_logo" widget="image" class="oe_avatar"/>
+            </field>
+            
+            <!-- Add custom fields at the end of the form -->
+            <xpath expr="//sheet" position="inside">
+                <group string="Additional Information">
+                    <group>
+                        <field name="icon_class" placeholder="e.g., fa-laptop"/>
+                        <field name="is_featured"/>
+                    </group>
+                    <group>
+                        <field name="seo_description"/>
+                    </group>
+                </group>
+                <group string="Banner Image">
+                    <field name="banner_image" widget="image"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

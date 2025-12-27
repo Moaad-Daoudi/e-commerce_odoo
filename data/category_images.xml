@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Category images and logos for all demo categories -->
+        
+        <!-- Electronics Category -->
+        <record id="demo_category_electronics" model="product.public.category">
+            <field name="image_1920" type="base64" file="marketplace_platform/static/src/img/categories/electronics.png"/>
+            <field name="category_logo" type="base64" file="marketplace_platform/static/src/img/categories/electronics_logo.png"/>
+            <field name="icon_class">fa-laptop</field>
+            <field name="is_featured">True</field>
+            <field name="seo_description">Browse the latest electronics, gadgets, and tech accessories from top vendors.</field>
+        </record>
+        
+        <!-- Fashion Category -->
+        <record id="demo_category_fashion" model="product.public.category">
+            <field name="image_1920" type="base64" file="marketplace_platform/static/src/img/categories/fashion.png"/>
+            <field name="category_logo" type="base64" file="marketplace_platform/static/src/img/categories/fashion_logo.png"/>
+            <field name="icon_class">fa-shopping-bag</field>
+            <field name="is_featured">True</field>
+            <field name="seo_description">Discover trendy fashion, clothing, and accessories for men and women.</field>
+        </record>
+        
+        <!-- Home & Garden Category -->
+        <record id="demo_category_home" model="product.public.category">
+            <field name="image_1920" type="base64" file="marketplace_platform/static/src/img/categories/home.png"/>
+            <field name="category_logo" type="base64" file="marketplace_platform/static/src/img/categories/home_logo.png"/>
+            <field name="icon_class">fa-home</field>
+            <field name="is_featured">True</field>
+            <field name="seo_description">Shop home decor, furniture, and garden essentials for your perfect living space.</field>
+        </record>
+        
+        <!-- Sports & Outdoors Category -->
+        <record id="demo_category_sports" model="product.public.category">
+            <field name="image_1920" type="base64" file="marketplace_platform/static/src/img/categories/sports.png"/>
+            <field name="category_logo" type="base64" file="marketplace_platform/static/src/img/categories/sports_logo.png"/>
+            <field name="icon_class">fa-futbol-o</field>
+            <field name="is_featured">True</field>
+            <field name="seo_description">Get the best sports equipment, outdoor gear, and fitness accessories.</field>
+        </record>
+        
+        <!-- Books & Media Category -->
+        <record id="demo_category_books" model="product.public.category">
+            <field name="image_1920" type="base64" file="marketplace_platform/static/src/img/categories/books.png"/>
+            <field name="category_logo" type="base64" file="marketplace_platform/static/src/img/categories/books_logo.png"/>
+            <field name="icon_class">fa-book</field>
+            <field name="is_featured">True</field>
+            <field name="seo_description">Explore a wide selection of books, magazines, and digital media.</field>
+        </record>
+        
+        <!-- Beauty & Health Category -->
+        <record id="demo_category_beauty" model="product.public.category">
+            <field name="image_1920" type="base64" file="marketplace_platform/static/src/img/categories/beauty.png"/>
+            <field name="category_logo" type="base64" file="marketplace_platform/static/src/img/categories/beauty_logo.png"/>
+            <field name="icon_class">fa-heart</field>
+            <field name="is_featured">True</field>
+            <field name="seo_description">Shop premium beauty products, skincare, and health essentials.</field>
+        </record>
+        
+        <!-- 
+        To add images and logos to categories:
+        Go to Website → Configuration → eCommerce → Categories
+        Click on each category and upload images through the UI
+        -->
+    </data>
+</odoo>

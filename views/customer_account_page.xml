@@ -80,13 +80,19 @@
                                                             <td class="fw-bold"><t t-esc="order.name"/></td>
                                                             <td><t t-esc="order.date_order" t-options='{"widget": "date"}'/></td>
                                                             <td>
-                                                                <span t-attf-class="status-badge #{'sale' if order.state == 'sale' else 'draft'}">
-                                                                    <t t-esc="order.state"/>
-                                                                </span>
+                                                                <t t-if="order.state in ['sale', 'done']">
+                                                                    <span class="badge bg-success rounded-pill">Paid</span>
+                                                                </t>
+                                                                <t t-elif="order.state == 'draft'">
+                                                                    <span class="badge bg-warning rounded-pill">Pending</span>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <span class="badge bg-secondary rounded-pill"><t t-esc="order.state.title()"/></span>
+                                                                </t>
                                                             </td>
                                                             <td class="fw-bold">$<t t-esc="'%.2f' % order.amount_total"/></td>
                                                             <td>
-                                                                <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">View</a>
+                                                                <a t-attf-href="/my/orders/{{order.id}}" class="btn btn-sm btn-outline-primary rounded-pill">View</a>
                                                             </td>
                                                         </tr>
                                                     </t>
@@ -201,8 +207,11 @@
                                                     <tr>
                                                         <th>Order #</th>
                                                         <th>Date</th>
+                                                        <th>Items</th>
                                                         <th>Total</th>
-                                                        <th>Status</th>
+                                                        <th>Payment</th>
+                                                        <th>Delivery</th>
+                                                        <th>Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -210,11 +219,29 @@
                                                         <tr>
                                                             <td class="fw-bold"><t t-esc="order.name"/></td>
                                                             <td><t t-esc="order.date_order" t-options='{"widget": "date"}'/></td>
+                                                            <td><t t-esc="len(order.order_line)"/> items</td>
                                                             <td class="fw-bold text-dark">$<t t-esc="'%.2f' % order.amount_total"/></td>
                                                             <td>
-                                                                <span t-attf-class="status-badge #{'sale' if order.state == 'sale' else 'draft'}">
-                                                                    <t t-esc="order.state"/>
-                                                                </span>
+                                                                <t t-if="order.state in ['sale', 'done']">
+                                                                    <span class="badge bg-success rounded-pill">Paid</span>
+                                                                </t>
+                                                                <t t-elif="order.state == 'draft'">
+                                                                    <span class="badge bg-warning rounded-pill">Pending</span>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <span class="badge bg-secondary rounded-pill"><t t-esc="order.state.title()"/></span>
+                                                                </t>
+                                                            </td>
+                                                            <td>
+                                                                <t t-if="order.state in ['sale', 'done']">
+                                                                    <small class="text-success">3-7 days</small>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <small class="text-muted">-</small>
+                                                                </t>
+                                                            </td>
+                                                            <td>
+                                                                <a t-attf-href="/my/orders/{{order.id}}" class="btn btn-sm btn-outline-primary rounded-pill">View</a>
                                                             </td>
                                                         </tr>
                                                     </t>

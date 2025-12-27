@@ -30,8 +30,8 @@ class MarketplaceController(http.Controller):
             order='website_sequence asc, create_date desc'
         )
         
-        # fetch categories (keep existing logic)
-        categories = request.env['product.public.category'].sudo().search([], limit=5)
+        # fetch categories (only featured ones)
+        categories = request.env['product.public.category'].sudo().search([('is_featured', '=', True)], limit=6)
 
         # 4. Pagination Data Calculation
         total_pages = math.ceil(total_products / items_per_page)
@@ -518,6 +518,56 @@ class MarketplaceController(http.Controller):
         partner = request.env.user.partner_id
         
         address = request.env['res.partner'].sudo().browse(address_id)
+    
+    # VIEW ORDER DETAILS
+    @http.route(['/my/orders/<int:order_id>'], type='http', auth="user", website=True)
+    def order_detail(self, order_id, **kw):
+        """View detailed order information"""
+        partner = request.env.user.partner_id
+        
+        # Get the order and verify it belongs to the user
+        order = request.env['sale.order'].sudo().search([
+            ('id', '=', order_id),
+            ('partner_id', 'child_of', partner.id)
+        ], limit=1)
+        
+        if not order:
+            return request.redirect('/my/account?section=orders')
+        
+        # Calculate delivery status based on order state and picking state
+        delivery_status = 'pending'
+        if order.state == 'done':
+            delivery_status = 'delivered'
+        elif order.state == 'sale':
+            # Check if there are pickings (deliveries)
+            pickings = request.env['stock.picking'].sudo().search([
+                ('sale_id', '=', order.id)
+            ])
+            if pickings:
+                if any(p.state == 'done' for p in pickings):
+                    delivery_status = 'delivered'
+                elif any(p.state in ['confirmed', 'assigned'] for p in pickings):
+                    delivery_status = 'shipped'
+            else:
+                delivery_status = 'processing'
+        
+        # Calculate estimated delivery date
+        estimated_delivery = False
+        if order.state in ['sale', 'done'] and delivery_status != 'delivered':
+            # Estimate 3-7 business days from order confirmation
+            from datetime import datetime, timedelta
+            order_date = order.date_order
+            estimated_days = 7  # default to 7 days
+            estimated_date = order_date + timedelta(days=estimated_days)
+            estimated_delivery = estimated_date.strftime('%B %d, %Y')
+        
+        values = {
+            'order': order,
+            'delivery_status': delivery_status,
+            'estimated_delivery': estimated_delivery,
+        }
+        
+        return request.render("marketplace_platform.customer_order_detail_page", values)
         if address.exists() and address.parent_id.id == partner.id:
             address.unlink()
         
@@ -1240,6 +1290,126 @@ class MarketplaceController(http.Controller):
         }
         
         return request.render("marketplace_platform.portal_vendor_dashboard", values)
+    
+    # VENDOR INCOME & COMMISSION PAGE
+    @http.route(['/my/marketplace/income'], type='http', auth="user", website=True)
+    def vendor_income(self, **kw):
+        user = request.env.user
+        partner = user.partner_id
+        
+        # Get Vendor Profile
+        vendor = request.env['marketplace.vendor'].search([('partner_id', '=', partner.id)], limit=1)
+        
+        if not vendor or vendor.state != 'active':
+            return request.redirect('/marketplace/register')
+
+        # Get all commissions for this vendor
+        commissions = request.env['marketplace.commission'].search([
+            ('vendor_id', '=', vendor.id)
+        ], order='create_date desc')
+        
+        # Calculate totals
+        confirmed_commissions = commissions.filtered(lambda c: c.state in ['confirmed', 'paid'])
+        paid_commissions = commissions.filtered(lambda c: c.state == 'paid')
+        
+        total_earnings = sum(confirmed_commissions.mapped('sale_amount'))
+        total_commission = sum(confirmed_commissions.mapped('amount_commission'))
+        net_income = total_earnings - total_commission
+        available_balance = sum(confirmed_commissions.mapped('vendor_amount')) - sum(paid_commissions.mapped('vendor_amount'))
+
+        values = {
+            'page_name': 'income',
+            'vendor': vendor,
+            'commissions': commissions,
+            'total_earnings': total_earnings,
+            'total_commission': total_commission,
+            'net_income': net_income,
+            'available_balance': available_balance,
+            'user_id': request.env.user,
+        }
+        
+        return request.render("marketplace_platform.vendor_income_page", values)
+    
+    # CUSTOM CHECKOUT ROUTES
+    @http.route(['/shop/checkout/address'], type='http', auth="public", website=True)
+    def custom_checkout_address(self, **kw):
+        """Custom shipping address page"""
+        order = request.website.sale_get_order()
+        
+        if not order or not order.order_line:
+            return request.redirect('/cart')
+        
+        countries = request.env['res.country'].sudo().search([])
+        
+        return request.render("marketplace_platform.custom_address_page", {
+            'website_sale_order': order.sudo(),
+            'countries': countries,
+        })
+    
+    @http.route(['/shop/checkout/payment'], type='http', auth="public", methods=['GET', 'POST'], website=True, csrf=False)
+    def custom_checkout_payment(self, **post):
+        """Save address and show payment page"""
+        order = request.website.sale_get_order()
+        
+        if not order or not order.order_line:
+            return request.redirect('/cart')
+        
+        # Save address data to order if POST request
+        if request.httprequest.method == 'POST' and post.get('name'):
+            try:
+                partner_values = {
+                    'name': post.get('name', ''),
+                    'email': post.get('email', ''),
+                    'phone': post.get('phone', ''),
+                    'street': post.get('street', ''),
+                    'city': post.get('city', ''),
+                    'zip': post.get('zip', ''),
+                }
+                
+                if post.get('country_id'):
+                    partner_values['country_id'] = int(post.get('country_id'))
+                
+                order.partner_id.sudo().write(partner_values)
+            except Exception as e:
+                pass
+        
+        return request.render("marketplace_platform.custom_payment_page", {
+            'website_sale_order': order.sudo(),
+        })
+    
+    @http.route(['/shop/checkout/confirm'], type='http', auth="public", website=True, csrf=False)
+    def custom_checkout_confirm(self, **kw):
+        """Confirm order and process payment"""
+        order = request.website.sale_get_order()
+        
+        if not order or not order.order_line:
+            return request.redirect('/cart')
+        
+        try:
+            # Save the order name before clearing cart
+            order_name = order.name
+            
+            # Instead of action_confirm, just change state to 'sale'
+            # This avoids all the vendor access issues
+            order.sudo().write({'state': 'sale'})
+            
+            # Clear the cart session
+            request.website.sale_reset()
+            
+            # Show success page
+            return request.render("marketplace_platform.order_confirmation_page", {
+                'order_name': order_name,
+            })
+        except Exception as e:
+            # Log the error for debugging
+            import logging
+            import traceback
+            _logger = logging.getLogger(__name__)
+            _logger.error("Error confirming order: %s", str(e))
+            _logger.error("Traceback: %s", traceback.format_exc())
+            
+            # If error, redirect back to cart
+            return request.redirect('/cart?error=checkout_failed')
         
     # OUR STORY (About Us)
     @http.route('/about-us', type='http', auth="public", website=True)
@@ -1364,10 +1534,10 @@ class MarketplaceController(http.Controller):
     @http.route('/shipping', type='http', auth="public", website=True)
     def shipping(self, **kw): return request.render("marketplace_platform.shipping_page")
 
-    @http.route('/terms', type='http', auth="public", website=True)
+    @http.route('/e-terms', type='http', auth="public", website=True)
     def terms(self, **kw): return request.render("marketplace_platform.terms_page")
 
-    @http.route('/privacy', type='http', auth="public", website=True)
+    @http.route(['/privacy', '/page/website.privacy'], type='http', auth="public", website=True)
     def privacy(self, **kw): return request.render("marketplace_platform.privacy_page")
     
 

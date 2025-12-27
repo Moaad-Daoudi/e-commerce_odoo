@@ -1,6 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_marketplace_vendor_public,marketplace.vendor.public,model_marketplace_vendor,,1,0,0,0
 access_marketplace_vendor_portal,marketplace.vendor.portal,model_marketplace_vendor,base.group_portal,1,0,0,0
+access_marketplace_vendor_user_read,marketplace.vendor.user.read,model_marketplace_vendor,base.group_user,1,0,0,0
 access_marketplace_vendor_manager,marketplace.vendor.manager,model_marketplace_vendor,group_marketplace_manager,1,1,1,1
 access_marketplace_vendor_user,marketplace.vendor.user,model_marketplace_vendor,group_marketplace_vendor,1,1,0,0
 access_marketplace_commission_public,marketplace.commission.public,model_marketplace_commission,,1,0,0,0

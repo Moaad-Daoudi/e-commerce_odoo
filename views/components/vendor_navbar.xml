@@ -12,6 +12,9 @@
                     <a href="/my/marketplace/orders" t-attf-class="vendor-nav-link #{'active' if page_name == 'orders' else ''}">
                         <i class="fa fa-shopping-bag me-2"/> Orders
                     </a>
+                    <a href="/my/marketplace/income" t-attf-class="vendor-nav-link #{'active' if page_name == 'income' else ''}">
+                        <i class="fa fa-dollar me-2"/> Income
+                    </a>
                     <a href="/my/marketplace/settings" 
                         t-attf-class="vendor-nav-link #{'active' if page_name == 'profile' else ''}">
                         <i class="fa fa-user me-2"/> Profile

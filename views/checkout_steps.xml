@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Progress Bar Component -->
+    <template id="checkout_progress_bar" name="Checkout Progress Bar">
+        <div class="bg-white border-bottom py-4 shadow-sm">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center position-relative" style="max-width: 800px; margin: 0 auto;">
+                    <!-- Progress Line Background -->
+                    <div class="position-absolute w-100" style="height: 3px; background: #e0e0e0; top: 25px; left: 0; z-index: 0;"/>
+                    
+                    <!-- Step 1: Cart -->
+                    <div class="text-center position-relative" style="z-index: 1; flex: 1;">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" 
+                             t-attf-style="width: 50px; height: 50px; {{ 'background: #28a745; color: white; box-shadow: 0 2px 8px rgba(40,167,69,0.3);' if current_step >= 1 else 'background: #e0e0e0; color: #999;' }}">
+                            <i class="fa fa-shopping-cart fa-lg"/>
+                        </div>
+                        <div class="small fw-bold" t-attf-style="{{ 'color: #28a745;' if current_step >= 1 else 'color: #999;' }}">Cart</div>
+                    </div>
+                    
+                    <!-- Step 2: Shipping -->
+                    <div class="text-center position-relative" style="z-index: 1; flex: 1;">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" 
+                             t-attf-style="width: 50px; height: 50px; {{ 'background: #28a745; color: white; box-shadow: 0 2px 8px rgba(40,167,69,0.3);' if current_step >= 2 else 'background: #e0e0e0; color: #999;' }}">
+                            <i class="fa fa-truck fa-lg"/>
+                        </div>
+                        <div class="small fw-bold" t-attf-style="{{ 'color: #28a745;' if current_step >= 2 else 'color: #999;' }}">Shipping</div>
+                    </div>
+                    
+                    <!-- Step 3: Payment -->
+                    <div class="text-center position-relative" style="z-index: 1; flex: 1;">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" 
+                             t-attf-style="width: 50px; height: 50px; {{ 'background: #28a745; color: white; box-shadow: 0 2px 8px rgba(40,167,69,0.3);' if current_step >= 3 else 'background: #e0e0e0; color: #999;' }}">
+                            <i class="fa fa-credit-card fa-lg"/>
+                        </div>
+                        <div class="small fw-bold" t-attf-style="{{ 'color: #28a745;' if current_step >= 3 else 'color: #999;' }}">Payment</div>
+                    </div>
+                    
+                    <!-- Step 4: Confirmation -->
+                    <div class="text-center position-relative" style="z-index: 1; flex: 1;">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" 
+                             t-attf-style="width: 50px; height: 50px; {{ 'background: #28a745; color: white; box-shadow: 0 2px 8px rgba(40,167,69,0.3);' if current_step >= 4 else 'background: #e0e0e0; color: #999;' }}">
+                            <i class="fa fa-check fa-lg"/>
+                        </div>
+                        <div class="small fw-bold" t-attf-style="{{ 'color: #28a745;' if current_step >= 4 else 'color: #999;' }}">Complete</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Custom Cart Page with Progress -->
+    <template id="custom_cart_page" name="Custom Cart">
+        <t t-call="website.layout">
+            <t t-set="current_step" t-value="1"/>
+            <t t-call="marketplace_platform.checkout_progress_bar"/>
+            
+            <div class="container my-5">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <h2 class="mb-4">Shopping Cart</h2>
+                        <t t-if="website_sale_order and website_sale_order.website_order_line">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="website_sale_order.website_order_line" t-as="line">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img t-if="line.product_id.image_128" 
+                                                     t-att-src="'data:image/png;base64,%s' % line.product_id.image_128.decode('utf-8')" 
+                                                     class="me-3" style="width: 60px; height: 60px; object-fit: cover;"/>
+                                                <div>
+                                                    <div class="fw-bold" t-esc="line.product_id.name"/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td t-esc="'%.2f' % line.price_unit" class="text-end"/>
+                                        <td>
+                                            <input type="number" class="form-control" style="width: 80px;" 
+                                                   t-att-value="line.product_uom_qty" min="1"/>
+                                        </td>
+                                        <td t-esc="'%.2f' % line.price_total" class="text-end fw-bold"/>
+                                        <td>
+                                            <button class="btn btn-sm btn-danger">
+                                                <i class="fa fa-trash"/>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                        <t t-else="">
+                            <div class="alert alert-info">
+                                <i class="fa fa-shopping-cart me-2"/>
+                                Your cart is empty
+                            </div>
+                        </t>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Order Summary</h5>
+                                <hr/>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Subtotal:</span>
+                                    <span t-esc="'%.2f' % (website_sale_order.amount_untaxed if website_sale_order else 0)"/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Tax:</span>
+                                    <span t-esc="'%.2f' % (website_sale_order.amount_tax if website_sale_order else 0)"/>
+                                </div>
+                                <hr/>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <strong>Total:</strong>
+                                    <strong t-esc="'%.2f' % (website_sale_order.amount_total if website_sale_order else 0)"/>
+                                </div>
+                                <a href="/shop/checkout/address" class="btn btn-success w-100" t-if="website_sale_order">
+                                    <i class="fa fa-arrow-right me-2"/>
+                                    Proceed to Checkout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Custom Shipping Address Page -->
+    <template id="custom_address_page" name="Custom Shipping Address">
+        <t t-call="website.layout">
+            <t t-set="current_step" t-value="2"/>
+            <t t-call="marketplace_platform.checkout_progress_bar"/>
+            
+            <div class="container my-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <h2 class="mb-4">
+                            <i class="fa fa-truck text-success me-2"/>
+                            Shipping Address
+                        </h2>
+                        
+                        <form action="/shop/checkout/payment" method="post" class="card">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label">Full Name *</label>
+                                        <input type="text" name="name" class="form-control" required="required"/>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Email *</label>
+                                        <input type="email" name="email" class="form-control" required="required"/>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Phone *</label>
+                                        <input type="tel" name="phone" class="form-control" required="required"/>
+                                    </div>
+                                    
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label">Street Address *</label>
+                                        <input type="text" name="street" class="form-control" required="required"/>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">City *</label>
+                                        <input type="text" name="city" class="form-control" required="required"/>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Zip Code *</label>
+                                        <input type="text" name="zip" class="form-control" required="required"/>
+                                    </div>
+                                    
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label">Country *</label>
+                                        <select name="country_id" class="form-select" required="required">
+                                            <option value="">Select Country</option>
+                                            <t t-foreach="countries" t-as="country">
+                                                <option t-att-value="country.id" t-esc="country.name"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="/shop/cart" class="btn btn-outline-secondary">
+                                        <i class="fa fa-arrow-left me-2"/>
+                                        Back to Cart
+                                    </a>
+                                    <button type="submit" class="btn btn-success">
+                                        Continue to Payment
+                                        <i class="fa fa-arrow-right ms-2"/>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Custom Payment Page -->
+    <template id="custom_payment_page" name="Custom Payment">
+        <t t-call="website.layout">
+            <t t-set="current_step" t-value="3"/>
+            <t t-call="marketplace_platform.checkout_progress_bar"/>
+            
+            <div class="container my-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <h2 class="mb-4">
+                            <i class="fa fa-credit-card text-success me-2"/>
+                            Payment Method
+                        </h2>
+                        
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Choose Payment Method</h5>
+                                <hr/>
+                                
+                                <div class="form-check mb-3 p-3 border rounded">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="credit_card" checked="checked"/>
+                                    <label class="form-check-label w-100" for="credit_card">
+                                        <i class="fa fa-credit-card me-2"/>
+                                        <strong>Credit / Debit Card</strong>
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check mb-3 p-3 border rounded">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="paypal"/>
+                                    <label class="form-check-label w-100" for="paypal">
+                                        <i class="fa fa-paypal me-2"/>
+                                        <strong>PayPal</strong>
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check mb-3 p-3 border rounded">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="bank_transfer"/>
+                                    <label class="form-check-label w-100" for="bank_transfer">
+                                        <i class="fa fa-bank me-2"/>
+                                        <strong>Bank Transfer</strong>
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check mb-3 p-3 border rounded">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="cash_on_delivery"/>
+                                    <label class="form-check-label w-100" for="cash_on_delivery">
+                                        <i class="fa fa-money me-2"/>
+                                        <strong>Cash on Delivery</strong>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Order Summary</h5>
+                                <hr/>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Subtotal:</span>
+                                    <span t-esc="'%.2f' % (website_sale_order.amount_untaxed if website_sale_order else 0)"/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Shipping:</span>
+                                    <span>0.00</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Tax:</span>
+                                    <span t-esc="'%.2f' % (website_sale_order.amount_tax if website_sale_order else 0)"/>
+                                </div>
+                                <hr/>
+                                <div class="d-flex justify-content-between">
+                                    <strong>Total:</strong>
+                                    <strong class="text-success" t-esc="'%.2f' % (website_sale_order.amount_total if website_sale_order else 0)"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="/shop/checkout/address" class="btn btn-outline-secondary">
+                                <i class="fa fa-arrow-left me-2"/>
+                                Back to Shipping
+                            </a>
+                            <a href="/shop/checkout/confirm" class="btn btn-success btn-lg">
+                                <i class="fa fa-check me-2"/>
+                                Place Order
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Order Confirmation Page -->
+    <template id="order_confirmation_page" name="Order Confirmation">
+        <t t-call="website.layout">
+            <t t-set="current_step" t-value="4"/>
+            <t t-call="marketplace_platform.checkout_progress_bar"/>
+            
+            <div class="container my-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 text-center">
+                        <div class="card">
+                            <div class="card-body py-5">
+                                <div class="mb-4">
+                                    <i class="fa fa-check-circle text-success" style="font-size: 80px;"/>
+                                </div>
+                                <h2 class="mb-3">Order Confirmed!</h2>
+                                <p class="lead mb-4">Thank you for your purchase.</p>
+                                <p class="text-muted">Your order <strong t-esc="order_name"/> has been successfully placed.</p>
+                                <p class="text-muted mb-4">We'll send you an email confirmation shortly.</p>
+                                
+                                <div class="d-flex justify-content-center gap-3 mt-4">
+                                    <a href="/" class="btn btn-outline-primary">
+                                        <i class="fa fa-home me-2"/>
+                                        Back to Home
+                                    </a>
+                                    <a href="/my/account" class="btn btn-success">
+                                        <i class="fa fa-user me-2"/>
+                                        View Orders
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

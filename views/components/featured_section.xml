@@ -7,7 +7,6 @@
                 <div class="row mb-5">
                     <div class="col-12 text-center mb-4">
                         <div class="d-flex align-items-center gap-2 mb-2">
-                             <!-- Simple icon styling -->
                             <span class="bg-secondary bg-opacity-10 p-2 rounded-circle">
                                 <i class="fa fa-th-large text-muted"/>
                             </span>
@@ -19,13 +18,30 @@
                     <div class="col-12">
                         <div class="d-flex flex-wrap gap-4 justify-content-center justify-content-lg-start">
                             <t t-foreach="categories" t-as="cat">
-                                <!-- Link to category route -->
+                                <!-- Link to category route using slug -->
                                 <a t-att-href="'/category/%s' % slug(cat)" class="aura-cat-circle text-decoration-none text-center">
-                                    <div class="cat-img-wrapper shadow-sm mb-3">
-                                        <!-- Using Odoo's image controller -->
-                                        <img t-att-src="website.image_url(cat, 'image_128')" class="img-fluid" alt="Category"/>
+                                    <div class="cat-img-wrapper shadow-sm mb-3 d-flex align-items-center justify-content-center overflow-hidden rounded-circle" style="width: 80px; height: 80px; padding: 0;">
+                                        <!-- PRIORITY 1: Custom Logo -->
+                                        <t t-if="cat.category_logo">
+                                            <span t-field="cat.category_logo" 
+                                                  t-options="{'widget': 'image', 'class': 'rounded-circle', 'style': 'width: 100%; height: 100%; object-fit: cover;'}"
+                                                  role="img" t-att-aria-label="cat.name"/>
+                                        </t>
+                                        
+                                        <!-- PRIORITY 2: Standard Image -->
+                                        <t t-elif="cat.image_128">
+                                            <span t-field="cat.image_128" 
+                                                  t-options="{'widget': 'image', 'class': 'rounded-circle', 'style': 'width: 100%; height: 100%; object-fit: cover;'}"
+                                                  role="img" t-att-aria-label="cat.name"/>
+                                        </t>
+                                        
+                                        <!-- PRIORITY 3: Fallback Icon -->
+                                        <t t-else="">
+                                            <i t-attf-class="fa #{cat.icon_class or 'fa-folder'} fa-2x text-muted"/>
+                                        </t>
+                                        
                                     </div>
-                                    <span class="fw-bold text-dark small" t-field="cat.name"/>
+                                    <span class="fw-bold text-dark small d-block" t-field="cat.name"/>
                                 </a>
                             </t>
                         </div>
@@ -44,8 +60,13 @@
                             <!-- Link to product page -->
                             <a t-att-href="'/product/%s' % product.id" class="text-decoration-none">
                                 <div class="card h-100 aura-product-card border-0 shadow-sm">
-                                    <div class="product-img-box position-relative overflow-hidden">
-                                        <img t-att-src="website.image_url(product, 'image_512')" class="card-img-top object-fit-cover" style="height: 250px;" alt="Product"/>
+                                    <div class="product-img-box position-relative overflow-hidden" style="height: 250px; background-color: #f8f9fa;">
+                                        
+                                        <!-- Correct Product Image Rendering -->
+                                        <span t-field="product.image_512" 
+                                              t-options="{'widget': 'image', 'class': 'card-img-top w-100 h-100 object-fit-cover'}"
+                                              role="img"/>
+
                                         <!-- Wishlist Button -->
                                         <t t-set="in_wishlist" t-value="request.env['product.wishlist'].sudo().search_count([('partner_id', '=', request.env.user.partner_id.id), ('product_id', '=', product.product_variant_ids[0].id if product.product_variant_ids else False)]) > 0 if not request.env.user._is_public() else False"/>
                                         <a t-attf-href="/wishlist/add/#{product.id}" 
