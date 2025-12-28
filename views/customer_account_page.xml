@@ -56,7 +56,7 @@
                                             <p>Pending</p>
                                         </div>
                                         <div class="stat-card">
-                                            <h2>0</h2>
+                                            <h2><t t-esc="wishlist_count"/></h2>
                                             <p>Wishlist</p>
                                         </div>
                                     </div>

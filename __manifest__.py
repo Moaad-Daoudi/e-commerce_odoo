@@ -94,6 +94,7 @@
         'views/wishlist_page.xml',
         'views/checkout_steps.xml',
         'wizard/vendor_refuse_view.xml',
+        'wizard/generate_commissions_wizard_view.xml',
     ],
     
     'assets': {

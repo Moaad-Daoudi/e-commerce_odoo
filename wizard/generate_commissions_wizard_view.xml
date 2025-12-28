@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_generate_commissions_wizard_form" model="ir.ui.view">
+        <field name="name">generate.commissions.wizard.form</field>
+        <field name="model">marketplace.generate.commissions.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Missing Commissions">
+                <group>
+                    <field name="order_count" readonly="1"/>
+                </group>
+                <footer>
+                    <button name="action_generate" string="Generate Commissions" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_generate_commissions_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Missing Commissions</field>
+        <field name="res_model">marketplace.generate.commissions.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+    </record>
+
+    <!-- Add menu item under Sales / Orders / Generate Commissions -->
+    <menuitem 
+        id="menu_generate_commissions"
+        name="Generate Missing Commissions"
+        parent="sale.sale_order_menu"
+        action="action_generate_commissions_wizard"
+        sequence="100"
+        groups="base.group_system"/>
+</odoo>

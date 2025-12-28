@@ -16,11 +16,12 @@
                     </div>
 
                     <div class="col-12">
-                        <div class="d-flex flex-wrap gap-4 justify-content-center justify-content-lg-start">
+                        <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 g-4">
                             <t t-foreach="categories" t-as="cat">
                                 <!-- Link to category route using slug -->
-                                <a t-att-href="'/category/%s' % slug(cat)" class="aura-cat-circle text-decoration-none text-center">
-                                    <div class="cat-img-wrapper shadow-sm mb-3 d-flex align-items-center justify-content-center overflow-hidden rounded-circle" style="width: 80px; height: 80px; padding: 0;">
+                                <div class="col text-center">
+                                    <a t-att-href="'/category/%s' % slug(cat)" class="aura-cat-circle text-decoration-none d-block">
+                                        <div class="cat-img-wrapper shadow-sm mb-3 d-flex align-items-center justify-content-center overflow-hidden rounded-circle mx-auto" style="width: 80px; height: 80px; padding: 0;">
                                         <!-- PRIORITY 1: Custom Logo -->
                                         <t t-if="cat.category_logo">
                                             <span t-field="cat.category_logo" 
@@ -43,6 +44,7 @@
                                     </div>
                                     <span class="fw-bold text-dark small d-block" t-field="cat.name"/>
                                 </a>
+                            </div>
                             </t>
                         </div>
                     </div>
@@ -69,12 +71,12 @@
 
                                         <!-- Wishlist Button -->
                                         <t t-set="in_wishlist" t-value="request.env['product.wishlist'].sudo().search_count([('partner_id', '=', request.env.user.partner_id.id), ('product_id', '=', product.product_variant_ids[0].id if product.product_variant_ids else False)]) > 0 if not request.env.user._is_public() else False"/>
-                                        <a t-attf-href="/wishlist/add/#{product.id}" 
+                                        <a t-attf-href="#{'/wishlist/remove/' + str(product.id) if in_wishlist else '/wishlist/add/' + str(product.id)}" 
                                            t-attf-class="btn-wish-float #{in_wishlist and 'in-wishlist' or ''}"
                                            t-attf-data-product-id="#{product.id}"
                                            title="Save for Later" 
                                            onclick="event.stopPropagation();">
-                                            <i t-attf-class="fa fa-heart#{'-' if in_wishlist else '-o'}" t-attf-style="#{in_wishlist and 'color: #dc3545;' or ''}"/>
+                                            <i t-attf-class="fa fa-heart#{'' if in_wishlist else '-o'}" t-attf-style="#{in_wishlist and 'color: #dc3545;' or ''}"/>
                                         </a>
                                     </div>
                                     <div class="card-body">

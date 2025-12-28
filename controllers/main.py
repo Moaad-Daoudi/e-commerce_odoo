@@ -358,13 +358,42 @@ class MarketplaceController(http.Controller):
 
     # CUSTOM CART UPDATE (Add to Cart)
     @http.route('/cart/update', type='http', auth="public", methods=['POST'], website=True, csrf=True)
-    def cart_update(self, product_id=None, add_qty=1, set_qty=0, **kw):
-        """Add product to cart"""
+    def cart_update(self, product_id=None, line_id=None, add_qty=None, remove_qty=None, set_qty=None, **kw):
+        """Add product to cart or update cart line quantities"""
+        order = request.website.sale_get_order()
+        
+        # Handle line_id based update (from cart page)
+        if line_id:
+            if not order or order.state != 'draft':
+                return request.redirect('/cart')
+                
+            line = request.env['sale.order.line'].sudo().browse(int(line_id))
+            if line.exists() and line.order_id == order:
+                # Calculate new quantity
+                if set_qty is not None:
+                    new_qty = float(set_qty)
+                elif add_qty:
+                    new_qty = line.product_uom_qty + float(add_qty)
+                elif remove_qty:
+                    new_qty = line.product_uom_qty - float(remove_qty)
+                else:
+                    new_qty = line.product_uom_qty
+                
+                # Update or remove line
+                if new_qty <= 0:
+                    line.unlink()
+                else:
+                    line.sudo().write({'product_uom_qty': new_qty})
+            
+            return request.redirect('/cart')
+        
+        # Handle product_id based update (add to cart from product page)
         if not product_id:
             return request.redirect('/cart')
         
         # Get or create sale order
-        order = request.website.sale_get_order(force_create=True)
+        if not order:
+            order = request.website.sale_get_order(force_create=True)
         
         if order.state != 'draft':
             request.website.sale_reset()
@@ -373,10 +402,11 @@ class MarketplaceController(http.Controller):
         # Add product to cart
         product = request.env['product.product'].sudo().browse(int(product_id))
         if product.exists():
+            qty = float(add_qty) if add_qty else 1.0
             order.sudo()._cart_update(
                 product_id=int(product_id),
-                add_qty=float(add_qty),
-                set_qty=float(set_qty),
+                add_qty=qty,
+                set_qty=float(set_qty) if set_qty is not None else 0,
             )
         
         return request.redirect('/cart')
@@ -430,7 +460,7 @@ class MarketplaceController(http.Controller):
         # Calculate stats
         total_orders = len(orders)
         pending_orders = len(orders.filtered(lambda o: o.state in ['draft', 'sent']))
-        wishlist_count = 0  # Placeholder for wishlist
+        wishlist_count = request.env['product.wishlist'].search_count([('partner_id', '=', partner.id)])
         
         values = {
             'section': section,
@@ -1134,7 +1164,7 @@ class MarketplaceController(http.Controller):
         # For simplicity in this custom build, we enforce login or use the public user (not recommended for persistent wishlist).
         # Assuming User is logged in for full features:
         if request.env.user._is_public():
-            return request.redirect('/web/login?redirect=/wishlist')
+            return request.redirect('/login?redirect=/wishlist')
 
         try:
             Wishlist = request.env['product.wishlist'].sudo()
@@ -1165,51 +1195,52 @@ class MarketplaceController(http.Controller):
             })
 
 
-    # ADD TO WISHLIST ACTION
-    @http.route('/wishlist/add/<int:product_tmpl_id>', type='http', auth="public", website=True)
+    # ADD TO WISHLIST
+    @http.route('/wishlist/add/<int:product_tmpl_id>', type='http', auth="user", website=True)
     def aura_wishlist_add(self, product_tmpl_id, **kw):
-        import logging
-        _logger = logging.getLogger(__name__)
+        partner = request.env.user.partner_id
+        product_tmpl = request.env['product.template'].browse(product_tmpl_id)
         
-        # Check if user is logged in
-        if request.env.user._is_public():
-            # Redirect to login with return URL
-            referrer = request.httprequest.referrer or '/'
-            return request.redirect('/web/login?redirect=' + referrer)
-        
-        try:
-            partner = request.env.user.partner_id
-            
-            # Get the product template
-            product_tmpl = request.env['product.template'].sudo().browse(product_tmpl_id)
-            if not product_tmpl.exists():
-                raise Exception("Product not found")
-            
-            # Get the first product variant
-            if not product_tmpl.product_variant_ids:
-                raise Exception("No product variant available")
-            
+        if product_tmpl.exists() and product_tmpl.product_variant_ids:
             product_variant = product_tmpl.product_variant_ids[0]
+            Wishlist = request.env['product.wishlist']
             
-            # Add to wishlist using our custom model
-            Wishlist = request.env['product.wishlist'].sudo()
-            wishlist_item = Wishlist._add_to_wishlist(
-                partner_id=partner.id,
-                product_id=product_variant.id,
-                website_id=request.website.id if hasattr(request, 'website') else None
-            )
+            # Check if already in wishlist
+            existing = Wishlist.search([
+                ('partner_id', '=', partner.id),
+                ('product_id', '=', product_variant.id)
+            ], limit=1)
             
-            # Redirect back with success
-            referrer = request.httprequest.referrer or '/'
-            separator = '&' if '?' in referrer else '?'
-            return request.redirect(referrer + separator + 'wishlist_added=1')
-                
-        except Exception as e:
-            _logger.error("Error adding to wishlist: %s", str(e))
-            # Redirect back with error
-            referrer = request.httprequest.referrer or '/'
-            separator = '&' if '?' in referrer else '?'
-            return request.redirect(referrer + separator + 'wishlist_error=1')
+            if not existing:
+                # Add to wishlist
+                Wishlist._add_to_wishlist(
+                    partner_id=partner.id,
+                    product_id=product_variant.id,
+                    website_id=request.website.id if hasattr(request, 'website') else None
+                )
+        
+        return request.redirect(request.httprequest.referrer or '/')
+    
+    # REMOVE FROM WISHLIST (by product template id)
+    @http.route('/wishlist/remove/<int:product_tmpl_id>', type='http', auth="user", website=True)
+    def aura_wishlist_remove(self, product_tmpl_id, **kw):
+        partner = request.env.user.partner_id
+        product_tmpl = request.env['product.template'].browse(product_tmpl_id)
+        
+        if product_tmpl.exists() and product_tmpl.product_variant_ids:
+            product_variant = product_tmpl.product_variant_ids[0]
+            Wishlist = request.env['product.wishlist']
+            
+            # Find and remove from wishlist
+            wishlist_item = Wishlist.search([
+                ('partner_id', '=', partner.id),
+                ('product_id', '=', product_variant.id)
+            ], limit=1)
+            
+            if wishlist_item:
+                wishlist_item.unlink()
+        
+        return request.redirect(request.httprequest.referrer or '/')
     
     # 3. ACTION: REMOVE SINGLE ITEM
     @http.route(['/wishlist/remove/<int:wishlist_id>'], type='http', auth="user", website=True)
@@ -1265,13 +1296,13 @@ class MarketplaceController(http.Controller):
         
         # Sales (Lines belonging to this vendor)
         # We search Order Lines where the product belongs to the vendor
-        vendor_lines = request.env['sale.order.line'].search([
-            ('state', 'in', ['sale', 'done']),
+        vendor_lines = request.env['sale.order.line'].sudo().search([
+            ('order_id.state', 'in', ['sale', 'done']),
             ('product_id.product_tmpl_id.vendor_id', '=', vendor.id)
         ])
         
         total_sales_amount = sum(vendor_lines.mapped('price_subtotal'))
-        total_orders_count = len(vendor_lines.mapped('order_id'))
+        total_orders_count = len(set(vendor_lines.mapped('order_id.id')))
         
         # Recent Orders (Get the last 5 distinct orders)
         recent_orders = vendor_lines.mapped('order_id').sorted(key=lambda r: r.date_order, reverse=True)[:5]
@@ -1304,7 +1335,7 @@ class MarketplaceController(http.Controller):
             return request.redirect('/marketplace/register')
 
         # Get all commissions for this vendor
-        commissions = request.env['marketplace.commission'].search([
+        commissions = request.env['marketplace.commission'].sudo().search([
             ('vendor_id', '=', vendor.id)
         ], order='create_date desc')
         
@@ -1312,10 +1343,10 @@ class MarketplaceController(http.Controller):
         confirmed_commissions = commissions.filtered(lambda c: c.state in ['confirmed', 'paid'])
         paid_commissions = commissions.filtered(lambda c: c.state == 'paid')
         
-        total_earnings = sum(confirmed_commissions.mapped('sale_amount'))
-        total_commission = sum(confirmed_commissions.mapped('amount_commission'))
+        total_earnings = sum(confirmed_commissions.mapped('sale_amount')) if confirmed_commissions else 0.0
+        total_commission = sum(confirmed_commissions.mapped('amount_commission')) if confirmed_commissions else 0.0
         net_income = total_earnings - total_commission
-        available_balance = sum(confirmed_commissions.mapped('vendor_amount')) - sum(paid_commissions.mapped('vendor_amount'))
+        available_balance = sum(confirmed_commissions.mapped('vendor_amount')) - sum(paid_commissions.mapped('vendor_amount')) if confirmed_commissions else 0.0
 
         values = {
             'page_name': 'income',

@@ -85,15 +85,35 @@
                             </div>
                             
                             <t t-if="commissions">
+                                <!-- Income Chart (Placeholder - can use Chart.js) -->
+                                <div class="mb-4 p-4 bg-light rounded">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h6 class="fw-bold m-0">Earnings Overview</h6>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button type="button" class="btn btn-outline-secondary active" onclick="changeIncomeChartType('line')">
+                                                <i class="fa fa-line-chart"/> Line
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary" onclick="changeIncomeChartType('bar')">
+                                                <i class="fa fa-bar-chart"/> Bar
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary" onclick="changeIncomeChartType('doughnut')">
+                                                <i class="fa fa-pie-chart"/> Doughnut
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div style="height: 250px; position: relative;">
+                                        <canvas id="earningsChart"></canvas>
+                                    </div>
+                                </div>
+                                
                                 <div class="table-responsive">
                                     <table class="table table-hover align-middle">
                                         <thead class="bg-light">
                                             <tr>
-                                                <th class="border-0 rounded-start">Order</th>
+                                                <th class="border-0 rounded-start">Reference</th>
+                                                <th class="border-0">Order</th>
                                                 <th class="border-0">Date</th>
-                                                <th class="border-0">Product</th>
                                                 <th class="border-0">Sale Amount</th>
-                                                <th class="border-0">Commission %</th>
                                                 <th class="border-0">Commission</th>
                                                 <th class="border-0">Your Earning</th>
                                                 <th class="border-0 rounded-end">Status</th>
@@ -102,14 +122,13 @@
                                         <tbody>
                                             <t t-foreach="commissions" t-as="comm">
                                                 <tr>
-                                                    <td class="fw-bold"><t t-esc="comm.sale_order_id.name"/></td>
+                                                    <td class="fw-bold"><t t-esc="comm.name"/></td>
+                                                    <td><t t-esc="comm.order_line_id.order_id.name"/></td>
                                                     <td class="small text-muted"><t t-esc="comm.create_date" t-options='{"widget": "date"}'/></td>
-                                                    <td><t t-esc="comm.product_id.name"/></td>
                                                     <td>
                                                         <span t-field="comm.sale_amount" 
                                                               t-options="{'widget': 'monetary', 'display_currency': comm.currency_id}"/>
                                                     </td>
-                                                    <td><t t-esc="comm.commission_rate"/>%</td>
                                                     <td class="text-danger">
                                                         -<span t-field="comm.amount_commission" 
                                                               t-options="{'widget': 'monetary', 'display_currency': comm.currency_id}"/>
@@ -128,11 +147,124 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                
+                                <!-- Chart.js Script -->
+                                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                                <script>
+                                    let earningsChart;
+                                    
+                                    const commissionData = {
+                                        labels: [
+                                            <t t-foreach="commissions[:10]" t-as="comm">
+                                                '<t t-esc="comm.create_date.strftime('%m/%d') if comm.create_date else 'N/A'"/>',
+                                            </t>
+                                        ],
+                                        earnings: [
+                                            <t t-foreach="commissions[:10]" t-as="comm">
+                                                <t t-esc="float(comm.vendor_amount or 0)"/>,
+                                            </t>
+                                        ],
+                                        commissions: [
+                                            <t t-foreach="commissions[:10]" t-as="comm">
+                                                <t t-esc="float(comm.amount_commission or 0)"/>,
+                                            </t>
+                                        ]
+                                    };
+                                    
+                                    function createIncomeChart(type = 'line') {
+                                        const ctx = document.getElementById('earningsChart');
+                                        if (!ctx) return;
+                                        
+                                        if (earningsChart) {
+                                            earningsChart.destroy();
+                                        }
+                                        
+                                        const datasets = type === 'doughnut' ? [{
+                                            label: 'Earnings',
+                                            data: commissionData.earnings,
+                                            backgroundColor: [
+                                                '#4CAF50', '#66BB6A', '#81C784', '#A5D6A7', 
+                                                '#C8E6C9', '#E8F5E9', '#F1F8E9', '#DCEDC8',
+                                                '#C5E1A5', '#AED581'
+                                            ],
+                                            borderWidth: 2
+                                        }] : [{
+                                            label: 'Your Earnings',
+                                            data: commissionData.earnings,
+                                            borderColor: '#4CAF50',
+                                            backgroundColor: type === 'line' ? 'rgba(76, 175, 80, 0.1)' : '#4CAF50',
+                                            tension: 0.4,
+                                            borderRadius: type === 'bar' ? 8 : 0,
+                                            fill: type === 'line'
+                                        }, {
+                                            label: 'Platform Commission',
+                                            data: commissionData.commissions,
+                                            borderColor: '#FF9800',
+                                            backgroundColor: type === 'line' ? 'rgba(255, 152, 0, 0.1)' : '#FF9800',
+                                            tension: 0.4,
+                                            borderRadius: type === 'bar' ? 8 : 0,
+                                            fill: type === 'line'
+                                        }];
+                                        
+                                        const config = {
+                                            type: type,
+                                            data: {
+                                                labels: commissionData.labels,
+                                                datasets: datasets
+                                            },
+                                            options: {
+                                                responsive: true,
+                                                maintainAspectRatio: false,
+                                                plugins: {
+                                                    legend: { 
+                                                        display: true,
+                                                        position: type === 'doughnut' ? 'right' : 'top'
+                                                    },
+                                                    tooltip: {
+                                                        callbacks: {
+                                                            label: function(context) {
+                                                                const value = type === 'doughnut' ? context.parsed : context.parsed.y;
+                                                                return context.dataset.label + ': $' + value.toFixed(2);
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                scales: type !== 'doughnut' ? {
+                                                    y: { 
+                                                        beginAtZero: true,
+                                                        ticks: {
+                                                            callback: function(value) {
+                                                                return '$' + value.toFixed(0);
+                                                            }
+                                                        }
+                                                    }
+                                                } : {}
+                                            }
+                                        };
+                                        
+                                        earningsChart = new Chart(ctx, config);
+                                    }
+                                    
+                                    function changeIncomeChartType(type) {
+                                        // Update active button
+                                        document.querySelectorAll('.btn-group button').forEach(btn => {
+                                            btn.classList.remove('active');
+                                        });
+                                        event.target.closest('button').classList.add('active');
+                                        
+                                        createIncomeChart(type);
+                                    }
+                                    
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        createIncomeChart('line');
+                                    });
+                                </script>
                             </t>
                             <t t-else="">
                                 <div class="text-center py-5">
                                     <i class="fa fa-chart-line fa-3x text-muted opacity-25 mb-3"/>
                                     <p class="text-muted">No commission records yet</p>
+                                    <p class="small text-muted">Commissions will appear here once customers purchase your products.</p>
                                 </div>
                             </t>
                         </div>

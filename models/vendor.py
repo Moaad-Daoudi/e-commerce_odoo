@@ -39,7 +39,7 @@ class MarketplaceVendor(models.Model):
     # Financial fields
     currency_id = fields.Many2one('res.currency', string="Currency", default=lambda self: self.env.company.currency_id)
     default_commission_rate = fields.Float(string="Commission Rate (%)", default=10.0)
-    balance = fields.Monetary(string="Balance", currency_field='currency_id', default=0.0)
+    balance = fields.Monetary(string="Balance", currency_field='currency_id', compute='_compute_balance', store=True)
     
     # Relations
     product_ids = fields.One2many('product.template', 'vendor_id', string="Products")
@@ -53,6 +53,17 @@ class MarketplaceVendor(models.Model):
         ('partner_uniq', 'unique(partner_id)', 'You already have a vendor profile!'),
         ('shop_url_uniq', 'unique(shop_url)', 'This Shop URL is already taken.')
     ]
+
+    @api.depends('commission_ids', 'commission_ids.state', 'commission_ids.amount_vendor')
+    def _compute_balance(self):
+        """Calculate available balance from confirmed commissions minus paid ones"""
+        for rec in self:
+            confirmed_comms = rec.commission_ids.filtered(lambda c: c.state in ['confirmed', 'paid'])
+            paid_comms = rec.commission_ids.filtered(lambda c: c.state == 'paid')
+            
+            total_earned = sum(confirmed_comms.mapped('amount_vendor'))
+            total_paid = sum(paid_comms.mapped('amount_vendor'))
+            rec.balance = total_earned - total_paid
 
     @api.depends('commission_ids', 'commission_ids.state')
     def _compute_kpi(self):

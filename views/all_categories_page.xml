@@ -8,7 +8,6 @@
                 <t t-call="marketplace_platform.hero_component">
                     <t t-set="hero_title" t-value="'Explore Categories'"/>
                     <t t-set="hero_subtitle" t-value="'Discover unique handmade products across all our categories'"/>
-                    <t t-set="hero_breadcrumb" t-value="'Home / Categories'"/>
                 </t>
 
                 <!-- Main Content -->

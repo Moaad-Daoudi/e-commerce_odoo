@@ -50,95 +50,101 @@
 
     <!-- Custom Cart Page with Progress -->
     <template id="custom_cart_page" name="Custom Cart">
-        <t t-call="website.layout">
-            <t t-set="current_step" t-value="1"/>
-            <t t-call="marketplace_platform.checkout_progress_bar"/>
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap">
+                <t t-call="marketplace_platform.navbar_component"/>
+                <t t-set="current_step" t-value="1"/>
+                <t t-call="marketplace_platform.checkout_progress_bar"/>
             
-            <div class="container my-5">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <h2 class="mb-4">Shopping Cart</h2>
-                        <t t-if="website_sale_order and website_sale_order.website_order_line">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Total</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr t-foreach="website_sale_order.website_order_line" t-as="line">
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <img t-if="line.product_id.image_128" 
-                                                     t-att-src="'data:image/png;base64,%s' % line.product_id.image_128.decode('utf-8')" 
-                                                     class="me-3" style="width: 60px; height: 60px; object-fit: cover;"/>
-                                                <div>
-                                                    <div class="fw-bold" t-esc="line.product_id.name"/>
+                <div class="container my-5">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h2 class="mb-4">Shopping Cart</h2>
+                            <t t-if="website_sale_order and website_sale_order.website_order_line">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="website_sale_order.website_order_line" t-as="line">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img t-if="line.product_id.image_128" 
+                                                         t-att-src="'data:image/png;base64,%s' % line.product_id.image_128.decode('utf-8')" 
+                                                         class="me-3" style="width: 60px; height: 60px; object-fit: cover;"/>
+                                                    <div>
+                                                        <div class="fw-bold" t-esc="line.product_id.name"/>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td t-esc="'%.2f' % line.price_unit" class="text-end"/>
-                                        <td>
-                                            <input type="number" class="form-control" style="width: 80px;" 
-                                                   t-att-value="line.product_uom_qty" min="1"/>
-                                        </td>
-                                        <td t-esc="'%.2f' % line.price_total" class="text-end fw-bold"/>
-                                        <td>
-                                            <button class="btn btn-sm btn-danger">
-                                                <i class="fa fa-trash"/>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </t>
-                        <t t-else="">
-                            <div class="alert alert-info">
-                                <i class="fa fa-shopping-cart me-2"/>
-                                Your cart is empty
-                            </div>
-                        </t>
-                    </div>
-                    
-                    <div class="col-lg-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Order Summary</h5>
-                                <hr/>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Subtotal:</span>
-                                    <span t-esc="'%.2f' % (website_sale_order.amount_untaxed if website_sale_order else 0)"/>
+                                            </td>
+                                            <td t-esc="'%.2f' % line.price_unit" class="text-end"/>
+                                            <td>
+                                                <input type="number" class="form-control" style="width: 80px;" 
+                                                       t-att-value="line.product_uom_qty" min="1"/>
+                                            </td>
+                                            <td t-esc="'%.2f' % line.price_total" class="text-end fw-bold"/>
+                                            <td>
+                                                <button class="btn btn-sm btn-danger">
+                                                    <i class="fa fa-trash"/>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <t t-else="">
+                                <div class="alert alert-info">
+                                    <i class="fa fa-shopping-cart me-2"/>
+                                    Your cart is empty
                                 </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Tax:</span>
-                                    <span t-esc="'%.2f' % (website_sale_order.amount_tax if website_sale_order else 0)"/>
+                            </t>
+                        </div>
+                        
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Order Summary</h5>
+                                    <hr/>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Subtotal:</span>
+                                        <span t-esc="'%.2f' % (website_sale_order.amount_untaxed if website_sale_order else 0)"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Tax:</span>
+                                        <span t-esc="'%.2f' % (website_sale_order.amount_tax if website_sale_order else 0)"/>
+                                    </div>
+                                    <hr/>
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <strong>Total:</strong>
+                                        <strong t-esc="'%.2f' % (website_sale_order.amount_total if website_sale_order else 0)"/>
+                                    </div>
+                                    <a href="/shop/checkout/address" class="btn btn-success w-100" t-if="website_sale_order">
+                                        <i class="fa fa-arrow-right me-2"/>
+                                        Proceed to Checkout
+                                    </a>
                                 </div>
-                                <hr/>
-                                <div class="d-flex justify-content-between mb-3">
-                                    <strong>Total:</strong>
-                                    <strong t-esc="'%.2f' % (website_sale_order.amount_total if website_sale_order else 0)"/>
-                                </div>
-                                <a href="/shop/checkout/address" class="btn btn-success w-100" t-if="website_sale_order">
-                                    <i class="fa fa-arrow-right me-2"/>
-                                    Proceed to Checkout
-                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
+                <t t-call="marketplace_platform.footer_component"/>
             </div>
         </t>
     </template>
 
     <!-- Custom Shipping Address Page -->
     <template id="custom_address_page" name="Custom Shipping Address">
-        <t t-call="website.layout">
-            <t t-set="current_step" t-value="2"/>
-            <t t-call="marketplace_platform.checkout_progress_bar"/>
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap">
+                <t t-call="marketplace_platform.navbar_component"/>
+                <t t-set="current_step" t-value="2"/>
+                <t t-call="marketplace_platform.checkout_progress_bar"/>
             
             <div class="container my-5">
                 <div class="row justify-content-center">
@@ -208,14 +214,18 @@
                     </div>
                 </div>
             </div>
+            <t t-call="marketplace_platform.footer_component"/>
+            </div>
         </t>
     </template>
 
     <!-- Custom Payment Page -->
     <template id="custom_payment_page" name="Custom Payment">
-        <t t-call="website.layout">
-            <t t-set="current_step" t-value="3"/>
-            <t t-call="marketplace_platform.checkout_progress_bar"/>
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap">
+                <t t-call="marketplace_platform.navbar_component"/>
+                <t t-set="current_step" t-value="3"/>
+                <t t-call="marketplace_platform.checkout_progress_bar"/>
             
             <div class="container my-5">
                 <div class="row justify-content-center">
@@ -300,15 +310,17 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </t>
+            </div>            <t t-call="marketplace_platform.footer_component"/>
+            </div>        </t>
     </template>
 
     <!-- Order Confirmation Page -->
     <template id="order_confirmation_page" name="Order Confirmation">
-        <t t-call="website.layout">
-            <t t-set="current_step" t-value="4"/>
-            <t t-call="marketplace_platform.checkout_progress_bar"/>
+        <t t-call="marketplace_platform.minimal_layout">
+            <div id="wrap">
+                <t t-call="marketplace_platform.navbar_component"/>
+                <t t-set="current_step" t-value="4"/>
+                <t t-call="marketplace_platform.checkout_progress_bar"/>
             
             <div class="container my-5">
                 <div class="row justify-content-center">
@@ -337,6 +349,8 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <t t-call="marketplace_platform.footer_component"/>
             </div>
         </t>
     </template>

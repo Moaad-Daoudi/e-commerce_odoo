@@ -8,7 +8,6 @@
                 <t t-call="marketplace_platform.hero_component">
                     <t t-set="hero_title" t-value="'Contact Us'"/>
                     <t t-set="hero_subtitle" t-value="'We would love to hear from you'"/>
-                    <t t-set="hero_breadcrumb" t-value="'Home / Contact'"/>
                 </t>
 
                 <!-- Main Content -->

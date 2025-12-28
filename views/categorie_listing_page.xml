@@ -25,13 +25,6 @@
                             </div>
                             <h1 class="fw-bold display-4 text-white" t-field="category.name"/>
                             <p class="lead text-white mb-0" t-if="category.seo_description" t-field="category.seo_description"/>
-                            <nav aria-label="breadcrumb" class="mt-3">
-                                <ol class="breadcrumb justify-content-center">
-                                    <li class="breadcrumb-item"><a href="/" class="text-white">Home</a></li>
-                                    <li class="breadcrumb-item"><a href="/categories" class="text-white">Shop</a></li>
-                                    <li class="breadcrumb-item active text-white" aria-current="page"><span t-esc="category.name"/></li>
-                                </ol>
-                            </nav>
                         </div>
                     </div>
                 </div>

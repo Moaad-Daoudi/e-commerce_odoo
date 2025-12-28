@@ -74,21 +74,33 @@
                                                 <!-- Quantity Stepper -->
                                                 <div class="aura-qty-input-group">
                                                     <!-- Decrease -->
-                                                    <a t-attf-href="/shop/cart/update?line_id=#{line.id}&amp;remove_qty=1" 
-                                                       class="btn-qty text-decoration-none">-</a>
+                                                    <form method="post" action="/cart/update" style="display: inline;">
+                                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                                        <input type="hidden" name="line_id" t-att-value="line.id"/>
+                                                        <input type="hidden" name="remove_qty" value="1"/>
+                                                        <button type="submit" class="btn-qty" style="border: none; background: none; cursor: pointer;">-</button>
+                                                    </form>
                                                     
                                                     <input type="text" class="input-qty" t-att-value="int(line.product_uom_qty)"/>
                                                     
                                                     <!-- Increase -->
-                                                    <a t-attf-href="/shop/cart/update?line_id=#{line.id}&amp;add_qty=1" 
-                                                       class="btn-qty text-decoration-none">+</a>
+                                                    <form method="post" action="/cart/update" style="display: inline;">
+                                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                                        <input type="hidden" name="line_id" t-att-value="line.id"/>
+                                                        <input type="hidden" name="add_qty" value="1"/>
+                                                        <button type="submit" class="btn-qty" style="border: none; background: none; cursor: pointer;">+</button>
+                                                    </form>
                                                 </div>
 
                                                 <!-- Remove Link -->
-                                                <a t-attf-href="/shop/cart/update?line_id=#{line.id}&amp;set_qty=0" 
-                                                   class="btn-remove">
-                                                    Remove
-                                                </a>
+                                                <form method="post" action="/cart/update" style="display: inline;">
+                                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                                    <input type="hidden" name="line_id" t-att-value="line.id"/>
+                                                    <input type="hidden" name="set_qty" value="0"/>
+                                                    <button type="submit" class="btn-remove" style="border: none; background: none; cursor: pointer; color: inherit;">
+                                                        Remove
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>

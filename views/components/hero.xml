@@ -21,15 +21,15 @@
                         <h1 class="display-3 fw-bold mb-4 text-dark" style="letter-spacing: -1px; line-height: 1.1;">
                             <t t-if="hero_title" t-raw="hero_title"/>
                             <t t-else="">
-                                Crafted with Soul.<br/>
-                                <span class="text-primary-gradient">Discover Unique</span>
+                                Everything You Need.<br/>
+                                <span class="text-primary-gradient">All in One Place</span>
                             </t>
                         </h1>
                         
-                        <p class="lead text-muted mb-5" style="max-width: 450px;">
+                        <p class="lead text-muted mb-5" style="max-width: 500px;">
                             <t t-if="hero_subtitle" t-esc="hero_subtitle"/>
                             <t t-else="">
-                                Handmade goods, art, and artisanal finds from independent creators around the world.
+                                From electronics to fashion, sports gear to home essentials. Discover quality products from trusted vendors worldwide.
                             </t>
                         </p>
                         
@@ -39,8 +39,8 @@
                             </a>
                         </t>
                         <t t-else="">
-                            <a href="/shop" class="btn btn-aura-primary btn-lg px-5 py-3 rounded-pill shadow-sm">
-                                Explore Makers
+                            <a href="/categories" class="btn btn-aura-primary btn-lg px-5 py-3 rounded-pill shadow-sm">
+                                Shop Now
                             </a>
                         </t>
                     </div>
