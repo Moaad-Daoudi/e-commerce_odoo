@@ -101,6 +101,7 @@
         'web.assets_frontend': [
             'marketplace_platform/static/src/scss/aura_style.scss',
             'marketplace_platform/static/src/js/wishlist.js',
+            'marketplace_platform/static/src/js/wishlist_ajax.js',
         ],
     },
 

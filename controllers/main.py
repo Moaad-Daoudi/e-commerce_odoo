@@ -1307,6 +1307,26 @@ class MarketplaceController(http.Controller):
         # Recent Orders (Get the last 5 distinct orders)
         recent_orders = vendor_lines.mapped('order_id').sorted(key=lambda r: r.date_order, reverse=True)[:5]
 
+        # Get sales data for the last 7 days for charts
+        from datetime import datetime, timedelta
+        import json
+        today = datetime.now().date()
+        chart_data = []
+        chart_labels = []
+        
+        for i in range(6, -1, -1):  # Last 7 days (6 days ago to today)
+            target_date = today - timedelta(days=i)
+            day_name = target_date.strftime('%a')  # Mon, Tue, Wed...
+            
+            # Get sales for this specific day
+            day_lines = vendor_lines.filtered(
+                lambda l: l.order_id.date_order.date() == target_date
+            )
+            day_total = sum(day_lines.mapped('price_subtotal'))
+            
+            chart_labels.append(day_name)
+            chart_data.append(round(day_total, 2))
+
         values = {
             'page_name': 'dashboard', # For navbar active state
             'vendor': vendor,
@@ -1318,6 +1338,8 @@ class MarketplaceController(http.Controller):
             },
             'recent_orders': recent_orders,
             'user_id': request.env.user,
+            'chart_labels': json.dumps(chart_labels),
+            'chart_data': json.dumps(chart_data),
         }
         
         return request.render("marketplace_platform.portal_vendor_dashboard", values)
